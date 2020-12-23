@@ -11,13 +11,27 @@ const SERVER = HTTP.createServer((req, res) => {
     // console.log(req.method);
     // const {headers, url, method} = req;
     // console.log(headers, url, method);
-    res.setHeader('Content-Type', 'text/html');
-    res.setHeader('Content-Type', 'application/json');
-    res.setHeader('X-Powered-By', 'Node.js');
-    res.write("<h1>Hello Sourav</h1>")
-    res.write("<h2>Hello Sourav Again</h2>")
+    // res.statusCode = 404;
+    // res.setHeader('Content-Type', 'text/html');
+    // res.setHeader('Content-Type', 'application/json');
+    // res.setHeader('X-Powered-By', 'Node.js');
+
+    res.writeHead(200, {
+        'Content-Type': 'application/json',
+        'X-Powered-By': 'Node.js'
+    })
+
+    // res.write("<h1>Hello Sourav</h1>")
+    // res.write("<h2>Hello Sourav Again</h2>")
+
+    console.log(req.headers.authorization);
+
     res.end(JSON.stringify({
         success: true,
+        success: false,
+        // error: "Not Found",
+        // error: "Bad Request",
+        // data: todos,
         data: todos
     }));
 })
