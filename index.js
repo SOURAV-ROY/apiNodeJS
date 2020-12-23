@@ -24,11 +24,19 @@ const SERVER = HTTP.createServer((req, res) => {
     // res.write("<h1>Hello Sourav</h1>")
     // res.write("<h2>Hello Sourav Again</h2>")
 
-    console.log(req.headers.authorization);
+    console.log("Authorization Code : " + req.headers.authorization);
 
+    let body = [];
+
+    req.on('data', chunk => {
+        body.push(chunk)
+    }).on('end', () => {
+        body = Buffer.concat(body).toString();
+        console.log(body);
+    })
     res.end(JSON.stringify({
         success: true,
-        success: false,
+        // success: false,
         // error: "Not Found",
         // error: "Bad Request",
         // data: todos,
