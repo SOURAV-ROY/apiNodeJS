@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8047249a-3bd8-4884-b4d3-1d08233b6ceb" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/server.js" afterDir="false" />
     </list>
@@ -78,7 +77,7 @@
       <workItem from="1608789701578" duration="1801000" />
       <workItem from="1608793639684" duration="77000" />
       <workItem from="1608793901490" duration="19000" />
-      <workItem from="1608793926214" duration="5790000" />
+      <workItem from="1608793926214" duration="7208000" />
     </task>
     <servers />
   </component>
