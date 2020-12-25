@@ -1,5 +1,6 @@
 const express = require('express');
 const dotenv = require("dotenv");
+const logger = require('./middleware/logger');
 
 //Router Files****************
 const bootcamps = require('./routes/bootcamps');
@@ -9,12 +10,7 @@ dotenv.config({path: "./config/config.env"});
 
 const app = express();
 
-//Middleware ******************
-const logger = (req, res, next) => {
-    req.hello = "Hello SOURAV";
-    console.log("Middleware RUN");
-    next();
-};
+//Use Middleware ******************
 app.use(logger);
 
 //Mount Routers ******************
