@@ -9,6 +9,14 @@ dotenv.config({path: "./config/config.env"});
 
 const app = express();
 
+//Middleware ******************
+const logger = (req, res, next) => {
+    req.hello = "Hello SOURAV";
+    console.log("Middleware RUN");
+    next();
+};
+app.use(logger);
+
 //Mount Routers ******************
 app.use('/api/v1/bootcamps', bootcamps);
 
