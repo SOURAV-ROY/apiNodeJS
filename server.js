@@ -28,6 +28,16 @@ app.use('/api/v1/bootcamps', bootcamps);
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log(`Server Running in ${process.env.NODE_ENV} Mode on Port ${PORT}`)
+})
+
+//handle unhandled promise rejections
+process.on('unhandledRejection', (error, promise) => {
+    console.log(`Error: ${error.message}`);
+
+//  Close server and exit process **********
+    server.close(() => {
+        process.exit(1);
+    })
 })
