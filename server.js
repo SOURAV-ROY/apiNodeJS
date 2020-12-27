@@ -3,10 +3,10 @@ const dotenv = require("dotenv");
 const logger = require('./middleware/logger');
 const morgan = require('morgan');
 const colors = require('colors');
-const connectDB = require('./config/db');
+const connectDB = require('./config_update/db');
 
 //Load env vars ************
-dotenv.config({path: "./config/config.env"});
+dotenv.config({path: "./config_update/config.env"});
 
 //Connect To DB************************************
 connectDB();

@@ -2,11 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8047249a-3bd8-4884-b4d3-1d08233b6ceb" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMD.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMD.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/db.js" beforeDir="false" afterPath="$PROJECT_DIR$/config/db.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/config.env" beforeDir="false" afterPath="$PROJECT_DIR$/config_update/config.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/db.js" beforeDir="false" afterPath="$PROJECT_DIR$/config_update/db.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/middleware/logger.js" beforeDir="false" afterPath="$PROJECT_DIR$/middleware/logger.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/server.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -54,6 +54,7 @@
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
     <property name="ts.external.directory.path" value="C:\Program Files\JetBrains\PhpStorm 2020.2\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
@@ -86,7 +87,16 @@
       <workItem from="1608875661197" duration="348000" />
       <workItem from="1608881400611" duration="5759000" />
       <workItem from="1608892051088" duration="4472000" />
-      <workItem from="1608966051724" duration="5285000" />
+      <workItem from="1608966051724" duration="5705000" />
+      <workItem from="1608986889862" duration="21000" />
+      <workItem from="1608995783209" duration="786000" />
+      <workItem from="1608996843601" duration="365000" />
+      <workItem from="1609000102504" duration="447000" />
+      <workItem from="1609002930179" duration="4633000" />
+      <workItem from="1609043578881" duration="618000" />
+      <workItem from="1609050910260" duration="1296000" />
+      <workItem from="1609054163072" duration="36000" />
+      <workItem from="1609054261161" duration="3477000" />
     </task>
     <servers />
   </component>
