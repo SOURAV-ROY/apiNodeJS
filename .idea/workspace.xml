@@ -2,11 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8047249a-3bd8-4884-b4d3-1d08233b6ceb" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/config.env" beforeDir="false" afterPath="$PROJECT_DIR$/config_update/config.env" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/db.js" beforeDir="false" afterPath="$PROJECT_DIR$/config_update/db.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/middleware/logger.js" beforeDir="false" afterPath="$PROJECT_DIR$/middleware/logger.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/bootcampsController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/bootcampsController.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/server.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -60,6 +57,7 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="H:\2020\htdocs\NODE-JS\apiNodeJS\config_update" />
       <recent name="H:\2020\htdocs\NODE-JS\apiNodeJS\middleware" />
       <recent name="H:\2020\htdocs\NODE-JS\apiNodeJS\config" />
     </key>
@@ -96,7 +94,7 @@
       <workItem from="1609043578881" duration="618000" />
       <workItem from="1609050910260" duration="1296000" />
       <workItem from="1609054163072" duration="36000" />
-      <workItem from="1609054261161" duration="3477000" />
+      <workItem from="1609054261161" duration="7798000" />
     </task>
     <servers />
   </component>
