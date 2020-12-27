@@ -3,24 +3,45 @@ const Bootcamp = require("../models/BootcampModel");
 // @description     Get all bootcamps
 // @route           GET /api/v1/bootcamps
 // @access          Public
-exports.getBootcamps = (req, res, next) => {
-    res.status(200)
-        .json({
-            success: true,
-            msg: "Show All Bootcamps",
-            // hello: req.hello
+exports.getBootcamps = async (req, res, next) => {
+
+    try {
+        const bootcamps = await Bootcamp.find();
+        res.status(200).json({
+            status: true,
+            data: bootcamps
         });
+    } catch (errors) {
+        res.status(400).json({success: false});
+    }
+
+
+    // res.status(200)
+    //     .json({
+    //         success: true,
+    //         msg: "Show All Bootcamps",
+    //         // hello: req.hello
+    //     });
 };
 
 // @description     Get single bootcamp
 // @route           GET /api/v1/bootcamps/:id
 // @access          Public
-exports.getBootcamp = (req, res, next) => {
-    res.status(200)
-        .json({
-            success: true,
-            msg: `Show a Single Bootcamp ${req.params.id}`
-        });
+exports.getBootcamp = async (req, res, next) => {
+    try {
+        const bootcamp = await Bootcamp.findById(req.params.id);
+        if (!bootcamp) {
+            return res.status(400).json({success: false});
+        }
+        res.status(200).json({success: true, data: bootcamp});
+    } catch (errors) {
+        res.status(400).json({success: false});
+    }
+    // res.status(200)
+    //     .json({
+    //         success: true,
+    //         msg: `Show a Single Bootcamp ${req.params.id}`
+    //     });
 };
 
 // @description     Create new bootcamp
