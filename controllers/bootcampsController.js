@@ -14,7 +14,8 @@ exports.getBootcamps = async (req, res, next) => {
             data: bootcamps
         });
     } catch (errors) {
-        res.status(400).json({success: false});
+        // res.status(400).json({success: false});
+        next(errors);
     }
 
 
@@ -38,7 +39,8 @@ exports.getBootcamp = async (req, res, next) => {
         res.status(200).json({success: true, data: bootcamp});
     } catch (errors) {
         // res.status(400).json({success: false});
-        next(new ErrorResponse(`Bootcamp not found with id ${req.params.id}`, 404));
+        next(errors);
+        // next(new ErrorResponse(`Bootcamp not found with id ${req.params.id}`, 404));
     }
     // res.status(200)
     //     .json({
@@ -64,7 +66,8 @@ exports.creteBootcamp = async (req, res, next) => {
             data: bootcamp
         });
     } catch (errors) {
-        res.status(400).json({success: false});
+        // res.status(400).json({success: false});
+        next(errors);
     }
 };
 
@@ -79,11 +82,12 @@ exports.updateBootcamp = async (req, res, next) => {
         });
 
         if (!bootcamp) {
-            return res.status(400).json({success: false});
+            return next(new ErrorResponse(`Bootcamp not found with id ${req.params.id}`, 404));
         }
         res.status(200).json({success: true, data: bootcamp});
     } catch (errors) {
-        res.status(400).json({success: false});
+        // res.status(400).json({success: false});
+        next(errors);
     }
 
     // res.status(200)
@@ -101,11 +105,12 @@ exports.deleteBootcamp = async (req, res, next) => {
         const bootcamp = await Bootcamp.findByIdAndDelete(req.params.id);
 
         if (!bootcamp) {
-            return res.status(400).json({success: false});
+            return next(new ErrorResponse(`Bootcamp not found with id ${req.params.id}`, 404));
         }
         res.status(200).json({success: true, data: {}});
     } catch (errors) {
-        res.status(400).json({success: false});
+        // res.status(400).json({success: false});
+        next(errors);
     }
     // res.status(200)
     //     .json({
