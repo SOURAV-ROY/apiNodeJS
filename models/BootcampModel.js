@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const BootcampSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: [true, "Please Add Note"],
+        required: [true, "Please Add Name"],
         unique: true,
         trim: true,
         maxlength: [50, "name can not be more than 50 characters"]
@@ -34,7 +34,7 @@ const BootcampSchema = new mongoose.Schema({
     },
     address: {
         type: String,
-        required: [true, "Please Add Description"],
+        required: [true, "Please Add Address"],
     },
     // location: {
     //     //GeoJSON Point *************************
