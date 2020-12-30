@@ -4,6 +4,7 @@
     <list default="true" id="8047249a-3bd8-4884-b4d3-1d08233b6ceb" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controllers/bootcampsController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/bootcampsController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/server.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,7 +41,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="javascript.nodejs.core.library.configured.version" value="15.1.0" />
     <property name="javascript.nodejs.core.library.typings.version" value="14.14.14" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../DevCamperAPI" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -94,7 +95,16 @@
       <workItem from="1609050910260" duration="1296000" />
       <workItem from="1609054163072" duration="36000" />
       <workItem from="1609054261161" duration="9949000" />
-      <workItem from="1609089528937" duration="6124000" />
+      <workItem from="1609089528937" duration="6655000" />
+      <workItem from="1609128421436" duration="701000" />
+      <workItem from="1609131019942" duration="833000" />
+      <workItem from="1609149780108" duration="1219000" />
+      <workItem from="1609177763000" duration="1285000" />
+      <workItem from="1609221555460" duration="1008000" />
+      <workItem from="1609308565064" duration="64000" />
+      <workItem from="1609309122187" duration="1522000" />
+      <workItem from="1609313729316" duration="4451000" />
+      <workItem from="1609338352236" duration="660000" />
     </task>
     <servers />
   </component>
