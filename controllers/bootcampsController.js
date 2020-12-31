@@ -10,9 +10,9 @@ exports.getBootcamps = asyncHandler(async (req, res, next) => {
     // try {
     const bootcamps = await Bootcamp.find();
 
-    if (!bootcamps) {
-        return next(new ErrorResponse(`Bootcamp not found with id ${req.params.id}`, 404));
-    }
+    // if (!bootcamps) {
+    //     return next(new ErrorResponse(`Bootcamp not found with id ${req.params.id}`, 404));
+    // }
     res.status(200).json({
         status: true,
         count: bootcamps.length,
