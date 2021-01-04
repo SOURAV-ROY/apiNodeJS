@@ -11,12 +11,13 @@ const Bootcamp = require('./models/BootcampModel');
 
 
 //Connect to DB *******************************************************
-mongoose.connect(process.env.MONGO_URI, {
+const optionDB = {
     useNewUrlParser: true,
     useCreateIndex: true,
     useFindAndModify: false,
     useUnifiedTopology: true
-});
+};
+mongoose.connect(process.env.MONGO_URI, optionDB);
 
 //Read JSON files ******************************************************
 const bootcamps = JSON.parse(fs.readFileSync(`${__dirname}/_data/bootcamps.json`, 'utf-8'));
