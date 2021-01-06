@@ -16,7 +16,7 @@ exports.getBootcamps = asyncHandler(async (req, res, next) => {
     const reqQuery = {...req.query};
 
     //Field to Exclude *****************************
-    const removeField = ['select', 'sort'];
+    const removeField = ['select', 'sort', 'page', 'limit'];
 
     //Loop over removeFields and delete them from reqQuery **********
     removeField.forEach(param => delete reqQuery[param]);
@@ -46,8 +46,34 @@ exports.getBootcamps = asyncHandler(async (req, res, next) => {
         query = query.sort('-createdAt');
     }
 
+    //Pagination **********************************
+    const page = parseInt(req.query.page, 10) || 1;
+    // const limit = parseInt(req.query.limit, 10) || 2;
+    const limit = parseInt(req.query.limit, 10) || 25;
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+    const total = await Bootcamp.countDocuments();
+
+    query = query.skip(startIndex).limit(limit);
+
     //Executing Query *****************************
     const bootcamps = await query;
+
+    //Pagination Result ****************************
+    const pagination = {};
+
+    if (endIndex < total) {
+        pagination.next = {
+            page: page + 1,
+            limit
+        }
+    }
+    if (startIndex > 0) {
+        pagination.prev = {
+            page: page - 1,
+            limit
+        }
+    }
 
     // if (!bootcamps) {
     //     return next(new ErrorResponse(`Bootcamp not found with id ${req.params.id}`, 404));
@@ -55,6 +81,7 @@ exports.getBootcamps = asyncHandler(async (req, res, next) => {
     res.status(200).json({
         status: true,
         count: bootcamps.length,
+        pagination,
         data: bootcamps
     });
     // } catch (errors) {
