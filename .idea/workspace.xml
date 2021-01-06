@@ -3,9 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="8047249a-3bd8-4884-b4d3-1d08233b6ceb" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_data/bootcamps.json" beforeDir="false" afterPath="$PROJECT_DIR$/_data/bootcamps.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controllers/bootcampsController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/bootcampsController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/bootcamps.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/bootcamps.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/seeder.js" beforeDir="false" afterPath="$PROJECT_DIR$/seeder.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -119,7 +118,13 @@
       <workItem from="1609660062537" duration="1189000" />
       <workItem from="1609689664213" duration="674000" />
       <workItem from="1609739872564" duration="1168000" />
-      <workItem from="1609744414310" duration="3672000" />
+      <workItem from="1609744414310" duration="5614000" />
+      <workItem from="1609828552480" duration="1040000" />
+      <workItem from="1609835103129" duration="645000" />
+      <workItem from="1609842580954" duration="1995000" />
+      <workItem from="1609866378465" duration="1326000" />
+      <workItem from="1609912339946" duration="59000" />
+      <workItem from="1609914982217" duration="2542000" />
     </task>
     <servers />
   </component>

@@ -9,7 +9,18 @@ const Bootcamp = require("../models/BootcampModel");
 exports.getBootcamps = asyncHandler(async (req, res, next) => {
 
     // try {
-    const bootcamps = await Bootcamp.find();
+    // console.log(req.query);
+    let query;
+
+    let queryString = JSON.stringify(req.query);
+    queryString = queryString.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
+
+    console.log(queryString);
+
+    query = Bootcamp.find(JSON.parse(queryString));
+
+    // const bootcamps = await Bootcamp.find();
+    const bootcamps = await query;
 
     // if (!bootcamps) {
     //     return next(new ErrorResponse(`Bootcamp not found with id ${req.params.id}`, 404));
