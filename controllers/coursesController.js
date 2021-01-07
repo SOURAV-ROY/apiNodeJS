@@ -8,6 +8,7 @@ const Course = require("../models/CourseModel");
 // @access          Public
 
 exports.getCourses = asyncHandler(async (req, res, next) => {
+
     let query;
 
     if (req.params.bootcampId) {
@@ -23,4 +24,4 @@ exports.getCourses = asyncHandler(async (req, res, next) => {
         count: courses.length,
         data: courses
     });
-})
+});
