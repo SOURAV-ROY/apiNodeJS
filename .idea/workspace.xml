@@ -4,8 +4,7 @@
     <list default="true" id="8047249a-3bd8-4884-b4d3-1d08233b6ceb" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controllers/coursesController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/coursesController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/bootcamps.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/bootcamps.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/courses.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/courses.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/CourseModel.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/CourseModel.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -127,7 +126,8 @@
       <workItem from="1609912339946" duration="59000" />
       <workItem from="1609914982217" duration="3419000" />
       <workItem from="1609948083325" duration="8805000" />
-      <workItem from="1609998962609" duration="7073000" />
+      <workItem from="1609998962609" duration="7658000" />
+      <workItem from="1610031586828" duration="3800000" />
     </task>
     <servers />
   </component>
