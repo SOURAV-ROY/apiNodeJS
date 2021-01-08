@@ -2,7 +2,7 @@
 
 ## Reverse Populate
 ### In Model (Options)
-```json
+```js
 toJSON: {virtuals: true},
 toObject: {virtuals: true}
 ```
