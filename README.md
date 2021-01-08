@@ -18,7 +18,7 @@ BootcampSchema.virtual('courses', {
 ```js
 query = Bootcamp.find(JSON.parse(queryString)).populate('courses');
 ```
-### Course Being Removed From Bootcamp
+## Course Being Removed From Bootcamp
 ```js
 BootcampSchema.pre('remove', async function (next) {
     console.log(`Course being removed from bootcamp: ${this._id}`);
