@@ -30,3 +30,38 @@ BootcampSchema.pre('remove', async function (next) {
 const bootcamp = await Bootcamp.findById(req.params.id);
 bootcamp.remove();
 ```
+## Calculating The Average CourseCost
+```js
+CourseSchema.statics.getAverageCost = async function (bootcampId) {
+    console.log('Calculate average const...'.blue);
+    const obj = await this.aggregate([
+        {
+            $match: {bootcamp: bootcampId}
+        },
+        {
+            $group: {
+                _id: '$bootcamp',
+                averageCost: {$avg: '$tuition'}
+            }
+        }
+    ]);
+    try {
+        await this.model('Bootcamp').findByIdAndUpdate(bootcampId, {
+            averageCost: Math.ceil(obj[0].averageCost / 10) * 10
+        })
+    } catch (errors) {
+        console.log(errors);
+    }
+}
+```
+```js
+//Call AverageCost After Add Course **********************
+CourseSchema.post('save', function () {
+    this.constructor.getAverageCost(this.bootcamp);
+});
+
+//Call AverageCost Before Remove Course ******************
+CourseSchema.pre('remove', function () {
+    this.constructor.getAverageCost(this.bootcamp);
+});
+```
