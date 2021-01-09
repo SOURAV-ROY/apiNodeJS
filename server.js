@@ -1,8 +1,10 @@
+const path = require('path');
 const express = require('express');
 const dotenv = require("dotenv");
 const logger = require('./middleware/logger');
 const morgan = require('morgan');
 const colors = require('colors');
+const fileUpload = require('express-fileupload');
 const errorHandler = require('./middleware/error');
 const connectDB = require('./config_update/db');
 
@@ -28,6 +30,11 @@ app.use(logger);
 if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'));
 }
+
+//File Uploading *******************************************************
+app.use(fileUpload());
+//Set Static Folder ****************************************************
+app.use(express.static(path.join(__dirname, 'public')));
 
 //Mount Routers *********************************************************
 app.use('/api/v1/bootcamps', bootcamps);
