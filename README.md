@@ -33,7 +33,6 @@ bootcamp.remove();
 ## Calculating The Average CourseCost
 ```js
 CourseSchema.statics.getAverageCost = async function (bootcampId) {
-    console.log('Calculate average const...'.blue);
     const obj = await this.aggregate([
         {
             $match: {bootcamp: bootcampId}
