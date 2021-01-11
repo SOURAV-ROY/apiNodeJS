@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 const logger = require('./middleware/logger');
 const morgan = require('morgan');
 const colors = require('colors');
+const cookieParser = require('cookie-parser');
 const fileUpload = require('express-fileupload');
 const errorHandler = require('./middleware/error');
 const connectDB = require('./config_update/db');
@@ -23,6 +24,9 @@ const app = express();
 
 //Body Parser **********************************************************
 app.use(express.json());
+
+//Cookie Parser ********************************************************
+app.use(cookieParser());
 
 //Use logger Middleware ************************************************
 app.use(logger);
