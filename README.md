@@ -79,3 +79,9 @@ UserSchema.methods.getSignedJwtToken = function () {
     });
 };
 ```
+## Match User Entered Password to Hashed Password ##
+```js
+UserSchema.methods.matchPassword = async function (enteredPassword) {
+    return await bcrypt.compare(enteredPassword, this.password);
+};
+```
