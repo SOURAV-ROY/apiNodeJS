@@ -68,8 +68,7 @@ const sendTokenResponse = (user, statusCode, res) => {
     const token = user.getSignedJwtToken();
 
     const options = {
-        expires: new Date(
-            Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000),
+        expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000),
         httpOnly: true
     };
 
@@ -84,4 +83,15 @@ const sendTokenResponse = (user, statusCode, res) => {
             status: true,
             token
         });
-}
+};
+
+// @description     Get User
+// @route           GET /api/v1/auth/me
+// @access          Private
+exports.getMe = asyncHandler(async (req, res, next) => {
+    let user = await User.findById(req.user.id);
+    res.status(200).json({
+        success: true,
+        data: user
+    });
+});
