@@ -96,3 +96,13 @@ exports.authorize = (...roles) => {
     };
 };
 ```
+## Bootcamp User Relationship ##
+```js
+  req.body.user = req.user.id;
+  
+  const publishedBootcamp = await Bootcamp.findOne({user: req.user.id});
+  
+  if (publishedBootcamp && req.user.role !== 'admin') {
+      return next(new ErrorResponse(`The User with ${req.user.id} Already Published a Bootcamp`, 400));
+  }
+```
