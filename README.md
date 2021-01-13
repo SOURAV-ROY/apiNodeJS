@@ -85,3 +85,14 @@ UserSchema.methods.matchPassword = async function (enteredPassword) {
     return await bcrypt.compare(enteredPassword, this.password);
 };
 ```
+## Grand Access to Specific Roles ##
+```js
+exports.authorize = (...roles) => {
+    return (req, res, next) => {
+        if (!roles.includes(req.user.role)) {
+            return next(new ErrorResponse(`User Role ${req.user.role} is Not Authorize to access this route`, 403));
+        }
+        next();
+    };
+};
+```
