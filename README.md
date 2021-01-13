@@ -106,3 +106,9 @@ exports.authorize = (...roles) => {
       return next(new ErrorResponse(`The User with ${req.user.id} Already Published a Bootcamp`, 400));
   }
 ```
+## Make Sure User Is Bootcamp Owner ##
+```js
+if (bootcamp.user.toString() !== req.user.id && req.user.role !== 'admin') {
+    return next(new ErrorResponse(`User ${req.user.id} Is Not Authorized to The Bootcamp`, 401));
+}
+```
