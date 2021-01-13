@@ -165,7 +165,7 @@ exports.bootcampPhotoUpload = asyncHandler(async (req, res, next) => {
 
     //Make Sure user is bootcamp owner *********************************
     if (bootcamp.user.toString() !== req.user.id && req.user.role !== 'admin') {
-        return next(new ErrorResponse(`User ${req.user.id} -> ${req.user.name} Is Not Authorized to Delete The Bootcamp`, 401));
+        return next(new ErrorResponse(`User ${req.user.id} -> ${req.user.name} Is Not Authorized to Delete Photo From The Bootcamp`, 401));
     }
 
     if (!req.files) {
