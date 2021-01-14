@@ -74,6 +74,25 @@ exports.getMe = asyncHandler(async (req, res, next) => {
     });
 });
 
+// @description     Update User details
+// @route           PUT /api/v1/auth/updatedetails
+// @access          Private
+exports.updateDetails = asyncHandler(async (req, res, next) => {
+    const fieldToUpdate = {
+        name: req.body.name,
+        email: req.body.email
+    }
+
+    let user = await User.findByIdAndUpdate(req.user.id, fieldToUpdate, {
+        new: true,
+        runValidators: true
+    });
+    res.status(200).json({
+        success: true,
+        data: user
+    });
+});
+
 // @description     Forgot Pssword
 // @route           GET /api/v1/auth/forgotPassword
 // @access          Private
