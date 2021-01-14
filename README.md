@@ -115,7 +115,7 @@ if (bootcamp.user.toString() !== req.user.id && req.user.role !== 'admin') {
     return next(new ErrorResponse(`User ${req.user.id} Is Not Authorized to The Bootcamp`, 401));
 }
 ```
-## Generate And Hah Password Token ##
+## Generate And Hash Password Token ##
 ```js
 UserSchema.methods.getResetPasswordToken = function () {
     const resetToken = crypto.randomBytes(20).toString('hex');
