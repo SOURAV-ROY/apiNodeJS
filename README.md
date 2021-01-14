@@ -67,8 +67,11 @@ CourseSchema.pre('remove', function () {
 ## Encrypt Password Using bcryptjs ##
 ```js
 UserSchema.pre('save', async function (next) {
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
+   if (!this.isModified('password')) {
+          next();
+      }
+   const salt = await bcrypt.genSalt(10);
+   this.password = await bcrypt.hash(this.password, salt);
 });
 ```
 ## get Signed JWT ##
@@ -111,4 +114,17 @@ exports.authorize = (...roles) => {
 if (bootcamp.user.toString() !== req.user.id && req.user.role !== 'admin') {
     return next(new ErrorResponse(`User ${req.user.id} Is Not Authorized to The Bootcamp`, 401));
 }
+```
+## Generate And Hah Password Token ##
+```js
+UserSchema.methods.getResetPasswordToken = function () {
+    const resetToken = crypto.randomBytes(20).toString('hex');
+    this.resetPasswordToken = crypto
+        .createHash('sha256')
+        .update(resetToken)
+        .digest('hex');
+        
+    this.resetPasswordExpire = Date.now() + 10 * 60 * 1000;
+    return resetToken;
+};
 ```
