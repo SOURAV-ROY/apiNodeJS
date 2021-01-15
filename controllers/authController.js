@@ -93,7 +93,7 @@ exports.updateDetails = asyncHandler(async (req, res, next) => {
     });
 });
 
-// @description     Update User Details
+// @description     Update User Password
 // @route           PUT /api/v1/auth/updatePassword
 // @access          Private
 exports.updatePassword = asyncHandler(async (req, res, next) => {
