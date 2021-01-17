@@ -1,7 +1,8 @@
 const express = require('express');
 
 const {
-    getReviews
+    getReviews,
+    getReview
 
 } = require("../controllers/reviewsController");
 
@@ -21,4 +22,6 @@ router.route('/')
         }),
         getReviews)
 
+router.route('/:id')
+    .get(getReview)
 module.exports = router;
