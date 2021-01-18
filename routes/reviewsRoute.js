@@ -3,7 +3,8 @@ const express = require('express');
 const {
     getReviews,
     getReview,
-    addReview
+    addReview,
+    updateReview
 
 } = require("../controllers/reviewsController");
 
@@ -19,12 +20,13 @@ const {protect, authorize} = require('../middleware/auth');
 router.route('/')
     .get(advancedResults(Review, {
             path: 'bootcamp',
-            select: 'name description email phone housing'
+            select: 'name description email phone'
         }),
         getReviews)
     .post(protect, authorize('admin', 'user'), addReview);
 
 router.route('/:id')
-    .get(getReview);
+    .get(getReview)
+    .put(protect, authorize('user', 'admin'), updateReview);
 
 module.exports = router;
