@@ -5,6 +5,8 @@ const logger = require('./middleware/logger');
 const morgan = require('morgan');
 const colors = require('colors');
 const mongoSanitize = require('express-mongo-sanitize');
+const helmet = require('helmet');
+const xssClean = require('xss-clean');
 const cookieParser = require('cookie-parser');
 const fileUpload = require('express-fileupload');
 const errorHandler = require('./middleware/error');
@@ -42,8 +44,14 @@ if (process.env.NODE_ENV === 'development') {
 //File Uploading *******************************************************
 app.use(fileUpload());
 
-// Sanitize Data *****************************************************
+// Sanitize Data *******************************************************
 app.use(mongoSanitize());
+
+//Set Security Headers ************************************************
+app.use(helmet());
+
+// Prevent XSS attacks ************************************************
+app.use(xssClean());
 
 //Set Static Folder ****************************************************
 app.use(express.static(path.join(__dirname, 'public')));

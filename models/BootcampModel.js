@@ -8,7 +8,7 @@ const BootcampSchema = new mongoose.Schema({
             required: [true, "Please Add Name"],
             unique: true,
             trim: true,
-            maxlength: [50, "name can not be more than 50 characters"]
+            maxlength: [100, "name can not be more than 50 characters"]
         },
         slug: String,
         description: {
