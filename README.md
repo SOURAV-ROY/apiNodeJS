@@ -128,3 +128,7 @@ UserSchema.methods.getResetPasswordToken = function () {
     return resetToken;
 };
 ```
+## Prevent User From Submitting More Than 1 Review Per Bootcamp ##
+```js
+ReviewSchema.index({bootcamp: 1, user: 1}, {unique: true});
+```
