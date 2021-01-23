@@ -12,7 +12,7 @@ const {
 
 const router = express.Router();
 
-//Protect Middleware ****************************************************
+// Protect Middleware ****************************************
 const {protect} = require('../middleware/auth');
 
 router.post('/register', register);

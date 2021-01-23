@@ -22,9 +22,9 @@ dotenv.config({path: "./config_update/config.env"});
 connectDB();
 
 //Router Files**********************************************************
-const bootcamps = require('./routes/bootcamps');
-const courses = require('./routes/courses');
-const auth = require('./routes/auth');
+const bootcamps = require('./routes/bootcampsRoute');
+const courses = require('./routes/coursesRoute');
+const auth = require('./routes/authRoute');
 const users = require('./routes/usersRoute');
 const reviews = require('./routes/reviewsRoute');
 

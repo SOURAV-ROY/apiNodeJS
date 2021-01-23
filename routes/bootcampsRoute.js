@@ -12,16 +12,16 @@ const {
 const Bootcamp = require('../models/BootcampModel');
 const advancedResults = require('../middleware/advancedResults');
 
-//Include other resource routers ************************
-const courseRouter = require("./courses");
+// Include other resource routers ****************************************
+const courseRouter = require("./coursesRoute");
 const reviewRouter = require("./reviewsRoute");
 
 const router = express.Router();
 
-//Protect Middleware ****************************************************
+// Protect Middleware *****************************************************
 const {protect, authorize} = require('../middleware/auth');
 
-//Re-route into other resource routers ******************
+// Re-route into other resource routers ***********************************
 router.use('/:bootcampId/courses', courseRouter);
 router.use('/:bootcampId/reviews', reviewRouter);
 

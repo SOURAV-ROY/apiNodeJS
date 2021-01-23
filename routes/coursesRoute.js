@@ -11,7 +11,7 @@ const {
 const Course = require("../models/CourseModel");
 const advancedResults = require("../middleware/advancedResults");
 
-//Protect Middleware ****************************************************
+// Protect Middleware *******************************************************
 const router = express.Router({mergeParams: true});
 
 const {protect, authorize} = require('../middleware/auth');
