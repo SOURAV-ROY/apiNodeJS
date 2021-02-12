@@ -2,8 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8047249a-3bd8-4884-b4d3-1d08233b6ceb" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config_update/config.env" beforeDir="false" afterPath="$PROJECT_DIR$/config_update/config.env" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/middleware/advancedResults.js" beforeDir="false" afterPath="$PROJECT_DIR$/middleware/advancedResults.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/authController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/authController.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,8 +59,8 @@
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
-    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors" />
-    <property name="ts.external.directory.path" value="C:\Program Files\JetBrains\PhpStorm 2020.2\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
+    <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
+    <property name="ts.external.directory.path" value="C:\Program Files\JetBrains\PhpStorm 2020.3.1\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
@@ -179,7 +180,38 @@
       <workItem from="1611215257732" duration="715000" />
       <workItem from="1611253533839" duration="1199000" />
       <workItem from="1611294216534" duration="1410000" />
-      <workItem from="1611382202128" duration="5830000" />
+      <workItem from="1611382202128" duration="6784000" />
+      <workItem from="1611428845174" duration="328000" />
+      <workItem from="1611476906099" duration="857000" />
+      <workItem from="1611553455117" duration="2001000" />
+      <workItem from="1611593626666" duration="460000" />
+      <workItem from="1611594145618" duration="2271000" />
+      <workItem from="1611599420845" duration="1357000" />
+      <workItem from="1611643241401" duration="1600000" />
+      <workItem from="1611644918730" duration="1874000" />
+      <workItem from="1611655378517" duration="150000" />
+      <workItem from="1611655568327" duration="189000" />
+      <workItem from="1611655857851" duration="159000" />
+      <workItem from="1611675745525" duration="485000" />
+      <workItem from="1611680477861" duration="313000" />
+      <workItem from="1611681690929" duration="811000" />
+      <workItem from="1611726481730" duration="735000" />
+      <workItem from="1611758811460" duration="1761000" />
+      <workItem from="1612021468885" duration="101000" />
+      <workItem from="1612076430455" duration="600000" />
+      <workItem from="1612162482166" duration="108000" />
+      <workItem from="1612162632036" duration="1261000" />
+      <workItem from="1612378818170" duration="59000" />
+      <workItem from="1612412204410" duration="2814000" />
+      <workItem from="1612421515578" duration="608000" />
+      <workItem from="1612510393573" duration="1100000" />
+      <workItem from="1612622046410" duration="225000" />
+      <workItem from="1612858759446" duration="2623000" />
+      <workItem from="1612974925041" duration="192000" />
+      <workItem from="1613107766115" duration="2510000" />
+      <workItem from="1613139715309" duration="594000" />
+      <workItem from="1613143869621" duration="4969000" />
+      <workItem from="1613153351963" duration="1363000" />
     </task>
     <servers />
   </component>
