@@ -11,7 +11,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "nodemon": "^2.0.6"
+    "nodemon": "^2.0.7"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -20,17 +20,17 @@
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "express-fileupload": "^1.2.0",
+    "express-fileupload": "^1.2.1",
     "express-mongo-sanitize": "^2.0.2",
-    "express-rate-limit": "^5.2.3",
+    "express-rate-limit": "^5.2.6",
     "helmet": "^4.4.1",
     "hpp": "^0.2.3",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.11.8",
+    "mongoose": "^5.11.18",
     "morgan": "^1.10.0",
     "node-geocoder": "^3.27.0",
-    "nodemailer": "^6.4.17",
-    "slugify": "^1.4.6",
+    "nodemailer": "^6.5.0",
+    "slugify": "^1.4.7",
     "xss-clean": "^0.1.1"
   }
 }
