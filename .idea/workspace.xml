@@ -34,6 +34,9 @@
   <component name="GitToolBoxStore">
     <option name="projectConfigVersion" value="2" />
   </component>
+  <component name="PackageJsonUpdateNotifier">
+    <dismissed value="$PROJECT_DIR$/package.json" />
+  </component>
   <component name="ProjectId" id="1m0bPEyRfnhoL34LSAqtgRHIkKC" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="1" id="Add" />
@@ -48,7 +51,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="javascript.nodejs.core.library.configured.version" value="15.1.0" />
     <property name="javascript.nodejs.core.library.typings.version" value="14.14.14" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../REACT/github-actions-test" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -221,6 +224,12 @@
       <workItem from="1614529051371" duration="1978000" />
       <workItem from="1614576072529" duration="2362000" />
       <workItem from="1614579821441" duration="246000" />
+      <workItem from="1614671095737" duration="1409000" />
+      <workItem from="1614705344319" duration="904000" />
+      <workItem from="1614751600447" duration="1741000" />
+      <workItem from="1614786388362" duration="1178000" />
+      <workItem from="1614799093109" duration="577000" />
+      <workItem from="1615015848284" duration="1798000" />
     </task>
     <servers />
   </component>
