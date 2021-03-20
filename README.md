@@ -49,9 +49,9 @@
   * Authenticated users only
   * Must have the role "user" or "admin" (no publishers)
 - Update review
-  * Owner only
+  * Must have the role "user" or "admin" (no publishers)
 - Delete review
-  * Owner only
+  * Must have the role "user" or "admin" (no publishers)
 
 ### Users & Authentication
 - Authentication will be ton using JWT/cookies
