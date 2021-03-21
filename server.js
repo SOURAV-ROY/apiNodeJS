@@ -16,7 +16,7 @@ const errorHandler = require('./middleware/error');
 const connectDB = require('./db/db');
 
 //Load env vars *******************************************************
-dotenv.config({path: "./config_sourav/config.env"});
+dotenv.config({path: "./config/config.env"});
 
 //Connect To DB********************************************************
 connectDB();

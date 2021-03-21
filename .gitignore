@@ -19,6 +19,7 @@ pids
 lib-cov
 
 # Coverage directory used by tools like istanbul
+config
 coverage
 *.lcov
 
@@ -40,7 +41,6 @@ build/Release
 # Dependency directories
 node_modules/
 jspm_packages/
-config_sourav/
 
 # TypeScript v1 declaration files
 typings/
