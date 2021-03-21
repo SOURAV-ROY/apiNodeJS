@@ -2,10 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8047249a-3bd8-4884-b4d3-1d08233b6ceb" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config_update/config.env" beforeDir="false" afterPath="$PROJECT_DIR$/config_update/config.env" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/middleware/logger.js" beforeDir="false" afterPath="$PROJECT_DIR$/middleware/logger.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config_update/config.env" beforeDir="false" afterPath="$PROJECT_DIR$/config_sourav/config.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config_update/db.js" beforeDir="false" afterPath="$PROJECT_DIR$/db/db.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/seeder.js" beforeDir="false" afterPath="$PROJECT_DIR$/seeder.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/server.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -69,6 +73,7 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="H:\2020\htdocs\NODE-JS\apiNodeJS\db" />
       <recent name="H:\2020\htdocs\NODE-JS\apiNodeJS\config_update" />
       <recent name="H:\2020\htdocs\NODE-JS\apiNodeJS\middleware" />
       <recent name="H:\2020\htdocs\NODE-JS\apiNodeJS\config" />
@@ -240,7 +245,8 @@
       <workItem from="1616212934710" duration="1714000" />
       <workItem from="1616226494948" duration="929000" />
       <workItem from="1616259115058" duration="478000" />
-      <workItem from="1616319458659" duration="1318000" />
+      <workItem from="1616319458659" duration="1595000" />
+      <workItem from="1616326524270" duration="933000" />
     </task>
     <servers />
   </component>

@@ -13,10 +13,10 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const fileUpload = require('express-fileupload');
 const errorHandler = require('./middleware/error');
-const connectDB = require('./config_update/db');
+const connectDB = require('./db/db');
 
 //Load env vars *******************************************************
-dotenv.config({path: "./config_update/config.env"});
+dotenv.config({path: "./config_sourav/config.env"});
 
 //Connect To DB********************************************************
 connectDB();

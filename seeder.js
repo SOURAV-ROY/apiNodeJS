@@ -4,7 +4,7 @@ const colors = require('colors');
 const dotenv = require('dotenv');
 
 //Load env vars *******************************************************
-dotenv.config({path: "./config_update/config.env"});
+dotenv.config({path: "./config_sourav/config.env"});
 
 //Load models *********************************************************
 const Bootcamp = require('./models/BootcampModel');
