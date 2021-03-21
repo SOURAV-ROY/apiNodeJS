@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "set NODE_ENV=production && node server",
-    "dev": "node server.js"
+    "dev": "nodemon server.js"
   },
   "keywords": [],
   "author": "",
