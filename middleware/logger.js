@@ -1,10 +1,9 @@
-// @description     Logs request console
+// @description  -->> Logs Request Console
 
 const logger = (req, res, next) => {
-    // req.hello = "Hello SOURAV";
     console.log(`Middleware RUN`.brightCyan.bold);
     console.log(
-        `${req.method} ${req.protocol}://${req.get('host')}${req.originalUrl}`.brightMagenta.bold
+        `${req.method.red} ${req.protocol.green}://${req.get('host').brightBlue}${req.originalUrl.brightMagenta}`
     );
     next();
 };
