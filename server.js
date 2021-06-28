@@ -1,15 +1,17 @@
 const path = require('path');
 const express = require('express');
 const dotenv = require("dotenv");
-const logger = require('./middleware/logger');
 const morgan = require('morgan');
-const colors = require('colors');
 const mongoSanitize = require('express-mongo-sanitize');
 const helmet = require('helmet');
 const xssClean = require('xss-clean');
 const expressRateLimit = require('express-rate-limit');
 const hpp = require('hpp');
 const cors = require('cors');
+require('colors');
+
+// Internal Imports *****************************************************
+const logger = require('./middleware/logger');
 const cookieParser = require('cookie-parser');
 const fileUpload = require('express-fileupload');
 const errorHandler = require('./middleware/error');
@@ -19,7 +21,9 @@ const connectDB = require('./db/db');
 dotenv.config({path: "./config/config.env"});
 
 //Connect To DB********************************************************
-connectDB();
+connectDB().then(() => {
+    console.log(`Connected to MongoDB`.bgGreen.bold);
+});
 
 //Router Files**********************************************************
 const bootcamps = require('./routes/bootcampsRoute');
@@ -72,6 +76,10 @@ app.use(cors());
 //Set Static Folder ****************************************************
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Home Page
+app.get('/', (req, res) => {
+    res.send('<h1>Bootcamp Home Page</h1>');
+})
 //Mount Routers *********************************************************
 app.use('/api/v1/bootcamps', bootcamps);
 app.use('/api/v1/courses', courses);
