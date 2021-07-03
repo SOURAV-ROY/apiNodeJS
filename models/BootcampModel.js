@@ -116,7 +116,7 @@ BootcampSchema.pre('save', function (next) {
 
     this.slug = slugify(this.name, {lower: true});
 
-    console.log("Slugify RAN ->>> ", this.name);
+    console.log("Slugify RAN ->>> ", this.name.green.bold);
 
     next();
 });

@@ -3,8 +3,12 @@
   <component name="ChangeListManager">
     <list default="true" id="8047249a-3bd8-4884-b4d3-1d08233b6ceb" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/BootcampModel.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/BootcampModel.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/ReviewModel.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/ReviewModel.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/seeder.js" beforeDir="false" afterPath="$PROJECT_DIR$/seeder.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/server.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -286,7 +290,9 @@
       <workItem from="1624173482375" duration="388000" />
       <workItem from="1624200391655" duration="430000" />
       <workItem from="1624206158444" duration="609000" />
-      <workItem from="1624866539478" duration="6457000" />
+      <workItem from="1624866539478" duration="6864000" />
+      <workItem from="1624880147871" duration="65000" />
+      <workItem from="1625312204299" duration="1913000" />
     </task>
     <servers />
   </component>

@@ -22,17 +22,17 @@
     "@types/node" "*"
 
 "@types/mongodb@^3.5.27":
-  "integrity" "sha512-BkwAHFiZSSWdTIqbUVGmgvIsiXXjqAketeK7Izy7oSs6G3N8Bn993tK9eq6QEovQDx6OQ2FGP2KWDDxBzdlJ6Q=="
-  "resolved" "https://registry.npmjs.org/@types/mongodb/-/mongodb-3.6.10.tgz"
-  "version" "3.6.10"
+  "integrity" "sha512-krZbirw3ATb8EJySZdlDChX7A8WqTBPWWVjEAl9SUUL6QHJY/5+yCk7DjJv1BE0qmi5iShtd2meEi/Ru0F6c7g=="
+  "resolved" "https://registry.npmjs.org/@types/mongodb/-/mongodb-3.6.19.tgz"
+  "version" "3.6.19"
   dependencies:
     "@types/bson" "*"
     "@types/node" "*"
 
 "@types/node@*":
-  "integrity" "sha512-Lt+wj8NVPx0zUmUwumiVXapmaLUcAk3yPuHCFVXras9k5VT9TdhJqKqGVUQCD60OTMCl0qxJ57OiTL0Mic3Iag=="
-  "resolved" "https://registry.npmjs.org/@types/node/-/node-14.14.35.tgz"
-  "version" "14.14.35"
+  "integrity" "sha512-TmCW5HoZ2o2/z2EYi109jLqIaPIi9y/lc2LmDCWzuCi35bcaQ+OtUh6nwBiFK7SOu25FAU5+YKdqFZUwtqGSdg=="
+  "resolved" "https://registry.npmjs.org/@types/node/-/node-16.0.0.tgz"
+  "version" "16.0.0"
 
 "abbrev@1":
   "integrity" "sha512-nne9/IiQ/hzIhY6pdDnbBtz7DjPTKrY00P/zvPSm5pOFkl6xuGrGnXn/VtTNNfNtAfZ9/1RtehkszU9qcTii0Q=="
@@ -550,10 +550,10 @@
   "resolved" "https://registry.npmjs.org/express-mongo-sanitize/-/express-mongo-sanitize-2.1.0.tgz"
   "version" "2.1.0"
 
-"express-rate-limit@^5.2.6":
-  "integrity" "sha512-nE96xaxGfxiS5jP3tD3kIW1Jg9yQgX0rXCs3rCkZtmbWHEGyotwaezkLj7bnB41Z0uaOLM8W4AX6qHao4IZ2YA=="
-  "resolved" "https://registry.npmjs.org/express-rate-limit/-/express-rate-limit-5.2.6.tgz"
-  "version" "5.2.6"
+"express-rate-limit@^5.3.0":
+  "integrity" "sha512-qJhfEgCnmteSeZAeuOKQ2WEIFTX5ajrzE0xS6gCOBCoRQcU+xEzQmgYQQTpzCcqUAAzTEtu4YEih4pnLfvNtew=="
+  "resolved" "https://registry.npmjs.org/express-rate-limit/-/express-rate-limit-5.3.0.tgz"
+  "version" "5.3.0"
 
 "express@^4.17.1":
   "integrity" "sha512-mHJ9O79RqluphRrcw2X/GTh3k9tVv8YcoyY4Kkh4WDMUYKRZUq0h1o0w2rrrxBqM7VoeUVqgb27xlEMXTnYt4g=="
@@ -1115,10 +1115,10 @@
   "resolved" "https://registry.npmjs.org/mongoose-legacy-pluralize/-/mongoose-legacy-pluralize-1.0.2.tgz"
   "version" "1.0.2"
 
-"mongoose@*", "mongoose@^5.12.15":
-  "integrity" "sha512-GVvxE2/mbUsxAbTtleFlehCNMFlzcgKue/olukIpoN6iw1MYXKodf+ZIRndO+2jzlgbZgiHkAZZJbcFNt1DgHA=="
-  "resolved" "https://registry.npmjs.org/mongoose/-/mongoose-5.12.15.tgz"
-  "version" "5.12.15"
+"mongoose@*", "mongoose@^5.13.1":
+  "integrity" "sha512-xbaR1gLMMJVJCeHVjnrcZeUVa4fF8S2Twkyc2jHcVYm9QvCLQPfJG90yi37IDHF3/mDDmVoENNaGHm225/MG3A=="
+  "resolved" "https://registry.npmjs.org/mongoose/-/mongoose-5.13.1.tgz"
+  "version" "5.13.1"
   dependencies:
     "@types/mongodb" "^3.5.27"
     "bson" "^1.1.4"
@@ -1205,10 +1205,10 @@
   "resolved" "https://registry.npmjs.org/nodemailer/-/nodemailer-6.6.2.tgz"
   "version" "6.6.2"
 
-"nodemon@^2.0.7":
-  "integrity" "sha512-XHzK69Awgnec9UzHr1kc8EomQh4sjTQ8oRf8TsGrSmHDx9/UmiGG9E/mM3BuTfNeFwdNBvrqQq/RHL0xIeyFOA=="
-  "resolved" "https://registry.npmjs.org/nodemon/-/nodemon-2.0.7.tgz"
-  "version" "2.0.7"
+"nodemon@^2.0.9":
+  "integrity" "sha512-6O4k7C8f2HQArGpaPBOqGGddjzDLQAqCYmq3tKMeNIbz7Is/hOphMHy2dcY10sSq5wl3cqyn9Iz+Ep2j51JOLg=="
+  "resolved" "https://registry.npmjs.org/nodemon/-/nodemon-2.0.9.tgz"
+  "version" "2.0.9"
   dependencies:
     "chokidar" "^3.2.2"
     "debug" "^3.2.6"

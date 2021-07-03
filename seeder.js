@@ -1,7 +1,7 @@
 const fs = require('fs');
 const mongoose = require('mongoose');
-const colors = require('colors');
 const dotenv = require('dotenv');
+require('colors');
 
 //Load env vars *******************************************************
 // dotenv.config({path: "./config/config.env"});
@@ -21,7 +21,10 @@ const optionDB = {
     useFindAndModify: false,
     useUnifiedTopology: true
 };
-mongoose.connect(process.env.MONGO_URI, optionDB);
+mongoose.connect(process.env.MONGO_URI, optionDB)
+    .then(() => {
+        console.log(`Connected MongoDB In Seeder...`.green.inverse);
+    });
 
 //Read JSON files ******************************************************
 const bootcamps = JSON.parse(fs.readFileSync(`${__dirname}/_data/bootcamps.json`, 'utf-8'));
@@ -38,7 +41,7 @@ const importData = async () => {
         await User.create(users);
         await Review.create(reviews);
 
-        console.log("Data Imported.....".green.inverse);
+        console.log("Data Imported.....".green.bold);
         process.exit();
     } catch (errors) {
         console.log(errors);
@@ -53,7 +56,7 @@ const deleteData = async () => {
         await User.deleteMany();
         await Review.deleteMany();
 
-        console.log("Data Destroyed.....".red.inverse);
+        console.log("Data Destroyed.....".red.bold);
         process.exit();
     } catch (errors) {
         console.log(errors);
@@ -62,7 +65,11 @@ const deleteData = async () => {
 
 //node seeder.js *********************************************************
 if (process.argv[2] === '-i') {
-    importData();
+    importData().then(() => {
+        console.log(`Data Import Successfully`.green.bold);
+    });
 } else if (process.argv[2] === '-d') {
-    deleteData();
+    deleteData().then(() => {
+        console.log(`Data Remove DONE`.red.bold);
+    });
 }
