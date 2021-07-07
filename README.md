@@ -91,7 +91,7 @@
 
 ## Documentation
 - Use Postman to create documentation
-- Use docgen to create HTML files from Postman
+- Use [docgen](https://github.com/thedevsaddam/docgen) to create HTML files from Postman JSON File
 - Add html files as the / route for the api
 
 
