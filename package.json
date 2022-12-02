@@ -1,10 +1,10 @@
 {
-  "name": "apiNodeJS",
+  "name": "bootcamp-api",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "set NODE_ENV=production && node server",
+    "start": "node server",
     "dev": "nodemon server.js"
   },
   "keywords": [],
