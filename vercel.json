@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "builds": [
       {
           "src": "server.js",
@@ -9,7 +9,7 @@
   "routes": [
       {
           "src": "/api/v1/(.*)",
-          "dest": "/"
+          "dest": "/api/v1/"
       }
   ]
 }
