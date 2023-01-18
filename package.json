@@ -4,11 +4,11 @@
   "description": "",
   "main": "index.js",
   "engins": {
-    "node": "14.x"
+    "node": "16.x"
   },
   "scripts": {
-    "start": "node server",
-    "dev": "nodemon server.js"
+    "start": "node index.js",
+    "dev": "nodemon index.js"
   },
   "keywords": [],
   "author": "",

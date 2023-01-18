@@ -1,84 +1,108 @@
-const HTTP = require('http');
+const path = require('path');
+const express = require('express');
+const dotenv = require("dotenv");
+const morgan = require('morgan');
+const mongoSanitize = require('express-mongo-sanitize');
+const helmet = require('helmet');
+const xssClean = require('xss-clean');
+const expressRateLimit = require('express-rate-limit');
+const hpp = require('hpp');
+const cors = require('cors');
+require('colors');
 
-const todos = [
-    {id: 1, value: "One"},
-    {id: 2, value: "Two"},
-    {id: 3, value: "Three"},
-    {id: 4, value: "Four"},
-]
+// Internal Imports *****************************************************
+const logger = require('./middleware/logger');
+const cookieParser = require('cookie-parser');
+const fileUpload = require('express-fileupload');
+const errorHandler = require('./middleware/error');
+const connectDB = require('./db/db');
 
-const SERVER = HTTP.createServer((req, res) => {
-    // console.log(req.method);
-    // const {headers, url, method} = req;
-    const {method, url} = req;
-    // console.log(headers, url, method);
-    // res.statusCode = 404;
-    // res.setHeader('Content-Type', 'text/html');
-    // res.setHeader('Content-Type', 'application/json');
-    // res.setHeader('X-Powered-By', 'Node.js');
+//Load env vars *******************************************************
+// dotenv.config({path: "./config/config.env"});
+dotenv.config();
 
-    // res.writeHead(200, {
-    //     'Content-Type': 'application/json',
-    //     'X-Powered-By': 'Node.js'
-    // })
+//Connect To DB********************************************************
+connectDB().then(() => {
+    console.log(`Connected to MongoDB`.bgGreen.bold);
+});
 
-    // res.write("<h1>Hello Sourav</h1>")
-    // res.write("<h2>Hello Sourav Again</h2>")
+//Router Files**********************************************************
+const bootcamps = require('./routes/bootcampsRoute');
+const courses = require('./routes/coursesRoute');
+const auth = require('./routes/authRoute');
+const users = require('./routes/usersRoute');
+const reviews = require('./routes/reviewsRoute');
 
-    // console.log("Authorization Code : " + req.headers.authorization);
+const app = express();
 
-    let body = [];
+//Body Parser **********************************************************
+app.use(express.json());
 
-    req.on('data', chunk => {
-        body.push(chunk)
-    }).on('end', () => {
-        body = Buffer.concat(body).toString();
+//Cookie Parser ********************************************************
+app.use(cookieParser());
 
-        let status = 404;
-        const response = {
-            success: false,
-            data: null,
-            error: null
-        }
+//Use logger Middleware ************************************************
+app.use(logger);
 
-        if (method === 'GET' && url === '/todos') {
-            status = 200;
-            response.success = true;
-            response.data = todos
-        }
+//Use morgan Middleware *************************************************
+if (process.env.NODE_ENV === 'development') {
+    app.use(morgan('dev'));
+}
 
-        if (method === 'POST' && url === '/todos') {
-            const {id, text} = JSON.parse(body);
+//File Uploading *******************************************************
+app.use(fileUpload());
 
-            if (!id || !text) {
-                status = 400;
-                response.error = "Please enter ID & TEXT";
-            } else {
-                todos.push({id, text});
-                status = 201;
-                response.success = true;
-                response.data = todos;
-            }
-        }
-        res.writeHead(status, {
-            'Content-Type': 'application/json',
-            'X-Powered-By': 'Node.js'
-        });
-        res.end(JSON.stringify(response));
+// Sanitize Data *******************************************************
+app.use(mongoSanitize());
 
-        // console.log(body);
-    })
-    // res.end(JSON.stringify({
-    //     success: true,
-    //     // success: false,
-    //     // error: "Not Found",
-    //     // error: "Bad Request",
-    //     // data: todos,
-    //     data: todos
-    // }));
+//Set Security Headers ************************************************
+app.use(helmet());
+
+// Prevent XSS attacks ************************************************
+app.use(xssClean());
+
+//Rate Limiting ******************************************************
+const limiter = expressRateLimit({
+    windowMs: 10 * 60 * 1000, // 10 minutes
+    max: 100
+});
+app.use(limiter);
+
+//Prevent http params pollution **************************************
+app.use(hpp());
+
+//Enable CORS ********************************************************
+app.use(cors());
+
+//Set Static Folder ****************************************************
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Home Page
+app.get('/', (req, res) => {
+    res.send('<h1>Bootcamp Home Page</h1>');
+})
+//Mount Routers *********************************************************
+app.use('/api/v1/bootcamps', bootcamps);
+app.use('/api/v1/courses', courses);
+app.use('/api/v1/auth', auth);
+app.use('/api/v1/users', users);
+app.use('/api/v1/reviews', reviews);
+
+//Add Error Handler *****************************************************
+app.use(errorHandler);
+
+const PORT = process.env.PORT || 5000;
+
+const server = app.listen(PORT, () => {
+    console.log(`Server Running in ${process.env.NODE_ENV} Mode on Port ${PORT}`.green.bold.inverse)
 })
 
-const PORT = 2020;
-SERVER.listen(PORT, () => {
-    console.log(`Server Running on ${PORT}`)
-});
+//handle unhandled promise rejections ************************************
+process.on('unhandledRejection', (error) => {
+    console.log(`Error: ${error.message}`.bgRed.bold);
+
+//  Close server and exit process *****************************************
+    server.close(() => {
+        process.exit(1);
+    })
+})
