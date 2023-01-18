@@ -1,6 +1,6 @@
-# [NodeJs API Create](https://bnodejs.herokuapp.com) #
+# [NodeJs API Create](https://bootcamps.vercel.app) #
 
-### [Bootcamps](https://bnodejs.herokuapp.com/api/v1/bootcamps)
+### [Bootcamps](https://bootcamps.vercel.app/api/v1/bootcamps)
 - List all bootcamps in the database
    * Pagination
    * Select specific fields in result
@@ -25,7 +25,7 @@
 - Calculate the average cost of all courses for a bootcamp
 - Calculate the average rating from the reviews for a bootcamp
 
-### [Courses](https://bnodejs.herokuapp.com/api/v1/courses)
+### [Courses](https://bootcamps.vercel.app/api/v1/courses)
 - List all courses for bootcamp
 - List all courses in general
   * Pagination, filtering, etc
@@ -40,7 +40,7 @@
 - Delete course
   * Owner only
   
-### [Reviews](https://bnodejs.herokuapp.com/api/v1/reviews)
+### [Reviews](https://bootcamps.vercel.app/api/v1/reviews)
 - List all reviews for a bootcamp
 - List all reviews in general
   * Pagination, filtering, etc
