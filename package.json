@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "engines": {
-    "node": "^18.0.0"
+    "node": "^18.17.0"
   },
   "scripts": {
     "start": "node index.js",
@@ -30,7 +30,7 @@
     "helmet": "^7.0.0",
     "hpp": "^0.2.3",
     "jsonwebtoken": "^9.0.0",
-    "mongoose": "^6.11.3",
+    "mongoose": "^7.4.2",
     "morgan": "^1.10.0",
     "node-geocoder": "^4.2.0",
     "nodemailer": "^6.9.3",
