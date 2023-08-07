@@ -1,15 +1,15 @@
-const mongoose = require('mongoose');
-mongoose.set('strictQuery', false);
-mongoose.set('strictPopulate', false);
-const connectDB = async () => {
-    const connect = await mongoose.connect(process.env.MONGO_URI, {
-        useNewUrlParser: true,
-        // useCreateIndex: true,
-        // useFindAndModify: false,
-        useUnifiedTopology: true
-    });
+const mongoose = require("mongoose");
 
-    console.log(`MongoDB Connected : ${connect.connection.host}`.yellow.underline.bold);
-}
+mongoose.set("strictQuery", false);
+mongoose.set("strictPopulate", false);
+
+const connectDB = async () => {
+  const dbURL = process.env.MONGO_URI;
+  const connect = await mongoose.connect(dbURL);
+
+  console.log(
+    `MongoDB Connected : ${connect.connection.host}`.yellow.underline.bold
+  );
+};
 
 module.exports = connectDB;
