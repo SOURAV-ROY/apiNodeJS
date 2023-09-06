@@ -1,4 +1,4 @@
-# [NodeJs API Create](https://bootcamps.vercel.app) #
+# [NodeJs API](https://bootcamps.vercel.app) #
 
 ### [Bootcamps](https://bootcamps.vercel.app/api/v1/bootcamps)
 - List all bootcamps in the database
