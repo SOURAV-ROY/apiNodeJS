@@ -8,6 +8,7 @@ const xssClean = require('xss-clean');
 const expressRateLimit = require('express-rate-limit');
 const hpp = require('hpp');
 const cors = require('cors');
+const lusca = require('lusca');
 require('colors');
 
 // Internal Imports *****************************************************
@@ -73,6 +74,9 @@ app.use(hpp());
 
 //Enable CORS ********************************************************
 app.use(cors());
+
+// CSRF Protection *****************************************************
+app.use(lusca.csrf());
 
 //Set Static Folder ****************************************************
 app.use(express.static(path.join(__dirname, 'public')));
