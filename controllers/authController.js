@@ -3,6 +3,7 @@ const ErrorResponse = require('../utils/ErrorResponse')
 const asyncHandler = require('../middleware/async')
 const sendMail = require('../utils/sendMail');
 const User = require("../models/UserModel");
+const config = require('../config/config.json');
 
 // @description     Register User
 // @route           POST /api/v1/auth/register
@@ -122,7 +123,6 @@ exports.updatePassword = asyncHandler(async (req, res, next) => {
 
 // @description     Forgot Password
 // @route           GET /api/v1/auth/forgotPassword
-// @access          Private
 exports.forgotPassword = asyncHandler(async (req, res, next) => {
     let user = await User.findOne({email: req.body.email});
 
@@ -136,7 +136,7 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
     await user.save({validateBeforeSave: false});
 
     // Create reset url ********************************************************
-    const resetUrl = `${req.protocol}://${req.get('host')}/api/v1/auth/resetpassword/${resetToken}`;
+    const resetUrl = `${req.protocol}://${config.hostname}/api/v1/auth/resetpassword/${resetToken}`;
     const message = `You are receiving this email because you (or someone else) has request the reset password 
     please make the put request to: \n ${resetUrl}`;
 
