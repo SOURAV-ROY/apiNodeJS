@@ -1,22 +1,23 @@
-const path = require('path');
-const express = require('express');
+const path = require("path");
+const express = require("express");
 const dotenv = require("dotenv");
-const morgan = require('morgan');
-const mongoSanitize = require('express-mongo-sanitize');
-const helmet = require('helmet');
-const xssClean = require('xss-clean');
-const expressRateLimit = require('express-rate-limit');
-const hpp = require('hpp');
-const cors = require('cors');
-const lusca = require('lusca');
-require('colors');
+const morgan = require("morgan");
+const mongoSanitize = require("express-mongo-sanitize");
+const helmet = require("helmet");
+const xssClean = require("xss-clean");
+const expressRateLimit = require("express-rate-limit");
+const hpp = require("hpp");
+const cors = require("cors");
+const lusca = require("lusca");
+const session = require("express-session");
+require("colors");
 
 // Internal Imports *****************************************************
-const logger = require('./middleware/logger');
-const cookieParser = require('cookie-parser');
-const fileUpload = require('express-fileupload');
-const errorHandler = require('./middleware/error');
-const connectDB = require('./db/db');
+const logger = require("./middleware/logger");
+const cookieParser = require("cookie-parser");
+const fileUpload = require("express-fileupload");
+const errorHandler = require("./middleware/error");
+const connectDB = require("./db/db");
 
 //Load env vars *******************************************************
 // dotenv.config({path: "./config/config.env"});
@@ -24,15 +25,15 @@ dotenv.config();
 
 //Connect To DB********************************************************
 connectDB().then(() => {
-    console.log(`Connected to MongoDB`.bgGreen.bold);
+  console.log(`Connected to MongoDB`.bgGreen.bold);
 });
 
 //Router Files**********************************************************
-const bootcamps = require('./routes/bootcampsRoute');
-const courses = require('./routes/coursesRoute');
-const auth = require('./routes/authRoute');
-const users = require('./routes/usersRoute');
-const reviews = require('./routes/reviewsRoute');
+const bootcamps = require("./routes/bootcampsRoute");
+const courses = require("./routes/coursesRoute");
+const auth = require("./routes/authRoute");
+const users = require("./routes/usersRoute");
+const reviews = require("./routes/reviewsRoute");
 
 const app = express();
 
@@ -46,8 +47,8 @@ app.use(cookieParser());
 app.use(logger);
 
 //Use morgan Middleware *************************************************
-if (process.env.NODE_ENV === 'development') {
-    app.use(morgan('dev'));
+if (process.env.NODE_ENV === "development") {
+  app.use(morgan("dev"));
 }
 
 //File Uploading *******************************************************
@@ -64,8 +65,8 @@ app.use(xssClean());
 
 //Rate Limiting ******************************************************
 const limiter = expressRateLimit({
-    windowMs: 10 * 60 * 1000, // 10 minutes
-    max: 100
+  windowMs: 10 * 60 * 1000, // 10 minutes
+  max: 100,
 });
 app.use(limiter);
 
@@ -75,22 +76,32 @@ app.use(hpp());
 //Enable CORS ********************************************************
 app.use(cors());
 
+// Set up session middleware
+app.use(
+  session({
+    secret: "your-secret-key",
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: true },
+  })
+);
+
 // CSRF Protection *****************************************************
 app.use(lusca.csrf());
 
 //Set Static Folder ****************************************************
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, "public")));
 
 // Home Page
-app.get('/', (req, res) => {
-    res.send('<h1>Bootcamp Home Page</h1>');
-})
+app.get("/", (req, res) => {
+  res.send("<h1>Bootcamp Home Page</h1>");
+});
 //Mount Routers *********************************************************
-app.use('/api/v1/bootcamps', bootcamps);
-app.use('/api/v1/courses', courses);
-app.use('/api/v1/auth', auth);
-app.use('/api/v1/users', users);
-app.use('/api/v1/reviews', reviews);
+app.use("/api/v1/bootcamps", bootcamps);
+app.use("/api/v1/courses", courses);
+app.use("/api/v1/auth", auth);
+app.use("/api/v1/users", users);
+app.use("/api/v1/reviews", reviews);
 
 //Add Error Handler *****************************************************
 app.use(errorHandler);
@@ -98,15 +109,18 @@ app.use(errorHandler);
 const PORT = process.env.PORT || 5000;
 
 const server = app.listen(PORT, () => {
-    console.log(`Server Running in ${process.env.NODE_ENV} Mode on Port ${PORT}`.green.bold.inverse)
-})
+  console.log(
+    `Server Running in ${process.env.NODE_ENV} Mode on Port ${PORT}`.green.bold
+      .inverse
+  );
+});
 
 //handle unhandled promise rejections ************************************
-process.on('unhandledRejection', (error) => {
-    console.log(`Error: ${error.message}`.bgRed.bold);
+process.on("unhandledRejection", (error) => {
+  console.log(`Error: ${error.message}`.bgRed.bold);
 
-//  Close server and exit process *****************************************
-    server.close(() => {
-        process.exit(1);
-    })
-})
+  //  Close server and exit process *****************************************
+  server.close(() => {
+    process.exit(1);
+  });
+});
