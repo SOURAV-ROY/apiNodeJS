@@ -37,7 +37,7 @@ const advancedResults =
     res: AdvancedResultsResponse,
     next: NextFunction
   ): Promise<void> => {
-    let query;
+    let query: any;
 
     // Copy req.query
     const reqQuery: QueryString = { ...req.query };
