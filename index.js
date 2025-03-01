@@ -40,6 +40,9 @@ const app = express();
 //Body Parser **********************************************************
 app.use(express.json());
 
+// Fix: Trust proxy (add this line)
+app.set("trust proxy", true);
+
 //Cookie Parser ********************************************************
 app.use(cookieParser());
 
