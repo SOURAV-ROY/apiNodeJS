@@ -70,6 +70,13 @@ app.use(xssClean());
 const limiter = expressRateLimit({
   windowMs: 10 * 60 * 1000, // 10 minutes
   max: 100,
+  // Add this to acknowledge you understand the security implications
+  trustProxy: true,
+
+  // Optional: Use a custom key generator that combines IP with other identifiers
+  keyGenerator: (req) => {
+    return req?.ip + "-" + (req.headers["x-forwarded-for"] || "");
+  },
 });
 app.use(limiter);
 
