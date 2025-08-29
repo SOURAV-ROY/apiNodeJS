@@ -2,9 +2,9 @@ const path = require("path");
 const express = require("express");
 const dotenv = require("dotenv");
 const morgan = require("morgan");
-const mongoSanitize = require("express-mongo-sanitize");
+// const mongoSanitize = require("express-mongo-sanitize");
 const helmet = require("helmet");
-const xssClean = require("xss-clean");
+// const xssClean = require("xss-clean");
 const expressRateLimit = require("express-rate-limit");
 const hpp = require("hpp");
 const cors = require("cors");
@@ -58,13 +58,13 @@ if (process.env.NODE_ENV === "development") {
 app.use(fileUpload());
 
 // Sanitize Data *******************************************************
-app.use(mongoSanitize());
+// app.use(mongoSanitize());
 
 //Set Security Headers ************************************************
 app.use(helmet());
 
 // Prevent XSS attacks ************************************************
-app.use(xssClean());
+// app.use(xssClean());
 
 //Rate Limiting ******************************************************
 const limiter = expressRateLimit({
