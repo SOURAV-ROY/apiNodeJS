@@ -7,7 +7,7 @@ const BootcampSchema = new mongoose.Schema(
     name: {
       type: String,
       required: [true, "Please Add Name"],
-      unique: true,
+      // unique: true,
       trim: true,
       maxlength: [100, "name can not be more than 100 characters"],
     },
@@ -30,7 +30,7 @@ const BootcampSchema = new mongoose.Schema(
     },
     email: {
       type: String,
-      match: [/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/, "Please add a valid email"],
+      // match: [/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/, "Please add a valid email"],
     },
     address: {
       type: String,
@@ -92,11 +92,11 @@ const BootcampSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    user: {
-      type: mongoose.Schema.ObjectId,
-      ref: "User",
-      required: true,
-    },
+    // user: {
+    //   type: mongoose.Schema.ObjectId,
+    //   ref: "User",
+    //   required: true,
+    // },
   },
   {
     toJSON: { virtuals: true },
