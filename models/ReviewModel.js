@@ -31,7 +31,7 @@ const ReviewSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 //Prevent user from submitting more than one review per bootcamp ******

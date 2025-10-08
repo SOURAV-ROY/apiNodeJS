@@ -38,7 +38,7 @@ function generateBootcamps() {
         "Business",
         "Other",
       ],
-      { min: 1, max: 3 }
+      { min: 1, max: 3 },
     ),
     averageRating: faker.number.float({ min: 1, max: 10 }),
     averageCost: faker.number.int({ min: 500, max: 10000 }),

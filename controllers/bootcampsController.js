@@ -20,7 +20,7 @@ exports.getBootcamp = asyncHandler(async (req, res, next) => {
   const bootcamp = await Bootcamp.findById(bootcampId);
   if (!bootcamp) {
     return next(
-      new ErrorResponse(`Bootcamp not found with id ${req.params.id}`, 404)
+      new ErrorResponse(`Bootcamp not found with id ${req.params.id}`, 404),
     );
   }
   res.status(200).json({ success: true, data: bootcamp });
@@ -50,8 +50,8 @@ exports.creteBootcamp = asyncHandler(async (req, res, next) => {
     return next(
       new ErrorResponse(
         `The User with ${req.user.id} Already Published a Bootcamp`,
-        400
-      )
+        400,
+      ),
     );
   }
 
@@ -78,7 +78,7 @@ exports.updateBootcamp = asyncHandler(async (req, res, next) => {
 
   if (!bootcamp) {
     return next(
-      new ErrorResponse(`Bootcamp not found with id ${req.params.id}`, 404)
+      new ErrorResponse(`Bootcamp not found with id ${req.params.id}`, 404),
     );
   }
 
@@ -87,8 +87,8 @@ exports.updateBootcamp = asyncHandler(async (req, res, next) => {
     return next(
       new ErrorResponse(
         `User ${req.user.id} Is Not Authorized to Update The Bootcamp`,
-        401
-      )
+        401,
+      ),
     );
   }
 
@@ -98,7 +98,7 @@ exports.updateBootcamp = asyncHandler(async (req, res, next) => {
     {
       new: true,
       runValidators: true,
-    }
+    },
   );
 
   res.status(200).json({ success: true, data: bootcamp });
@@ -124,7 +124,7 @@ exports.deleteBootcamp = asyncHandler(async (req, res, next) => {
 
   if (!bootcamp) {
     return next(
-      new ErrorResponse(`Bootcamp not found with id ${req.params.id}`, 404)
+      new ErrorResponse(`Bootcamp not found with id ${req.params.id}`, 404),
     );
   }
 
@@ -133,8 +133,8 @@ exports.deleteBootcamp = asyncHandler(async (req, res, next) => {
     return next(
       new ErrorResponse(
         `User ${req.user.id} -> ${req.user.name} Is Not Authorized to Delete The Bootcamp`,
-        401
-      )
+        401,
+      ),
     );
   }
 
@@ -188,7 +188,7 @@ exports.bootcampPhotoUpload = asyncHandler(async (req, res, next) => {
   let bootcamp = await Bootcamp.findById(req.params.id);
   if (!bootcamp) {
     return next(
-      new ErrorResponse(`Bootcamp not found with id ${req.params.id}`, 404)
+      new ErrorResponse(`Bootcamp not found with id ${req.params.id}`, 404),
     );
   }
 
@@ -197,8 +197,8 @@ exports.bootcampPhotoUpload = asyncHandler(async (req, res, next) => {
     return next(
       new ErrorResponse(
         `User ${req.user.id} -> ${req.user.name} Is Not Authorized to Delete Photo From The Bootcamp`,
-        401
-      )
+        401,
+      ),
     );
   }
 
@@ -219,8 +219,8 @@ exports.bootcampPhotoUpload = asyncHandler(async (req, res, next) => {
     return next(
       new ErrorResponse(
         `Please Upload An Image Less Than ${process.env.MAX_FILE_UPLOAD}`,
-        400
-      )
+        400,
+      ),
     );
   }
 
@@ -239,7 +239,7 @@ exports.bootcampPhotoUpload = asyncHandler(async (req, res, next) => {
         success: true,
         data: file.name,
       });
-    }
+    },
   );
   console.log(file.name);
 });

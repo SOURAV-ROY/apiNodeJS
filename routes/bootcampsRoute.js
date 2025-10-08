@@ -1,16 +1,16 @@
-const express = require('express');
+const express = require("express");
 const {
-    getBootcamps,
-    getBootcamp,
-    creteBootcamp,
-    updateBootcamp,
-    deleteBootcamp,
-    getBootcampsInRadius,
-    bootcampPhotoUpload
+  getBootcamps,
+  getBootcamp,
+  creteBootcamp,
+  updateBootcamp,
+  deleteBootcamp,
+  getBootcampsInRadius,
+  bootcampPhotoUpload,
 } = require("../controllers/bootcampsController");
 
-const Bootcamp = require('../models/BootcampModel');
-const advancedResults = require('../middleware/advancedResults');
+const Bootcamp = require("../models/BootcampModel");
+const advancedResults = require("../middleware/advancedResults");
 
 // Include other resource routers ****************************************
 const courseRouter = require("./coursesRoute");
@@ -19,44 +19,32 @@ const reviewRouter = require("./reviewsRoute");
 const router = express.Router();
 
 // Protect Middleware *****************************************************
-const {protect, authorize} = require('../middleware/auth');
+const { protect, authorize } = require("../middleware/auth");
 
 // Re-route into other resource routers ***********************************
-router.use('/:bootcampId/courses', courseRouter);
-router.use('/:bootcampId/reviews', reviewRouter);
+router.use("/:bootcampId/courses", courseRouter);
+router.use("/:bootcampId/reviews", reviewRouter);
 
-router.get('/radius/:zipcode/:distance', getBootcampsInRadius);
+router.get("/radius/:zipcode/:distance", getBootcampsInRadius);
 
-router.get('/', advancedResults(Bootcamp, 'courses'), getBootcamps);
+router.get("/", advancedResults(Bootcamp, "courses"), getBootcamps);
 
-router.post('/',
-    protect,
-    authorize('admin', 'publisher'),
-    creteBootcamp
-);
+router.post("/", protect, authorize("admin", "publisher"), creteBootcamp);
 
-router.get('/:id', getBootcamp);
+router.get("/:id", getBootcamp);
 
-router.put('/:id',
-    protect,
-    authorize('admin', 'publisher'),
-    updateBootcamp
-);
+router.put("/:id", protect, authorize("admin", "publisher"), updateBootcamp);
 
-router.delete('/:id',
-    protect,
-    authorize('admin', 'publisher'),
-    deleteBootcamp
-);
+router.delete("/:id", protect, authorize("admin", "publisher"), deleteBootcamp);
 
-router.put('/:id/photo',
-    protect,
-    authorize('admin', 'publisher'),
-    bootcampPhotoUpload
+router.put(
+  "/:id/photo",
+  protect,
+  authorize("admin", "publisher"),
+  bootcampPhotoUpload,
 );
 
 module.exports = router;
-
 
 // router.get('/', (req, res) => {
 //         // res.send("<h1>Hello Sourav Roy</h1>");

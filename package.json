@@ -9,16 +9,21 @@
   },
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "format": "prettier --write ."
   },
   "keywords": [],
   "author": "SOURAV ROY",
   "license": "ISC",
   "devDependencies": {
+    "@babel/node": "^7.28.0",
     "@faker-js/faker": "^9.2.0",
-    "nodemon": "^3.1.7"
+    "nodemon": "^3.1.7",
+    "prettier": "^3.6.2"
   },
   "dependencies": {
+    "@babel/core": "^7.28.4",
+    "@babel/preset-env": "^7.28.3",
     "bcryptjs": "^2.4.3",
     "colors": "^1.4.0",
     "cookie-parser": "^1.4.7",

@@ -93,7 +93,7 @@ app.use(
     resave: false,
     saveUninitialized: true,
     cookie: { secure: true },
-  })
+  }),
 );
 
 // CSRF Protection *****************************************************
@@ -121,7 +121,7 @@ const PORT = process.env.PORT || 5000;
 const server = app.listen(PORT, () => {
   console.log(
     `Server Running in ${process.env.NODE_ENV} Mode on Port ${PORT}`.green.bold
-      .inverse
+      .inverse,
   );
 });
 
