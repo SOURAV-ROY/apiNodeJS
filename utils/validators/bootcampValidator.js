@@ -23,7 +23,7 @@ const bootcampSchema = Joi.object({
   jobAssistance: Joi.boolean().optional(),
   jobGuarantee: Joi.boolean().optional(),
   acceptGi: Joi.boolean().optional(),
-});
+}).unknown(true);
 
 module.exports = {
   bootcampSchema,

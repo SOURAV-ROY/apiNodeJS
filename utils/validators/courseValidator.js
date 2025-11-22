@@ -10,7 +10,7 @@ const createCourseSchema = Joi.object({
     .required(),
   scholarshipAvailable: Joi.boolean().optional(),
   bootcamp: Joi.string().hex().length(24).required(),
-});
+}).unknown(true);
 
 const updateCourseSchema = Joi.object({
   title: Joi.string().optional(),
@@ -21,7 +21,7 @@ const updateCourseSchema = Joi.object({
     .valid("beginner", "intermediate", "advanced")
     .optional(),
   scholarshipAvailable: Joi.boolean().optional(),
-});
+}).unknown(true);
 
 module.exports = {
   createCourseSchema,
