@@ -13,3 +13,4 @@ README.md
 vercel.json
 **/swagger.json
 _data/**.json
+.env.example
