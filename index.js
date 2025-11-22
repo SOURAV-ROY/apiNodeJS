@@ -97,7 +97,7 @@ app.use(
 );
 
 // CSRF Protection *****************************************************
-app.use(lusca.csrf());
+// app.use(lusca.csrf());
 
 //Set Static Folder ****************************************************
 app.use(express.static(path.join(__dirname, "public")));
@@ -107,11 +107,17 @@ app.get("/", (req, res) => {
   res.send("<h1>Bootcamp Home Page</h1>");
 });
 //Mount Routers *********************************************************
+//Mount Routers *********************************************************
 app.use("/api/v1/bootcamps", bootcamps);
 app.use("/api/v1/courses", courses);
 app.use("/api/v1/auth", auth);
 app.use("/api/v1/users", users);
 app.use("/api/v1/reviews", reviews);
+
+// Swagger UI ***********************************************************
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocument = require("./swagger.json");
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 //Add Error Handler *****************************************************
 app.use(errorHandler);
