@@ -124,22 +124,26 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
-const server = app.listen(PORT, () => {
-  console.log(
-    `Server Running in ${process.env.NODE_ENV} Mode on Port ${PORT}`.green.bold
-      .inverse,
-  );
-});
-
-//handle unhandled promise rejections ************************************
-process.on("unhandledRejection", (error) => {
-  console.log(`Error: ${error.message}`.bgRed.bold);
-
-  //  Close server and exit process *****************************************
-  server.close(() => {
-    process.exit(1);
+if (require.main === module) {
+  const server = app.listen(PORT, () => {
+    console.log(
+      `Server Running in ${process.env.NODE_ENV} Mode on Port ${PORT}`.green
+        .bold.inverse,
+    );
   });
-});
+
+  //handle unhandled promise rejections ************************************
+  process.on("unhandledRejection", (error) => {
+    console.log(`Error: ${error.message}`.bgRed.bold);
+
+    //  Close server and exit process *****************************************
+    server.close(() => {
+      process.exit(1);
+    });
+  });
+}
+
+module.exports = app;
 
 // const path = require("path");
 // const express = require("express");
