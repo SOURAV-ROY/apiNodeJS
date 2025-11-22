@@ -13,27 +13,31 @@ const session = require("express-session");
 require("colors");
 
 // Internal Imports *****************************************************
-const logger = require("./middleware/logger");
+// Internal Imports *****************************************************
+const { logger, errorHandler } = require("./middleware");
 const cookieParser = require("cookie-parser");
 const fileUpload = require("express-fileupload");
-const errorHandler = require("./middleware/error");
-const connectDB = require("./db/db");
+const connectDB = require("./db");
 
 //Load env vars *******************************************************
 // dotenv.config({path: "./config/config.env"});
 dotenv.config();
 
 //Connect To DB********************************************************
-connectDB().then(() => {
-  console.log(`Connected to MongoDB`.bgGreen.bold);
-});
+if (process.env.NODE_ENV !== "test") {
+  connectDB().then(() => {
+    console.log(`Connected to MongoDB`.bgGreen.bold);
+  });
+}
 
 //Router Files**********************************************************
-const bootcamps = require("./routes/bootcampsRoute");
-const courses = require("./routes/coursesRoute");
-const auth = require("./routes/authRoute");
-const users = require("./routes/usersRoute");
-const reviews = require("./routes/reviewsRoute");
+const {
+  bootcampsRoute,
+  coursesRoute,
+  authRoute,
+  usersRoute,
+  reviewsRoute,
+} = require("./routes");
 
 const app = express();
 
@@ -93,11 +97,11 @@ app.use(
     resave: false,
     saveUninitialized: true,
     cookie: { secure: true },
-  })
+  }),
 );
 
 // CSRF Protection *****************************************************
-app.use(lusca.csrf());
+// app.use(lusca.csrf());
 
 //Set Static Folder ****************************************************
 app.use(express.static(path.join(__dirname, "public")));
@@ -107,33 +111,43 @@ app.get("/", (req, res) => {
   res.send("<h1>Bootcamp Home Page</h1>");
 });
 //Mount Routers *********************************************************
-app.use("/api/v1/bootcamps", bootcamps);
-app.use("/api/v1/courses", courses);
-app.use("/api/v1/auth", auth);
-app.use("/api/v1/users", users);
-app.use("/api/v1/reviews", reviews);
+//Mount Routers *********************************************************
+app.use("/api/v1/bootcamps", bootcampsRoute);
+app.use("/api/v1/courses", coursesRoute);
+app.use("/api/v1/auth", authRoute);
+app.use("/api/v1/users", usersRoute);
+app.use("/api/v1/reviews", reviewsRoute);
+
+// Swagger UI ***********************************************************
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocument = require("./swagger.json");
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 //Add Error Handler *****************************************************
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
-const server = app.listen(PORT, () => {
-  console.log(
-    `Server Running in ${process.env.NODE_ENV} Mode on Port ${PORT}`.green.bold
-      .inverse
-  );
-});
-
-//handle unhandled promise rejections ************************************
-process.on("unhandledRejection", (error) => {
-  console.log(`Error: ${error.message}`.bgRed.bold);
-
-  //  Close server and exit process *****************************************
-  server.close(() => {
-    process.exit(1);
+if (require.main === module) {
+  const server = app.listen(PORT, () => {
+    console.log(
+      `Server Running in ${process.env.NODE_ENV} Mode on Port ${PORT}`.green
+        .bold.inverse,
+    );
   });
-});
+
+  //handle unhandled promise rejections ************************************
+  process.on("unhandledRejection", (error) => {
+    console.log(`Error: ${error.message}`.bgRed.bold);
+
+    //  Close server and exit process *****************************************
+    server.close(() => {
+      process.exit(1);
+    });
+  });
+}
+
+module.exports = app;
 
 // const path = require("path");
 // const express = require("express");
