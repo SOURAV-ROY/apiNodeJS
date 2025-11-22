@@ -15,22 +15,48 @@ const advancedResults = require("../middleware/advancedResults");
 const router = express.Router({ mergeParams: true });
 
 const { protect, authorize } = require("../middleware/auth");
+const validate = require("../middleware/validate");
+const {
+  createCourseSchema,
+  updateCourseSchema,
+} = require("../utils/validators/courseValidator");
+const {
+  idSchema,
+  querySchema,
+} = require("../utils/validators/commonValidator");
 
 router
   .route("/")
   .get(
+    validate(querySchema, "query"),
     advancedResults(Course, {
       path: "bootcamp",
       select: "name description email phone housing",
     }),
     getCourses,
   )
-  .post(protect, authorize("admin", "publisher"), addCourse);
+  .post(
+    protect,
+    authorize("admin", "publisher"),
+    validate(createCourseSchema),
+    addCourse,
+  );
 
 router
   .route("/:id")
-  .get(getCourse)
-  .put(protect, authorize("admin", "publisher"), updateCourse)
-  .delete(protect, authorize("admin", "publisher"), deleteCourse);
+  .get(validate(idSchema, "params"), getCourse)
+  .put(
+    protect,
+    authorize("admin", "publisher"),
+    validate(idSchema, "params"),
+    validate(updateCourseSchema),
+    updateCourse,
+  )
+  .delete(
+    protect,
+    authorize("admin", "publisher"),
+    validate(idSchema, "params"),
+    deleteCourse,
+  );
 
 module.exports = router;

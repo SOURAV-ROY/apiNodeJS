@@ -36,6 +36,7 @@
     "express-session": "^1.18.1",
     "helmet": "^8.0.0",
     "hpp": "^0.2.3",
+    "joi": "^18.0.2",
     "jsonwebtoken": "^9.0.2",
     "lusca": "^1.7.0",
     "mongoose": "^8.9.5",

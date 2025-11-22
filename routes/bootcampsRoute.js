@@ -21,26 +21,63 @@ const router = express.Router();
 // Protect Middleware *****************************************************
 const { protect, authorize } = require("../middleware/auth");
 
+// Validation Middleware **************************************************
+const validate = require("../middleware/validate");
+const { bootcampSchema } = require("../utils/validators/bootcampValidator");
+const {
+  idSchema,
+  querySchema,
+} = require("../utils/validators/commonValidator");
+
 // Re-route into other resource routers ***********************************
 router.use("/:bootcampId/courses", courseRouter);
 router.use("/:bootcampId/reviews", reviewRouter);
 
-router.get("/radius/:zipcode/:distance", getBootcampsInRadius);
+router.get(
+  "/radius/:zipcode/:distance",
+  validate(querySchema, "query"),
+  getBootcampsInRadius,
+);
 
-router.get("/", advancedResults(Bootcamp, "courses"), getBootcamps);
+router.get(
+  "/",
+  validate(querySchema, "query"),
+  advancedResults(Bootcamp, "courses"),
+  getBootcamps,
+);
 
-router.post("/", protect, authorize("admin", "publisher"), creteBootcamp);
+router.post(
+  "/",
+  protect,
+  authorize("admin", "publisher"),
+  validate(bootcampSchema),
+  creteBootcamp,
+);
 
-router.get("/:id", getBootcamp);
+router.get("/:id", validate(idSchema, "params"), getBootcamp);
 
-router.put("/:id", protect, authorize("admin", "publisher"), updateBootcamp);
+router.put(
+  "/:id",
+  protect,
+  authorize("admin", "publisher"),
+  validate(idSchema, "params"),
+  validate(bootcampSchema),
+  updateBootcamp,
+);
 
-router.delete("/:id", protect, authorize("admin", "publisher"), deleteBootcamp);
+router.delete(
+  "/:id",
+  protect,
+  authorize("admin", "publisher"),
+  validate(idSchema, "params"),
+  deleteBootcamp,
+);
 
 router.put(
   "/:id/photo",
   protect,
   authorize("admin", "publisher"),
+  validate(idSchema, "params"),
   bootcampPhotoUpload,
 );
 

@@ -15,8 +15,15 @@ const router = express.Router();
 // Protect Middleware ****************************************
 const { protect } = require("../middleware/auth");
 
-router.post("/register", register);
-router.post("/login", login);
+// Validation Middleware *************************************
+const validate = require("../middleware/validate");
+const {
+  registerSchema,
+  loginSchema,
+} = require("../utils/validators/authValidator");
+
+router.post("/register", validate(registerSchema), register);
+router.post("/login", validate(loginSchema), login);
 router.get("/logout", logout);
 router.get("/me", protect, getMe);
 
