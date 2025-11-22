@@ -3,6 +3,8 @@ const app = require("../index"); // Assuming index.js exports the app
 const mongoose = require("mongoose");
 const User = require("../models/UserModel");
 
+const connectDB = require("../db/db");
+
 describe("Auth Routes", () => {
   let token;
   const testUser = {
@@ -11,6 +13,10 @@ describe("Auth Routes", () => {
     password: "password123",
     role: "user",
   };
+
+  beforeAll(async () => {
+    await connectDB();
+  });
 
   afterAll(async () => {
     // Cleanup

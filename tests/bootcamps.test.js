@@ -4,6 +4,8 @@ const mongoose = require("mongoose");
 const User = require("../models/UserModel");
 const Bootcamp = require("../models/BootcampModel");
 
+const connectDB = require("../db/db");
+
 describe("Bootcamp Routes", () => {
   let token;
   const testUser = {
@@ -14,6 +16,7 @@ describe("Bootcamp Routes", () => {
   };
 
   beforeAll(async () => {
+    await connectDB();
     // Register and login to get token
     await request(app).post("/api/v1/auth/register").send(testUser);
     const res = await request(app).post("/api/v1/auth/login").send({

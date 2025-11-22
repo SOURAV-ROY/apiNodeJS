@@ -3,6 +3,8 @@ const app = require("../index");
 const mongoose = require("mongoose");
 const User = require("../models/UserModel");
 
+const connectDB = require("../db/db");
+
 describe("User Routes", () => {
   let token;
   const adminUser = {
@@ -13,6 +15,7 @@ describe("User Routes", () => {
   };
 
   beforeAll(async () => {
+    await connectDB();
     await request(app).post("/api/v1/auth/register").send(adminUser);
     const res = await request(app).post("/api/v1/auth/login").send({
       email: adminUser.email,

@@ -11,7 +11,7 @@
     "start": "node index.js",
     "dev": "nodemon --inspect index.js",
     "format": "prettier --write .",
-    "test": "jest"
+    "test": "jest --detectOpenHandles"
   },
   "keywords": [],
   "author": "SOURAV ROY",

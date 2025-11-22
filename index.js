@@ -24,9 +24,12 @@ const connectDB = require("./db/db");
 dotenv.config();
 
 //Connect To DB********************************************************
-connectDB().then(() => {
-  console.log(`Connected to MongoDB`.bgGreen.bold);
-});
+//Connect To DB********************************************************
+if (process.env.NODE_ENV !== "test") {
+  connectDB().then(() => {
+    console.log(`Connected to MongoDB`.bgGreen.bold);
+  });
+}
 
 //Router Files**********************************************************
 const bootcamps = require("./routes/bootcampsRoute");

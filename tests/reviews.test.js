@@ -2,7 +2,13 @@ const request = require("supertest");
 const app = require("../index");
 const mongoose = require("mongoose");
 
+const connectDB = require("../db/db");
+
 describe("Review Routes", () => {
+  beforeAll(async () => {
+    await connectDB();
+  });
+
   afterAll(async () => {
     await mongoose.connection.close();
   });
