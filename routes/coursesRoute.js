@@ -8,29 +8,53 @@ const {
   deleteCourse,
 } = require("../controllers/coursesController");
 
-const Course = require("../models/CourseModel");
-const advancedResults = require("../middleware/advancedResults");
+const { Course } = require("../models");
+const {
+  advancedResults,
+  protect,
+  authorize,
+  validate,
+} = require("../middleware");
 
-// Protect Middleware *******************************************************
 const router = express.Router({ mergeParams: true });
 
-const { protect, authorize } = require("../middleware/auth");
+const {
+  courseValidator: { createCourseSchema, updateCourseSchema },
+  commonValidator: { idSchema, querySchema },
+} = require("../utils/validators");
 
 router
   .route("/")
   .get(
+    validate(querySchema, "query"),
     advancedResults(Course, {
       path: "bootcamp",
       select: "name description email phone housing",
     }),
     getCourses,
   )
-  .post(protect, authorize("admin", "publisher"), addCourse);
+  .post(
+    protect,
+    authorize("admin", "publisher"),
+    validate(createCourseSchema),
+    addCourse,
+  );
 
 router
   .route("/:id")
-  .get(getCourse)
-  .put(protect, authorize("admin", "publisher"), updateCourse)
-  .delete(protect, authorize("admin", "publisher"), deleteCourse);
+  .get(validate(idSchema, "params"), getCourse)
+  .put(
+    protect,
+    authorize("admin", "publisher"),
+    validate(idSchema, "params"),
+    validate(updateCourseSchema),
+    updateCourse,
+  )
+  .delete(
+    protect,
+    authorize("admin", "publisher"),
+    validate(idSchema, "params"),
+    deleteCourse,
+  );
 
 module.exports = router;

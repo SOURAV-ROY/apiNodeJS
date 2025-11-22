@@ -4,8 +4,9 @@ const mongoose = require("mongoose");
 // import { v4 } from "uuid";
 
 const uri = "mongodb://127.0.0.1:27017/bnodeapi";
-const seedCount = 100000;
-const batchSize = 1000;
+// const uri = "mongodb://127.0.0.1:27017/bnodeapi_test";
+const seedCount = 1000;
+const batchSize = 100;
 
 // Generate 5 fake bootcamps
 function generateBootcamps() {

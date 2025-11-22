@@ -13,10 +13,15 @@ const {
 const router = express.Router();
 
 // Protect Middleware ****************************************
-const { protect } = require("../middleware/auth");
+const { protect, validate } = require("../middleware");
 
-router.post("/register", register);
-router.post("/login", login);
+// Validation Middleware *************************************
+const {
+  authValidator: { registerSchema, loginSchema },
+} = require("../utils/validators");
+
+router.post("/register", validate(registerSchema), register);
+router.post("/login", validate(loginSchema), login);
 router.get("/logout", logout);
 router.get("/me", protect, getMe);
 

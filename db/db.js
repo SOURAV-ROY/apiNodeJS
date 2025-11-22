@@ -4,7 +4,13 @@ mongoose.set("strictQuery", false);
 mongoose.set("strictPopulate", false);
 
 const connectDB = async () => {
-  const dbURL = process.env.MONGO_URI;
+  let dbURL = process.env.MONGO_URI;
+
+  if (process.env.NODE_ENV === "test") {
+    dbURL =
+      process.env.MONGO_URI_TEST || "mongodb://127.0.0.1:27017/bnodeapi_test";
+    console.log(`Using Test Database: ${dbURL}`.yellow.bold);
+  }
   try {
     const connect = await mongoose.connect(dbURL);
     console.log(
