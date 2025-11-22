@@ -7,8 +7,8 @@ const idSchema = Joi.object({
 const querySchema = Joi.object({
   select: Joi.string().optional(),
   sort: Joi.string().optional(),
-  page: Joi.number().integer().min(1).required(),
-  limit: Joi.number().integer().min(1).required(),
+  page: Joi.number().integer().min(1).optional(),
+  limit: Joi.number().integer().min(1).optional(),
 }).unknown(true); // Allow other query params for filtering
 
 module.exports = {

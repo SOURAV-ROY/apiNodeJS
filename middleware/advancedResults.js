@@ -39,8 +39,7 @@ const advancedResults = (model, populate) => async (req, res, next) => {
 
   //Pagination *******************************************************
   const page = parseInt(req.query.page, 10) || 1;
-
-  const limit = parseInt(req.query.limit, 10) || 2;
+  const limit = Math.min(parseInt(req.query.limit, 10) || 5, 50);
   // const limit = parseInt(req.query.limit, 10) || 25;
 
   const startIndex = (page - 1) * limit;
@@ -73,9 +72,12 @@ const advancedResults = (model, populate) => async (req, res, next) => {
     };
   }
 
+  const totalPages = Math.ceil(total / limit);
+
   res.advancedResults = {
     success: true,
     total,
+    totalPages,
     count: results.length,
     pagination,
     data: results,
