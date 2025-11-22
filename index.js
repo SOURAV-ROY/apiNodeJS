@@ -96,12 +96,12 @@ app.use(
     secret: "your-secret-key",
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: true },
+    cookie: { secure: process.env.NODE_ENV === "production" },
   }),
 );
 
 // CSRF Protection *****************************************************
-// app.use(lusca.csrf());
+app.use(lusca.csrf());
 
 //Set Static Folder ****************************************************
 app.use(express.static(path.join(__dirname, "public")));
