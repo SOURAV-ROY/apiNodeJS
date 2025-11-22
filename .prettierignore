@@ -1,0 +1,16 @@
+node_modules
+.gitignore
+.env
+.prettierignore
+.prettierrc
+babel.config.json
+CMD.txt
+config/config.json
+LICENSE
+package.json
+package-lock.json
+README.md
+vercel.json
+**/swagger.json
+_data/**.json
+.env.example

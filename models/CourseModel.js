@@ -41,7 +41,7 @@ const CourseSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 // Course.goFish()

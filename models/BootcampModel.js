@@ -7,7 +7,7 @@ const BootcampSchema = new mongoose.Schema(
     name: {
       type: String,
       required: [true, "Please Add Name"],
-      unique: true,
+      // unique: true,
       trim: true,
       maxlength: [100, "name can not be more than 100 characters"],
     },
@@ -30,7 +30,7 @@ const BootcampSchema = new mongoose.Schema(
     },
     email: {
       type: String,
-      match: [/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/, "Please add a valid email"],
+      // match: [/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/, "Please add a valid email"],
     },
     address: {
       type: String,
@@ -92,17 +92,17 @@ const BootcampSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    user: {
-      type: mongoose.Schema.ObjectId,
-      ref: "User",
-      required: true,
-    },
+    // user: {
+    //   type: mongoose.Schema.ObjectId,
+    //   ref: "User",
+    //   required: true,
+    // },
   },
   {
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
     timestamps: true,
-  }
+  },
 );
 
 // Use Slugify ********************************************************************
@@ -115,24 +115,24 @@ BootcampSchema.pre("save", function (next) {
 });
 
 //GeoCode & create location field *******************************
-// BootcampSchema.pre("save", async function (next) {
-//   const loc = await geocoder.geocode(this.address);
-//   this.location = {
-//     type: "Point",
-//     coordinates: [loc[0].longitude, loc[0].latitude],
-//     formattedAddress: loc[0].formattedAddress,
-//     street: loc[0].streetName,
-//     city: loc[0].city,
-//     state: loc[0].stateCode,
-//     zipcode: loc[0].zipcode,
-//     country: loc[0].countryCode,
-//   };
-//
-//   //Do not save address in DB ***************
-//   this.address = undefined;
-//
-//   next();
-// });
+BootcampSchema.pre("save", async function (next) {
+  const loc = await geocoder.geocode(this.address);
+  this.location = {
+    type: "Point",
+    coordinates: [loc[0].longitude, loc[0].latitude],
+    formattedAddress: loc[0].formattedAddress,
+    street: loc[0].streetName,
+    city: loc[0].city,
+    state: loc[0].stateCode,
+    zipcode: loc[0].zipcode,
+    country: loc[0].countryCode,
+  };
+
+  //Do not save address in DB ***************
+  this.address = undefined;
+
+  next();
+});
 
 //Cascade delete courses when a bootcamp *************
 BootcampSchema.pre("remove", async function (next) {
