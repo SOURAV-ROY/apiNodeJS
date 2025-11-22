@@ -1,10 +1,9 @@
 const request = require("supertest");
 const app = require("../index");
 const mongoose = require("mongoose");
-const User = require("../models/UserModel");
-const Bootcamp = require("../models/BootcampModel");
+const { User, Bootcamp } = require("../models");
 
-const connectDB = require("../db/db");
+const connectDB = require("../db");
 
 describe("Bootcamp Routes", () => {
   let token;

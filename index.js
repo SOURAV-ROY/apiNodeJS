@@ -13,17 +13,16 @@ const session = require("express-session");
 require("colors");
 
 // Internal Imports *****************************************************
-const logger = require("./middleware/logger");
+// Internal Imports *****************************************************
+const { logger, errorHandler } = require("./middleware");
 const cookieParser = require("cookie-parser");
 const fileUpload = require("express-fileupload");
-const errorHandler = require("./middleware/error");
-const connectDB = require("./db/db");
+const connectDB = require("./db");
 
 //Load env vars *******************************************************
 // dotenv.config({path: "./config/config.env"});
 dotenv.config();
 
-//Connect To DB********************************************************
 //Connect To DB********************************************************
 if (process.env.NODE_ENV !== "test") {
   connectDB().then(() => {
@@ -32,11 +31,13 @@ if (process.env.NODE_ENV !== "test") {
 }
 
 //Router Files**********************************************************
-const bootcamps = require("./routes/bootcampsRoute");
-const courses = require("./routes/coursesRoute");
-const auth = require("./routes/authRoute");
-const users = require("./routes/usersRoute");
-const reviews = require("./routes/reviewsRoute");
+const {
+  bootcampsRoute,
+  coursesRoute,
+  authRoute,
+  usersRoute,
+  reviewsRoute,
+} = require("./routes");
 
 const app = express();
 
@@ -111,11 +112,11 @@ app.get("/", (req, res) => {
 });
 //Mount Routers *********************************************************
 //Mount Routers *********************************************************
-app.use("/api/v1/bootcamps", bootcamps);
-app.use("/api/v1/courses", courses);
-app.use("/api/v1/auth", auth);
-app.use("/api/v1/users", users);
-app.use("/api/v1/reviews", reviews);
+app.use("/api/v1/bootcamps", bootcampsRoute);
+app.use("/api/v1/courses", coursesRoute);
+app.use("/api/v1/auth", authRoute);
+app.use("/api/v1/users", usersRoute);
+app.use("/api/v1/reviews", reviewsRoute);
 
 // Swagger UI ***********************************************************
 const swaggerUi = require("swagger-ui-express");

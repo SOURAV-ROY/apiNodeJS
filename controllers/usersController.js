@@ -1,5 +1,5 @@
-const asyncHandler = require("../middleware/async");
-const User = require("../models/UserModel");
+const { asyncHandler } = require("../middleware");
+const { User } = require("../models");
 
 // @description     Get All Users
 // @route           POST /api/v1/auth/users

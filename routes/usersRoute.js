@@ -8,22 +8,21 @@ const {
   deleteUser,
 } = require("../controllers/usersController");
 
-const User = require("../models/UserModel");
+const { User } = require("../models");
 
-//Protect Middleware *******************************************
 const router = express.Router({ mergeParams: true });
 
-const { protect, authorize } = require("../middleware/auth");
-const advancedResults = require("../middleware/advancedResults");
-const validate = require("../middleware/validate");
 const {
-  createUserSchema,
-  updateUserSchema,
-} = require("../utils/validators/userValidator");
+  protect,
+  authorize,
+  advancedResults,
+  validate,
+} = require("../middleware");
+
 const {
-  idSchema,
-  querySchema,
-} = require("../utils/validators/commonValidator");
+  userValidator: { createUserSchema, updateUserSchema },
+  commonValidator: { idSchema, querySchema },
+} = require("../utils/validators");
 
 router.use(protect);
 router.use(authorize("admin"));

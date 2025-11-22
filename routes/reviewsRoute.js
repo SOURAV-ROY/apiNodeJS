@@ -8,22 +8,21 @@ const {
   deleteReview,
 } = require("../controllers/reviewsController");
 
-const Review = require("../models/ReviewModel");
+const { Review } = require("../models");
 
-//Protect Middleware ************************************************
 const router = express.Router({ mergeParams: true });
 
-const advancedResults = require("../middleware/advancedResults");
-const { protect, authorize } = require("../middleware/auth");
-const validate = require("../middleware/validate");
 const {
-  createReviewSchema,
-  updateReviewSchema,
-} = require("../utils/validators/reviewValidator");
+  advancedResults,
+  protect,
+  authorize,
+  validate,
+} = require("../middleware");
+
 const {
-  idSchema,
-  querySchema,
-} = require("../utils/validators/commonValidator");
+  reviewValidator: { createReviewSchema, updateReviewSchema },
+  commonValidator: { idSchema, querySchema },
+} = require("../utils/validators");
 
 router
   .route("/")

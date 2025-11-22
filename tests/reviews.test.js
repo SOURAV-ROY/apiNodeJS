@@ -2,7 +2,7 @@ const request = require("supertest");
 const app = require("../index");
 const mongoose = require("mongoose");
 
-const connectDB = require("../db/db");
+const connectDB = require("../db");
 
 describe("Review Routes", () => {
   beforeAll(async () => {

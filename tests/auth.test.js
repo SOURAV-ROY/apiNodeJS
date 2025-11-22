@@ -1,9 +1,9 @@
 const request = require("supertest");
 const app = require("../index"); // Assuming index.js exports the app
 const mongoose = require("mongoose");
-const User = require("../models/UserModel");
+const { User } = require("../models");
 
-const connectDB = require("../db/db");
+const connectDB = require("../db");
 
 describe("Auth Routes", () => {
   let token;

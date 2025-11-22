@@ -8,22 +8,20 @@ const {
   deleteCourse,
 } = require("../controllers/coursesController");
 
-const Course = require("../models/CourseModel");
-const advancedResults = require("../middleware/advancedResults");
+const { Course } = require("../models");
+const {
+  advancedResults,
+  protect,
+  authorize,
+  validate,
+} = require("../middleware");
 
-// Protect Middleware *******************************************************
 const router = express.Router({ mergeParams: true });
 
-const { protect, authorize } = require("../middleware/auth");
-const validate = require("../middleware/validate");
 const {
-  createCourseSchema,
-  updateCourseSchema,
-} = require("../utils/validators/courseValidator");
-const {
-  idSchema,
-  querySchema,
-} = require("../utils/validators/commonValidator");
+  courseValidator: { createCourseSchema, updateCourseSchema },
+  commonValidator: { idSchema, querySchema },
+} = require("../utils/validators");
 
 router
   .route("/")

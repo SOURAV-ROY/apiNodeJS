@@ -9,8 +9,13 @@ const {
   bootcampPhotoUpload,
 } = require("../controllers/bootcampsController");
 
-const Bootcamp = require("../models/BootcampModel");
-const advancedResults = require("../middleware/advancedResults");
+const { Bootcamp } = require("../models");
+const {
+  advancedResults,
+  protect,
+  authorize,
+  validate,
+} = require("../middleware");
 
 // Include other resource routers ****************************************
 const courseRouter = require("./coursesRoute");
@@ -18,16 +23,11 @@ const reviewRouter = require("./reviewsRoute");
 
 const router = express.Router();
 
-// Protect Middleware *****************************************************
-const { protect, authorize } = require("../middleware/auth");
-
 // Validation Middleware **************************************************
-const validate = require("../middleware/validate");
-const { bootcampSchema } = require("../utils/validators/bootcampValidator");
 const {
-  idSchema,
-  querySchema,
-} = require("../utils/validators/commonValidator");
+  bootcampValidator: { bootcampSchema },
+  commonValidator: { idSchema, querySchema },
+} = require("../utils/validators");
 
 // Re-route into other resource routers ***********************************
 router.use("/:bootcampId/courses", courseRouter);
