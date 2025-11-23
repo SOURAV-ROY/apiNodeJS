@@ -8,6 +8,7 @@ const {
   resetPassword,
   updateDetails,
   updatePassword,
+  getCsrfToken,
 } = require("../controllers/authController");
 
 const router = express.Router();
@@ -23,6 +24,7 @@ const {
 router.post("/register", validate(registerSchema), register);
 router.post("/login", validate(loginSchema), login);
 router.get("/logout", logout);
+router.get("/csrf-token", getCsrfToken);
 router.get("/me", protect, getMe);
 
 router.put("/updatedetails", protect, updateDetails);
