@@ -1,3 +1,237 @@
+# [NodeJs API](https://bootcamps.vercel.app)
+********************************************
+
+### [Bootcamps](https://bootcamps.vercel.app/api/v1/bootcamps)
+- List all bootcamps in the database
+   * Pagination
+   * Select specific fields in result
+   * Limit number of results
+   * Filter by fields
+- Search bootcamps by radius from zipcode
+  * Use a geocoder to get exact location and coords from a single address field
+- Get single bootcamp
+- Create new bootcamp
+  * Authenticated users only
+  * Must have the role "publisher" or "admin"
+  * Only one bootcamp per publisher (admins can create more)
+  * Field validation via Mongoose
+- Upload a photo for bootcamp
+  * Owner only
+  * Photo will be uploaded to local filesystem
+- Update bootcamps
+  * Owner only
+  * Validation on update
+- Delete Bootcamp
+  * Owner only
+- Calculate the average cost of all courses for a bootcamp
+- Calculate the average rating from the reviews for a bootcamp
+
+### [Courses](https://bootcamps.vercel.app/api/v1/courses)
+- List all courses for bootcamp
+- List all courses in general
+  * Pagination, filtering, etc
+- Get single course
+- Create new course
+  * Authenticated users only
+  * Must have the role "publisher" or "admin"
+  * Only the owner or an admin can create a course for a bootcamp
+  * Publishers can create multiple courses
+- Update course
+  * Owner only
+- Delete course
+  * Owner only
+  
+### [Reviews](https://bootcamps.vercel.app/api/v1/reviews)
+- List all reviews for a bootcamp
+- List all reviews in general
+  * Pagination, filtering, etc
+- Get a single review
+- Create a review
+  * Authenticated users only
+  * Must have the role "user" or "admin" (no publishers)
+- Update review
+  * Must have the role "user" or "admin" (no publishers)
+- Delete review
+  * Must have the role "user" or "admin" (no publishers)
+
+### Users & Authentication
+- Authentication will be ton using JWT/cookies
+  * JWT and cookie should expire in 30 days
+- User registration
+  * Register as a "user" or "publisher"
+  * Once registered, a token will be sent along with a cookie (token = xxx)
+  * Passwords must be hashed
+- User login
+  * User can login with email and password
+  * Plain text password will compare with stored hashed password
+  * Once logged in, a token will be sent along with a cookie (token = xxx)
+- User logout
+  * Cookie will be sent to set token = none
+- Get user
+  * Route to get the currently logged in user (via token)
+- Password reset (lost password)
+  * User can request to reset password
+  * A hashed token will be emailed to the users registered email address
+  * A put request can be made to the generated url to reset password
+  * The token will expire after 10 minutes
+- Update user info
+  * Authenticated user only
+  * Separate route to update password
+- User CRUD
+  * Admin only
+- Users can only be made admin by updating the database field manually
+
+## Security
+- Encrypt passwords and reset tokens
+- Prevent NoSQL injections
+- Add headers for security (helmet)
+- Prevent cross site scripting - XSS
+- Add a rate limit for requests of 100 requests per 10 minutes
+- Protect against http param polution
+- Use cors to make API public (for now)
+
+## Documentation
+- Use Postman to create documentation
+- Use [docgen](https://github.com/thedevsaddam/docgen) to create HTML files from Postman JSON File
+- Add html files as the / route for the api
+
+
+
+
+## Reverse Populate
+### In Model (Options)
+```js
+toJSON: {virtuals: true},
+toObject: {virtuals: true}
+```
+```js
+BootcampSchema.virtual('courses', {
+  ref: 'Course',
+  localField: '_id',
+  foreignField: 'bootcamp',
+  justOne: false
+});
+```
+### In Controller
+```js
+query = Bootcamp.find(JSON.parse(queryString)).populate('courses');
+```
+## Course Being Removed From Bootcamp
+```js
+BootcampSchema.pre('remove', async function (next) {
+    console.log(`Course being removed from bootcamp: ${this._id}`);
+    await this.model('Course').deleteMany({bootcamp: this._id});
+    next();
+})
+```
+```js
+const bootcamp = await Bootcamp.findById(req.params.id);
+bootcamp.remove();
+```
+## Calculating The Average CourseCost
+```js
+CourseSchema.statics.getAverageCost = async function (bootcampId) {
+    const obj = await this.aggregate([
+        {
+            $match: {bootcamp: bootcampId}
+        },
+        {
+            $group: {
+                _id: '$bootcamp',
+                averageCost: {$avg: '$tuition'}
+            }
+        }
+    ]);
+    try {
+        await this.model('Bootcamp').findByIdAndUpdate(bootcampId, {
+            averageCost: Math.ceil(obj[0].averageCost / 10) * 10
+        })
+    } catch (errors) {
+        console.log(errors);
+    }
+}
+```
+```js
+//Call AverageCost After Add Course **********************
+CourseSchema.post('save', function () {
+    this.constructor.getAverageCost(this.bootcamp);
+});
+
+//Call AverageCost Before Remove Course ******************
+CourseSchema.pre('remove', function () {
+    this.constructor.getAverageCost(this.bootcamp);
+});
+```
+## Encrypt Password Using bcryptjs
+```js
+UserSchema.pre('save', async function (next) {
+   if (!this.isModified('password')) {
+          next();
+      }
+   const salt = await bcrypt.genSalt(10);
+   this.password = await bcrypt.hash(this.password, salt);
+});
+```
+## get Signed JWT
+```js
+UserSchema.methods.getSignedJwtToken = function () {
+    return jwt.sign({id: this._id}, process.env.JWT_SECRET, {
+        expiresIn: process.env.JWT_EXPIRE
+    });
+};
+```
+## Match User Entered Password to Hashed Password
+```js
+UserSchema.methods.matchPassword = async function (enteredPassword) {
+    return await bcrypt.compare(enteredPassword, this.password);
+};
+```
+## Grand Access to Specific Roles
+```js
+exports.authorize = (...roles) => {
+    return (req, res, next) => {
+        if (!roles.includes(req.user.role)) {
+            return next(new ErrorResponse(`User Role ${req.user.role} is Not Authorize to access this route`, 403));
+        }
+        next();
+    };
+};
+```
+## Bootcamp User Relationship
+```js
+  req.body.user = req.user.id;
+  
+  const publishedBootcamp = await Bootcamp.findOne({user: req.user.id});
+  
+  if (publishedBootcamp && req.user.role !== 'admin') {
+      return next(new ErrorResponse(`The User with ${req.user.id} Already Published a Bootcamp`, 400));
+  }
+```
+## Make Sure User Is Bootcamp Owner
+```js
+if (bootcamp.user.toString() !== req.user.id && req.user.role !== 'admin') {
+    return next(new ErrorResponse(`User ${req.user.id} Is Not Authorized to The Bootcamp`, 401));
+}
+```
+## Generate And Hash Password Token
+```js
+UserSchema.methods.getResetPasswordToken = function () {
+    const resetToken = crypto.randomBytes(20).toString('hex');
+    this.resetPasswordToken = crypto
+        .createHash('sha256')
+        .update(resetToken)
+        .digest('hex');
+        
+    this.resetPasswordExpire = Date.now() + 10 * 60 * 1000;
+    return resetToken;
+};
+```
+## Prevent User From Submitting More Than 1 Review Per Bootcamp
+```js
+ReviewSchema.index({bootcamp: 1, user: 1}, {unique: true});
+```
+***
+
 # API Reference
 
 Backend API for the DevCamper application to the manage bootcams
