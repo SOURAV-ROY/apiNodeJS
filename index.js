@@ -93,7 +93,7 @@ app.use(cors());
 // Set up session middleware
 app.use(
   session({
-    secret: "your-secret-key",
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
     cookie: { secure: process.env.NODE_ENV === "production" },
@@ -101,7 +101,9 @@ app.use(
 );
 
 // CSRF Protection *****************************************************
-app.use(lusca.csrf());
+if (process.env.NODE_ENV !== "development") {
+  app.use(lusca.csrf());
+}
 
 //Set Static Folder ****************************************************
 app.use(express.static(path.join(__dirname, "public")));
@@ -120,8 +122,8 @@ app.use("/api/v1/reviews", reviewsRoute);
 
 // Swagger UI ***********************************************************
 const swaggerUi = require("swagger-ui-express");
-const swaggerDocument = require("./swagger.json");
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+const swaggerDocument = require("./docs/swagger.json");
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 //Add Error Handler *****************************************************
 app.use(errorHandler);
