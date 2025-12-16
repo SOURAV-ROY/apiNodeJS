@@ -13,6 +13,14 @@ describe("Auth Routes", () => {
     password: "password123",
     role: "user",
   };
+  let csrfToken;
+  let cookies;
+
+  const getCsrfToken = async () => {
+    const res = await request(app).get("/api/v1/auth/csrf-token");
+    csrfToken = res.body.csrfToken;
+    cookies = res.headers["set-cookie"];
+  };
 
   beforeAll(async () => {
     await connectDB();
@@ -25,17 +33,27 @@ describe("Auth Routes", () => {
   });
 
   it("should register a new user", async () => {
-    const res = await request(app).post("/api/v1/auth/register").send(testUser);
+    await getCsrfToken();
+    const res = await request(app)
+      .post("/api/v1/auth/register")
+      .set("x-csrf-token", csrfToken)
+      .set("Cookie", cookies)
+      .send(testUser);
     expect(res.statusCode).toEqual(200);
     expect(res.body).toHaveProperty("token");
     token = res.body.token;
   });
 
   it("should login the user", async () => {
-    const res = await request(app).post("/api/v1/auth/login").send({
-      email: testUser.email,
-      password: testUser.password,
-    });
+    await getCsrfToken();
+    const res = await request(app)
+      .post("/api/v1/auth/login")
+      .set("x-csrf-token", csrfToken)
+      .set("Cookie", cookies)
+      .send({
+        email: testUser.email,
+        password: testUser.password,
+      });
     expect(res.statusCode).toEqual(200);
     expect(res.body).toHaveProperty("token");
   });
