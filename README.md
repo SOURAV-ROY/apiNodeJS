@@ -6,9 +6,11 @@ Backend API for the DevCamper application to manage bootcamps, courses, reviews,
 
 The documentation has been split into several files for better organization:
 
+- **[System Design](docs/SYSTEM_DESIGN.md)**: Comprehensive system architecture, design patterns, and technical overview of the project.
 - **[Setup and Configuration](docs/SETUP_AND_CONFIGURATION.md)**: Instructions on how to install, configure, and run the project.
 - **[API Reference](docs/API_REFERENCE.md)**: Detailed documentation of all API endpoints, including request/response examples.
 - **[Project Structure](docs/PROJECT_STRUCTURE.md)**: Explanation of the codebase organization and key directories.
+- **[Project Flow](docs/PROJECT_FLOW.md)**: Request lifecycle and data flow diagrams.
 
 ## Key Features
 
