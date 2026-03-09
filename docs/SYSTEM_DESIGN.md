@@ -10,8 +10,10 @@
 7. [Security Architecture](#security-architecture)
 8. [Request Flow](#request-flow)
 9. [Middleware Pipeline](#middleware-pipeline)
-10. [Deployment Architecture](#deployment-architecture)
-11. [Scalability Considerations](#scalability-considerations)
+10. [Data Management & Seeding](#data-management--seeding)
+11. [Deployment Architecture](#deployment-architecture)
+12. [Scalability Considerations](#scalability-considerations)
+13. [Future Improvements](#future-improvements)
 
 ---
 
@@ -42,52 +44,63 @@
 
 ### High-Level Architecture
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                        Client Layer                         │
-│              (Web App, Mobile App, Postman)                 │
-└───────────────────────────┬─────────────────────────────────┘
-                            │
-                            │ HTTP/HTTPS
-                            │
-┌───────────────────────────▼─────────────────────────────────┐
-│                    Application Layer                         │
-│  ┌──────────────────────────────────────────────────────┐  │
-│  │              Express.js Server                        │  │
-│  │  ┌──────────────┐  ┌──────────────┐  ┌───────────┐ │  │
-│  │  │  Middleware  │→ │   Routes     │→ │Controller │ │  │
-│  │  │   Pipeline   │  │   Handler    │  │  Logic    │ │  │
-│  │  └──────────────┘  └──────────────┘  └─────┬───────┘ │  │
-│  └────────────────────────────────────────────┼─────────┘  │
-│                                                │             │
-│  ┌────────────────────────────────────────────▼─────────┐  │
-│  │              Business Logic Layer                     │  │
-│  │  • Authentication & Authorization                     │  │
-│  │  • Validation                                         │  │
-│  │  • Geocoding                                          │  │
-│  │  • File Processing                                    │  │
-│  │  • Email Service                                      │  │
-│  └──────────────────────────────────────────────────────┘  │
-└───────────────────────────┬─────────────────────────────────┘
-                             │
-                             │
-┌───────────────────────────▼─────────────────────────────────┐
-│                      Data Layer                              │
-│  ┌──────────────────────────────────────────────────────┐  │
-│  │              MongoDB Database                         │  │
-│  │  • Users Collection                                   │  │
-│  │  • Bootcamps Collection                               │  │
-│  │  • Courses Collection                                 │  │
-│  │  • Reviews Collection                                 │  │
-│  └──────────────────────────────────────────────────────┘  │
-└─────────────────────────────────────────────────────────────┘
+```mermaid
+graph TD
+    subgraph ClientLayer [Client Layer]
+        C1[Web App]
+        C2[Mobile App]
+        C3[Postman/Insomnia]
+    end
 
-┌─────────────────────────────────────────────────────────────┐
-│                  External Services                           │
-│  • Geocoding API (MapQuest/Google)                          │
-│  • Email Service (Nodemailer)                               │
-│  • File Storage (Local Filesystem)                           │
-└─────────────────────────────────────────────────────────────┘
+    subgraph AppLayer [Application Layer]
+        subgraph Express [Express.js Server]
+            MW[Middleware Pipeline]
+            RH[Routes Handler]
+            CL[Controller Logic]
+            
+            MW --> RH
+            RH --> CL
+        end
+        
+        subgraph BusinessLogic [Business Logic Layer]
+            Auth[Auth & Authorization]
+            Val[Validation]
+            Geo[Geocoding]
+            File[File Processing]
+            Mail[Email Service]
+            
+            CL --> Auth
+            CL --> Val
+            CL --> Geo
+            CL --> File
+            CL --> Mail
+        end
+    end
+
+    subgraph DataLayer [Data Layer]
+        DB[(MongoDB Database)]
+        Coll1(Users Collection)
+        Coll2(Bootcamps Collection)
+        Coll3(Courses Collection)
+        Coll4(Reviews Collection)
+        
+        DB --- Coll1
+        DB --- Coll2
+        DB --- Coll3
+        DB --- Coll4
+    end
+
+    subgraph ExternalServices [External Services]
+        ExtGeo[Geocoding API]
+        ExtMail[Email Service]
+        ExtFile[Local Filesystem]
+    end
+
+    ClientLayer -->|HTTP/HTTPS| AppLayer
+    BusinessLogic --> DataLayer
+    Geo -.-> ExtGeo
+    Mail -.-> ExtMail
+    File -.-> ExtFile
 ```
 
 ### Architecture Pattern
@@ -115,6 +128,8 @@
 - `lusca`: CSRF protection
 - `bcryptjs`: Password hashing
 - `jsonwebtoken`: JWT token generation/verification
+- `express-session`: Session management
+- `lusca`: CSRF protection
 
 #### Utilities
 - `dotenv`: Environment variable management
@@ -223,52 +238,51 @@ Database connection and configuration.
 
 ### Entity Relationship Diagram
 
-```
-┌─────────────┐
-│    User     │
-│─────────────│
-│ _id         │
-│ name        │
-│ email       │◄─────┐
-│ password    │      │
-│ role        │      │
-│ resetToken  │      │
-└─────────────┘      │
-                     │
-                     │ (1:N)
-                     │
-┌─────────────┐      │    ┌─────────────┐
-│  Bootcamp   │      │    │   Review    │
-│─────────────│      │    │─────────────│
-│ _id         │      │    │ _id         │
-│ name        │      │    │ title       │
-│ description │      │    │ text        │
-│ address     │      │    │ rating      │
-│ location    │      │    │ bootcamp    │──┐
-│ careers[]   │      │    │ user        │──┘
-│ user        │──────┘    └─────────────┘
-│ photo       │
-│ slug        │
-└──────┬──────┘
-       │
-       │ (1:N)
-       │
-┌──────▼──────┐
-│   Course    │
-│─────────────│
-│ _id         │
-│ title       │
-│ description │
-│ weeks       │
-│ tuition     │
-│ bootcamp    │──────┐
-└─────────────┘      │
-                     │
-                     │ (references)
-                     │
-              ┌──────┴──────┐
-              │   Bootcamp  │
-              └─────────────┘
+```mermaid
+erDiagram
+    USER ||--o{ BOOTCAMP : "owns"
+    USER ||--o{ REVIEW : "writes"
+    BOOTCAMP ||--o{ COURSE : "contains"
+    BOOTCAMP ||--o{ REVIEW : "receives"
+
+    USER {
+        string id PK
+        string name
+        string email
+        string password
+        string role
+        string resetToken
+    }
+
+    BOOTCAMP {
+        string id PK
+        string name
+        string description
+        string address
+        object location
+        string careers
+        string user FK
+        string photo
+        string slug
+    }
+
+    COURSE {
+        string id PK
+        string title
+        string description
+        int weeks
+        int tuition
+        string bootcamp FK
+    }
+
+    REVIEW {
+        string id PK
+        string title
+        string text
+        int rating
+        string bootcamp FK
+        string user FK
+    }
 ```
 
 ### Model Details
@@ -367,6 +381,12 @@ All endpoints follow RESTful conventions:
 - Resource-based URLs
 - HTTP methods: GET, POST, PUT, DELETE
 - JSON request/response format
+
+### Swagger Documentation
+The API is fully documented using Swagger (OpenAPI 3.0).
+- **Documentation URL**: `/docs`
+- **Specification File**: `docs/swagger.json`
+- **Interactive UI**: Allows testing all endpoints directly from the browser.
 
 ### Endpoint Categories
 
@@ -511,82 +531,43 @@ Request → Helmet → CORS → Rate Limit → HPP → CSRF → Body Parser
 
 ### Complete Request Lifecycle
 
-```
-1. Client Request
-   ↓
-2. Express Server Receives Request
-   ↓
-3. Security Middleware Stack
-   ├─ Helmet (Security Headers)
-   ├─ CORS (Cross-Origin)
-   ├─ Rate Limiter (100/10min)
-   ├─ HPP (Parameter Pollution)
-   └─ CSRF (Production only)
-   ↓
-4. Body Parsing
-   ├─ JSON Parser
-   └─ Cookie Parser
-   ↓
-5. Logging Middleware
-   ├─ Morgan (Development)
-   └─ Custom Logger
-   ↓
-6. File Upload Middleware (if applicable)
-   ↓
-7. Route Matching
-   ↓
-8. Route-Specific Middleware
-   ├─ Authentication (protect)
-   ├─ Authorization (authorize roles)
-   └─ Validation (validate input)
-   ↓
-9. Controller Function
-   ├─ Business Logic
-   ├─ Database Operations
-   └─ External API Calls (Geocoding, Email)
-   ↓
-10. Response
-    ├─ Success: JSON with data
-    └─ Error: Error handler middleware
-   ↓
-11. Error Handler (if error occurred)
-    ├─ Log Error
-    ├─ Format Error Response
-    └─ Send Error JSON
-   ↓
-12. Client Receives Response
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Server as Express Server
+    participant SecMW as Security Middleware
+    participant BP as Body/Cookie Parser
+    participant Log as Logger
+    participant Router
+    participant Auth as Auth Middleware
+    participant Ctrl as Controller
+    participant DB as MongoDB
+    participant Ext as External APIs
+
+    Client->>Server: HTTP Request
+    Server->>SecMW: Process Security (Helmet, CORS, Rate Limit)
+    SecMW->>BP: Parse JSON & Cookies
+    BP->>Log: Log Request (Morgan)
+    Log->>Router: Match Route
+    Router->>Auth: Authenticate (JWT) & Authorize (Roles)
+    Auth->>Ctrl: Call Controller Function
+    Ctrl->>DB: Database Operations
+    DB-->>Ctrl: Data Results
+    Ctrl-->>Ext: External Services (Geocoding/Email)
+    Ext-->>Ctrl: Results
+    Ctrl-->>Client: Success/Error Response
 ```
 
 ### Example: Creating a Bootcamp
+**Flow**: `POST /api/v1/bootcamps` with Bearer Token
 
-```
-POST /api/v1/bootcamps
-Headers: { Authorization: Bearer <token> }
-Body: { name, description, address, ... }
-
-1. Rate limiter checks IP
-2. CORS validates origin
-3. Helmet adds security headers
-4. Body parser extracts JSON
-5. Route matches /api/v1/bootcamps
-6. protect middleware:
-   - Extracts token from header/cookie
-   - Verifies JWT
-   - Loads user into req.user
-7. authorize('publisher', 'admin') middleware:
-   - Checks req.user.role
-8. validate middleware:
-   - Validates request body with Joi
-9. creteBootcamp controller:
-   - Checks if user already has bootcamp
-   - Creates bootcamp with user ID
-   - Pre-save hooks:
-     * Generates slug
-     * Geocodes address
-   - Saves to database
-   - Returns JSON response
-10. Response sent to client
-```
+1. **Client** sends request with Auth header.
+2. **Rate Limiter** checks IP & **CORS** validates origin.
+3. **Helmet** sets security headers & **Body Parser** extracts JSON.
+4. **Auth Middleware** verifies JWT and loads `req.user`.
+5. **Authorize** checks if user is 'publisher' or 'admin'.
+6. **Controller** creates bootcamp, triggers pre-save hooks (Geocoding, Slug).
+7. **Success Response** sent back to client.
 
 ---
 
@@ -594,21 +575,17 @@ Body: { name, description, address, ... }
 
 ### Execution Order
 
-```javascript
-1. Trust Proxy Configuration
-2. Cookie Parser
-3. Logger Middleware
-4. Morgan (Development only)
-5. File Upload
-6. Helmet (Security Headers)
-7. Rate Limiter
-8. HPP (Parameter Pollution)
-9. CORS
-10. Session Middleware
-11. CSRF Protection (Production only)
-12. Static Files
-13. Routes
-14. Error Handler (Last)
+```mermaid
+graph LR
+    A[Start] --> B[Trust Proxy]
+    B --> C[Cookie Parser]
+    C --> D[Logger]
+    D --> E[File Upload]
+    E --> F[Security Stack]
+    F --> G[CORS/HPP]
+    G --> H[Session/CSRF]
+    H --> I[Routes]
+    I --> J[Error Handler]
 ```
 
 ### Custom Middleware Details
@@ -641,38 +618,55 @@ Body: { name, description, address, ... }
 
 ---
 
+## Data Management & Seeding
+
+### Data Directory (`_data/`)
+Contains initial seed data in JSON format:
+- `bootcamps.json`: Initial bootcamp listings
+- `courses.json`: Course data associated with bootcamps
+- `users.json`: Default user accounts (Admin, Publisher, User)
+- `reviews.json`: Sample reviews
+
+### Seeder Script (`seeder.js`)
+A utility script to manage database state.
+- **Import Data**: `node seeder.js -i`
+- **Destroy Data**: `node seeder.js -d`
+
+**Features:**
+- Clear existing collections before import
+- Bulk insert using Mongoose
+- Color-coded console output for status tracking
+
+---
+
 ## Deployment Architecture
 
 ### Current Deployment (Vercel)
-```
-┌─────────────────────────────────────────┐
-│           Vercel Platform               │
-│  ┌───────────────────────────────────┐ │
-│  │      Node.js Runtime               │ │
-│  │  ┌───────────────────────────────┐ │ │
-│  │  │   Express Application         │ │ │
-│  │  │   (Serverless Functions)      │ │ │
-│  │  └───────────────────────────────┘ │ │
-│  └───────────────────────────────────┘ │
-│                                         │
-│  ┌───────────────────────────────────┐ │
-│  │   Static File Storage              │ │
-│  │   (Bootcamp Photos)                │ │
-│  └───────────────────────────────────┘ │
-└───────────────┬─────────────────────────┘
-                │
-                │ MongoDB Connection
-                │
-┌───────────────▼─────────────────────────┐
-│      MongoDB Atlas (Cloud)              │
-│  ┌───────────────────────────────────┐  │
-│  │   Database Clusters               │  │
-│  │   • Users Collection              │  │
-│  │   • Bootcamps Collection          │  │
-│  │   • Courses Collection             │  │
-│  │   • Reviews Collection             │  │
-│  └───────────────────────────────────┘  │
-└─────────────────────────────────────────┘
+
+```mermaid
+graph TD
+    subgraph Vercel [Vercel Platform]
+        Node[Node.js Runtime]
+        Express[Express Application]
+        Static[Static File Storage]
+        
+        Node --> Express
+    end
+
+    subgraph MongoDBAtlas [MongoDB Atlas]
+        DB[(Cloud Database Clusters)]
+        Users(Users)
+        Bootcamps(Bootcamps)
+        Courses(Courses)
+        Reviews(Reviews)
+        
+        DB --- Users
+        DB --- Bootcamps
+        DB --- Courses
+        DB --- Reviews
+    end
+
+    Express -->|MongoDB Connection| DB
 ```
 
 ### Environment Configuration
@@ -798,16 +792,15 @@ The DevCamper API is a well-structured RESTful API following best practices for 
 ✅ Input validation at multiple layers
 
 ### Areas for Enhancement
-🔧 Cloud-based file storage
-🔧 Caching layer (Redis)
-🔧 Background job processing
-🔧 Enhanced monitoring and logging
+🔧 Cloud-based file storage (S3/Cloudinary)
+🔧 Caching layer (Redis/Memcached)
+🔧 Background job processing (Bull/RabbitMQ)
+🔧 Enhanced monitoring (ELK/New Relic)
 🔧 Horizontal scaling support
-🔧 API documentation (Swagger/OpenAPI)
 
 ---
 
-**Document Version**: 1.0  
-**Last Updated**: 2024  
-**Maintained By**: Development Team
+**Document Version**: 1.1  
+**Last Updated**: 2026-03-10  
+**Maintained By**: SOURAV ROY
 
