@@ -31,7 +31,7 @@ const UserSchema = new mongoose.Schema(
   },
   {
     timestamp: true,
-  }
+  },
 );
 
 // Encrypt password using bcryptjs **********************
