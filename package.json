@@ -27,7 +27,7 @@
     "supertest": "^7.1.4"
   },
   "dependencies": {
-    "@babel/core": "^7.28.4",
+    "@babel/core": "^7.29.6",
     "@babel/preset-env": "^7.28.3",
     "bcryptjs": "^2.4.3",
     "colors": "^1.4.0",
