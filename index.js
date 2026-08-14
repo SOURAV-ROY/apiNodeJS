@@ -23,6 +23,30 @@ const connectDB = require("./db");
 // dotenv.config({path: "./config/config.env"});
 dotenv.config();
 
+// Enforce environment secrets in production and supply secure fallbacks for development/testing
+if (process.env.NODE_ENV === "production") {
+  if (!process.env.SESSION_SECRET) {
+    throw new Error(
+      "CRITICAL SECURITY ERROR: SESSION_SECRET is required in production mode",
+    );
+  }
+  if (!process.env.JWT_SECRET) {
+    throw new Error(
+      "CRITICAL SECURITY ERROR: JWT_SECRET is required in production mode",
+    );
+  }
+} else {
+  // Safe fallbacks for dev/test environments to facilitate local development and testing out-of-the-box
+  process.env.SESSION_SECRET =
+    process.env.SESSION_SECRET ||
+    "dev-session-secret-placeholder-for-testing-only-12345";
+  process.env.JWT_SECRET =
+    process.env.JWT_SECRET ||
+    "dev-jwt-secret-placeholder-for-testing-only-12345";
+  process.env.JWT_EXPIRE = process.env.JWT_EXPIRE || "30d";
+  process.env.JWT_COOKIE_EXPIRE = process.env.JWT_COOKIE_EXPIRE || "30";
+}
+
 //Connect To DB********************************************************
 if (process.env.NODE_ENV !== "test") {
   connectDB().then(() => {

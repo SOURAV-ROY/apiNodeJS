@@ -1,0 +1,4 @@
+## 2026-08-14 - JWT Session Orphaning & Denial of Service (DoS) Vulnerability
+**Vulnerability:** Deleting a user from the database while they still possess a valid, unexpired JWT token caused the `protect` middleware to assign `req.user = null`. Downstream middlewares and routes that relied on role validation (e.g., checking `req.user.role`) would attempt to access properties of a null object, throwing a `TypeError` and causing a Denial of Service (DoS) or unexpected system crashes.
+**Learning:** Checking JWT validity (signature and expiration) is insufficient to guarantee that a user is still active and valid. Authenticated routes must always verify that the user fetched from the database is non-null before allowing request execution to proceed.
+**Prevention:** Add a database user presence check `if (!req.user)` directly in the core authentication / token-verification middleware (`protect`) before calling `next()`.
