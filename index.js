@@ -90,10 +90,16 @@ app.use(hpp());
 //Enable CORS ********************************************************
 app.use(cors());
 
+// Enforce secret presence in production; provide safe fallback in dev/test
+if (process.env.NODE_ENV === "production" && (!process.env.SESSION_SECRET || !process.env.JWT_SECRET)) {
+  throw new Error("FATAL SECURITY ERROR: SESSION_SECRET and JWT_SECRET must be defined in production mode.");
+}
+const sessionSecret = process.env.SESSION_SECRET || "dev_session_secret_fallback_key_32_chars";
+
 // Set up session middleware
 app.use(
   session({
-    secret: process.env.SESSION_SECRET,
+    secret: sessionSecret,
     resave: false,
     saveUninitialized: true,
     cookie: { secure: process.env.NODE_ENV === "production" },
