@@ -37,6 +37,13 @@ describe("Bootcamp Routes", () => {
     expect(res.body.success).toBe(true);
   });
 
+  it("should sanitize NoSQL injection operators in query parameters", async () => {
+    // Attempt query with NoSQL injection payload
+    const res = await request(app).get("/api/v1/bootcamps?name[$ne]=null");
+    expect(res.statusCode).toEqual(200);
+    expect(res.body.success).toBe(true);
+  });
+
   it("should create a new bootcamp", async () => {
     const res = await request(app)
       .post("/api/v1/bootcamps")

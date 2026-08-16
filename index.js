@@ -2,7 +2,7 @@ const path = require("path");
 const express = require("express");
 const dotenv = require("dotenv");
 const morgan = require("morgan");
-// const mongoSanitize = require("express-mongo-sanitize");
+const mongoSanitize = require("express-mongo-sanitize");
 const helmet = require("helmet");
 // const xssClean = require("xss-clean");
 const expressRateLimit = require("express-rate-limit");
@@ -62,7 +62,12 @@ if (process.env.NODE_ENV === "development") {
 app.use(fileUpload());
 
 // Sanitize Data *******************************************************
-// app.use(mongoSanitize());
+app.use((req, res, next) => {
+  if (req.body) mongoSanitize.sanitize(req.body);
+  if (req.query) mongoSanitize.sanitize(req.query);
+  if (req.params) mongoSanitize.sanitize(req.params);
+  next();
+});
 
 //Set Security Headers ************************************************
 app.use(helmet());
@@ -90,10 +95,18 @@ app.use(hpp());
 //Enable CORS ********************************************************
 app.use(cors());
 
+const sessionSecret =
+  process.env.SESSION_SECRET ||
+  (process.env.NODE_ENV !== "production" ? "development_session_secret" : undefined);
+
+if (!sessionSecret) {
+  throw new Error("SESSION_SECRET environment variable is required in production");
+}
+
 // Set up session middleware
 app.use(
   session({
-    secret: process.env.SESSION_SECRET,
+    secret: sessionSecret,
     resave: false,
     saveUninitialized: true,
     cookie: { secure: process.env.NODE_ENV === "production" },
