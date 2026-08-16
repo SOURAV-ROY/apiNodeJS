@@ -113,7 +113,7 @@ exports.updatePassword = asyncHandler(async (req, res, next) => {
   }
 
   user.password = req.body.newPassword;
-  user.save();
+  await user.save();
 
   sendTokenResponse(user, 200, res);
 });
