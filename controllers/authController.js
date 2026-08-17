@@ -8,14 +8,14 @@ const config = require("../config/config.json");
 // @route           POST /api/v1/auth/register
 // @access          Public
 exports.register = asyncHandler(async (req, res, next) => {
-  const { name, email, password, role } = req.body;
+  const { name, email, password } = req.body;
 
   // Create user ************************************************
+  // Public registration strictly defaults role to "user" to prevent privilege escalation
   const user = await User.create({
     name,
     email,
     password,
-    role,
   });
 
   // Create token ***********************************************
