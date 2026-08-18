@@ -1,4 +1,5 @@
 const express = require("express");
+const expressRateLimit = require("express-rate-limit");
 const {
   register,
   login,
@@ -12,6 +13,17 @@ const {
 } = require("../controllers/authController");
 
 const router = express.Router();
+
+// Specific rate limiter for sensitive authentication endpoints (e.g. forgot password)
+const forgotPasswordLimiter = expressRateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // Limit each IP to 5 requests per windowMs to prevent email bombing / enumeration
+  validate: { trustProxy: false },
+  message: {
+    success: false,
+    error: "Too many password reset requests from this IP, please try again after 15 minutes",
+  },
+});
 
 // Protect Middleware ****************************************
 const { protect, validate } = require("../middleware");
@@ -30,7 +42,7 @@ router.get("/me", protect, getMe);
 router.put("/updatedetails", protect, updateDetails);
 router.put("/updatepassword", protect, updatePassword);
 
-router.post("/forgotpassword", forgotPassword);
+router.post("/forgotpassword", forgotPasswordLimiter, forgotPassword);
 router.put("/resetpassword/:resettoken", resetPassword);
 
 module.exports = router;
