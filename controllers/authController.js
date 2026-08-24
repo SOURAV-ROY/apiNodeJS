@@ -119,17 +119,20 @@ exports.updatePassword = asyncHandler(async (req, res, next) => {
 });
 
 // @description     Forgot Password
-// @route           GET /api/v1/auth/forgotPassword
+// @route           POST /api/v1/auth/forgotPassword
 exports.forgotPassword = asyncHandler(async (req, res, next) => {
   let user = await User.findOne({ email: req.body.email });
 
+  // Prevent email enumeration: return standard success message if user is not found
   if (!user) {
-    return next(new ErrorResponse("There is No User with this email", 404));
+    return res.status(200).json({
+      success: true,
+      data: "Email sent if registered",
+    });
   }
 
   // Get reset token *********************************************************
   const resetToken = user.getResetPasswordToken();
-  // console.log(resetToken);
   await user.save({ validateBeforeSave: false });
 
   // Create reset url ********************************************************
@@ -143,7 +146,6 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
       subject: "Please Reset Token",
       message,
     });
-    res.status(200).json({ success: true, data: "Send Email" });
   } catch (err) {
     console.log(err);
     user.resetPasswordToken = undefined;
@@ -154,9 +156,10 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse("Email could not be send", 500));
   }
 
+  // Fail securely: do not expose user document in response
   res.status(200).json({
     success: true,
-    data: user,
+    data: "Email sent if registered",
   });
 });
 
