@@ -30,7 +30,7 @@ const { protect, validate } = require("../middleware");
 
 // Validation Middleware *************************************
 const {
-  authValidator: { registerSchema, loginSchema },
+  authValidator: { registerSchema, loginSchema, resetPasswordSchema },
 } = require("../utils/validators");
 
 router.post("/register", validate(registerSchema), register);
@@ -43,6 +43,10 @@ router.put("/updatedetails", protect, updateDetails);
 router.put("/updatepassword", protect, updatePassword);
 
 router.post("/forgotpassword", forgotPasswordLimiter, forgotPassword);
-router.put("/resetpassword/:resettoken", resetPassword);
+router.put(
+  "/resetpassword/:resettoken",
+  validate(resetPasswordSchema),
+  resetPassword,
+);
 
 module.exports = router;
