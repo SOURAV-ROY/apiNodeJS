@@ -16,8 +16,13 @@ const resetPasswordSchema = Joi.object({
   password: Joi.string().min(6).required(),
 }).unknown(true);
 
+const forgotPasswordSchema = Joi.object({
+  email: Joi.string().email().required(),
+}).unknown(true);
+
 module.exports = {
   registerSchema,
   loginSchema,
   resetPasswordSchema,
+  forgotPasswordSchema,
 };

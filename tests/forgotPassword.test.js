@@ -27,4 +27,32 @@ describe("Forgot Password Endpoint Security", () => {
     expect(res.body.user).toBeUndefined();
     expect(res.body.resetPasswordToken).toBeUndefined();
   });
+
+  it("should return 400 validation error when email is missing", async () => {
+    const agent = request.agent(app);
+    const csrfRes = await agent.get("/api/v1/auth/csrf-token");
+    const csrfToken = csrfRes.body.csrfToken;
+
+    const res = await agent
+      .post("/api/v1/auth/forgotpassword")
+      .set("x-csrf-token", csrfToken)
+      .send({});
+
+    expect(res.status).toBe(400);
+    expect(res.body.success).toBe(false);
+  });
+
+  it("should return 400 validation error when email format is invalid", async () => {
+    const agent = request.agent(app);
+    const csrfRes = await agent.get("/api/v1/auth/csrf-token");
+    const csrfToken = csrfRes.body.csrfToken;
+
+    const res = await agent
+      .post("/api/v1/auth/forgotpassword")
+      .set("x-csrf-token", csrfToken)
+      .send({ email: "invalid-email-format" });
+
+    expect(res.status).toBe(400);
+    expect(res.body.success).toBe(false);
+  });
 });
