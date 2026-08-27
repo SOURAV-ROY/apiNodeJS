@@ -21,7 +21,8 @@ const forgotPasswordLimiter = expressRateLimit({
   validate: { trustProxy: false },
   message: {
     success: false,
-    error: "Too many password reset requests from this IP, please try again after 15 minutes",
+    error:
+      "Too many password reset requests from this IP, please try again after 15 minutes",
   },
 });
 
@@ -35,6 +36,8 @@ const {
     loginSchema,
     resetPasswordSchema,
     forgotPasswordSchema,
+    updateDetailsSchema,
+    updatePasswordSchema,
   },
 } = require("../utils/validators");
 
@@ -44,8 +47,18 @@ router.get("/logout", logout);
 router.get("/csrf-token", getCsrfToken);
 router.get("/me", protect, getMe);
 
-router.put("/updatedetails", protect, updateDetails);
-router.put("/updatepassword", protect, updatePassword);
+router.put(
+  "/updatedetails",
+  protect,
+  validate(updateDetailsSchema),
+  updateDetails,
+);
+router.put(
+  "/updatepassword",
+  protect,
+  validate(updatePasswordSchema),
+  updatePassword,
+);
 
 router.post(
   "/forgotpassword",
