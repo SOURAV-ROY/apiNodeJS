@@ -2,7 +2,7 @@ const path = require("path");
 const express = require("express");
 const dotenv = require("dotenv");
 const morgan = require("morgan");
-// const mongoSanitize = require("express-mongo-sanitize");
+const mongoSanitize = require("express-mongo-sanitize");
 const helmet = require("helmet");
 // const xssClean = require("xss-clean");
 const expressRateLimit = require("express-rate-limit");
@@ -85,8 +85,14 @@ if (process.env.NODE_ENV === "development") {
 //File Uploading *******************************************************
 app.use(fileUpload());
 
-// Sanitize Data *******************************************************
-// app.use(mongoSanitize());
+// Sanitize Data (NoSQL Injection Protection) ************************
+// Express 5 req.query is a getter, so we sanitize objects in-place rather than reassigning req.query
+app.use((req, res, next) => {
+  if (req.body) mongoSanitize.sanitize(req.body);
+  if (req.params) mongoSanitize.sanitize(req.params);
+  if (req.query) mongoSanitize.sanitize(req.query);
+  next();
+});
 
 //Set Security Headers ************************************************
 app.use(helmet());
