@@ -213,6 +213,18 @@ exports.bootcampPhotoUpload = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse(`Please Upload An Image File`, 400));
   }
 
+  // Ensure file extension is an allowed image extension to prevent arbitrary file upload vulnerabilities
+  const ext = path.parse(file.name).ext.toLowerCase();
+  const allowedExtensions = [".jpg", ".jpeg", ".png", ".gif", ".webp"];
+  if (!allowedExtensions.includes(ext)) {
+    return next(
+      new ErrorResponse(
+        `Please Upload A Valid Image File Extension (.jpg, .jpeg, .png, .gif, .webp)`,
+        400,
+      ),
+    );
+  }
+
   //Check File Size *************************************************************************
   if (file.size > process.env.MAX_FILE_UPLOAD) {
     return next(
@@ -224,7 +236,7 @@ exports.bootcampPhotoUpload = asyncHandler(async (req, res, next) => {
   }
 
   //Create Custom FileName*******************************************************************
-  file.name = `photo_${bootcamp._id}${path.parse(file.name).ext}`;
+  file.name = `photo_${bootcamp._id}${ext}`;
   await file.mv(
     `${process.env.FILE_UPLOAD_PATH}/${file.name}`,
     async (error) => {

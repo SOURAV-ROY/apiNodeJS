@@ -13,7 +13,7 @@ describe("NoSQL Query Injection Prevention Middleware", () => {
       .post("/api/v1/auth/login")
       .set("x-csrf-token", csrfToken)
       .send({
-        email: { "$gt": "" },
+        email: { $gt: "" },
         password: "password123",
       });
 
