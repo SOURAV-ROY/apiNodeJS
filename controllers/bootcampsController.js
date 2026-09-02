@@ -235,20 +235,22 @@ exports.bootcampPhotoUpload = asyncHandler(async (req, res, next) => {
     );
   }
 
-  //Create Custom FileName*******************************************************************
-  file.name = `photo_${bootcamp._id}${ext}`;
+  //Create Custom FileName & Sanitize Path (Prevent Path Traversal) *************************
+  const sanitizedFileName = path.basename(`photo_${bootcamp._id}${ext}`);
+  const uploadPath = path.join(process.env.FILE_UPLOAD_PATH || "./public/uploads", sanitizedFileName);
+
   await file.mv(
-    `${process.env.FILE_UPLOAD_PATH}/${file.name}`,
+    uploadPath,
     async (error) => {
       if (error) {
         console.log(error);
         return next(new ErrorResponse(`Problem With File Upload`, 500));
       }
-      await Bootcamp.findByIdAndUpdate(req.params.id, { photo: file.name });
+      await Bootcamp.findByIdAndUpdate(bootcamp._id, { photo: sanitizedFileName });
 
       res.status(200).json({
         success: true,
-        data: file.name,
+        data: sanitizedFileName,
       });
     },
   );
