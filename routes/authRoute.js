@@ -14,7 +14,7 @@ const {
 
 const router = express.Router();
 
-// Specific rate limiter for sensitive authentication endpoints (e.g. forgot password)
+// Specific rate limiter for sensitive authentication endpoints (e.g. login & forgot password)
 const forgotPasswordLimiter = expressRateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 5, // Limit each IP to 5 requests per windowMs to prevent email bombing / enumeration
@@ -23,6 +23,18 @@ const forgotPasswordLimiter = expressRateLimit({
     success: false,
     error:
       "Too many password reset requests from this IP, please try again after 15 minutes",
+  },
+});
+
+// Dedicated rate limiter for login to prevent brute-force credential guessing attacks
+const loginLimiter = expressRateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // Limit each IP to 10 login attempts per 15 minutes
+  validate: { trustProxy: false },
+  message: {
+    success: false,
+    error:
+      "Too many login attempts from this IP, please try again after 15 minutes",
   },
 });
 
@@ -42,7 +54,7 @@ const {
 } = require("../utils/validators");
 
 router.post("/register", validate(registerSchema), register);
-router.post("/login", validate(loginSchema), login);
+router.post("/login", loginLimiter, validate(loginSchema), login);
 router.get("/logout", logout);
 router.get("/csrf-token", getCsrfToken);
 router.get("/me", protect, getMe);
