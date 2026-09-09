@@ -1,8 +1,13 @@
+const mongoSanitize = require("express-mongo-sanitize");
+
 const advancedResults = (model, populate) => async (req, res, next) => {
   let query;
 
   //Copy req.query ****************************************************
   const reqQuery = { ...req.query };
+
+  // Sanitize reqQuery in-place to remove MongoDB operators (e.g. $where, $gt)
+  mongoSanitize.sanitize(reqQuery);
 
   //Field to Exclude **************************************************
   const removeField = ["select", "sort", "page", "limit"];
