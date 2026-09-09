@@ -213,6 +213,18 @@ exports.bootcampPhotoUpload = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse(`Please Upload An Image File`, 400));
   }
 
+  // Ensure file extension is an allowed image extension to prevent arbitrary file upload vulnerabilities
+  const ext = path.parse(file.name).ext.toLowerCase();
+  const allowedExtensions = [".jpg", ".jpeg", ".png", ".gif", ".webp"];
+  if (!allowedExtensions.includes(ext)) {
+    return next(
+      new ErrorResponse(
+        `Please Upload A Valid Image File Extension (.jpg, .jpeg, .png, .gif, .webp)`,
+        400,
+      ),
+    );
+  }
+
   //Check File Size *************************************************************************
   if (file.size > process.env.MAX_FILE_UPLOAD) {
     return next(
@@ -223,20 +235,22 @@ exports.bootcampPhotoUpload = asyncHandler(async (req, res, next) => {
     );
   }
 
-  //Create Custom FileName*******************************************************************
-  file.name = `photo_${bootcamp._id}${path.parse(file.name).ext}`;
+  //Create Custom FileName & Sanitize Path (Prevent Path Traversal) *************************
+  const sanitizedFileName = path.basename(`photo_${bootcamp._id}${ext}`);
+  const uploadPath = path.join(process.env.FILE_UPLOAD_PATH || "./public/uploads", sanitizedFileName);
+
   await file.mv(
-    `${process.env.FILE_UPLOAD_PATH}/${file.name}`,
+    uploadPath,
     async (error) => {
       if (error) {
         console.log(error);
         return next(new ErrorResponse(`Problem With File Upload`, 500));
       }
-      await Bootcamp.findByIdAndUpdate(req.params.id, { photo: file.name });
+      await Bootcamp.findByIdAndUpdate(bootcamp._id, { photo: sanitizedFileName });
 
       res.status(200).json({
         success: true,
-        data: file.name,
+        data: sanitizedFileName,
       });
     },
   );
