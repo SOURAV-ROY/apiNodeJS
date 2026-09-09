@@ -26,8 +26,6 @@ exports.protect = asyncHandler(async (req, res, next) => {
     // Verify Token ****************************************
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    console.log(decoded);
-
     req.user = await User.findById(decoded.id);
 
     // Verify user still exists in database (defense in depth & prevents DoS on req.user property accesses)
