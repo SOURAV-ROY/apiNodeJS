@@ -107,6 +107,8 @@ describe("Bootcamp Photo Upload File Extension Validation", () => {
     expect(fileMoveMock).toHaveBeenCalled();
     const destinationPath = fileMoveMock.mock.calls[0][0];
     expect(destinationPath).not.toContain("../../../etc");
-    expect(destinationPath).toBe(require("path").join("./public/uploads", "passwd.png"));
+    expect(destinationPath).toBe(
+      require("path").join("./public/uploads", "passwd.png"),
+    );
   });
 });
