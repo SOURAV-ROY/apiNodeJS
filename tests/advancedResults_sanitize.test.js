@@ -18,9 +18,9 @@ describe("advancedResults middleware query sanitization", () => {
 
     const req = {
       query: {
-        "$where": "this.password != null",
-        "price": { "$gt": 0 },
-        "name": "Bootcamp",
+        $where: "this.password != null",
+        price: { $gt: 0 },
+        name: "Bootcamp",
       },
     };
 
@@ -54,7 +54,7 @@ describe("advancedResults middleware query sanitization", () => {
 
     const req = {
       query: {
-        "price": { "gte": "1000" },
+        price: { gte: "1000" },
       },
     };
 
@@ -65,7 +65,7 @@ describe("advancedResults middleware query sanitization", () => {
     await middleware(req, res, next);
 
     expect(mockModel.find).toHaveBeenCalledWith({
-      price: { "$gte": "1000" },
+      price: { $gte: "1000" },
     });
     expect(next).toHaveBeenCalled();
   });
