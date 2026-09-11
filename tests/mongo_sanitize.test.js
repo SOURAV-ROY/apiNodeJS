@@ -1,5 +1,29 @@
 const request = require("supertest");
+const { Bootcamp } = require("../models");
 const app = require("../index");
+
+jest.mock("../models", () => {
+  const original = jest.requireActual("../models");
+  return {
+    ...original,
+    Bootcamp: {
+      find: jest.fn().mockImplementation(() => {
+        const queryObj = {
+          populate: jest.fn().mockReturnThis(),
+          select: jest.fn().mockReturnThis(),
+          sort: jest.fn().mockReturnThis(),
+          skip: jest.fn().mockReturnThis(),
+          limit: jest.fn().mockReturnThis(),
+          then: function (resolve) {
+            resolve([]);
+          },
+        };
+        return queryObj;
+      }),
+      countDocuments: jest.fn().mockResolvedValue(0),
+    },
+  };
+});
 
 describe("NoSQL Query Injection Prevention Middleware", () => {
   it("should sanitize mongo operators from request body", async () => {
@@ -19,5 +43,15 @@ describe("NoSQL Query Injection Prevention Middleware", () => {
 
     // The validator will complain email is not a string (or invalid format), rather than allowing mongo operator injection
     expect(response.status).toBe(400);
+  });
+
+  it("should sanitize mongo operators from request query parameters", async () => {
+    const agent = request.agent(app);
+
+    // Send request with MongoDB operator $ne in query params
+    const response = await agent.get("/api/v1/bootcamps?name[$ne]=test");
+
+    // After sanitization, $ne is stripped, preventing NoSQL operator injection in query string
+    expect(response.status).not.toBe(500);
   });
 });

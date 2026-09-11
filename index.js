@@ -90,6 +90,8 @@ app.use((req, res, next) => {
   if (req.body) mongoSanitize.sanitize(req.body);
   if (req.params) mongoSanitize.sanitize(req.params);
   if (req.headers) mongoSanitize.sanitize(req.headers);
+  // Sanitize req.query in-place to prevent NoSQL query operator injection attacks via URL query params
+  if (req.query) mongoSanitize.sanitize(req.query);
   next();
 });
 
