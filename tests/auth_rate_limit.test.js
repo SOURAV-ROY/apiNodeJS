@@ -2,7 +2,7 @@ const request = require("supertest");
 const app = require("../index");
 const { User } = require("../models");
 
-describe("Auth Forgot Password Rate Limiting", () => {
+describe("Auth Rate Limiting", () => {
   beforeAll(() => {
     jest.spyOn(User, "findOne").mockResolvedValue(null);
   });
@@ -34,6 +34,31 @@ describe("Auth Forgot Password Rate Limiting", () => {
 
     expect(response.status).toBe(429);
     expect(response.body.error).toMatch(/Too many password reset requests/i);
+  });
+
+  it("should return 429 when rate limit is exceeded on /login", async () => {
+    const agent = request.agent(app);
+
+    // Get CSRF Token
+    const tokenRes = await agent.get("/api/v1/auth/csrf-token");
+    const csrfToken = tokenRes.body.csrfToken;
+
+    // Make 10 requests (the limit for login)
+    for (let i = 0; i < 10; i++) {
+      await agent
+        .post("/api/v1/auth/login")
+        .set("x-csrf-token", csrfToken)
+        .send({ email: `test${i}@example.com`, password: "password123" });
+    }
+
+    // The 11th request should be rate limited and return 429
+    const response = await agent
+      .post("/api/v1/auth/login")
+      .set("x-csrf-token", csrfToken)
+      .send({ email: "test11@example.com", password: "password123" });
+
+    expect(response.status).toBe(429);
+    expect(response.body.error).toMatch(/Too many login attempts/i);
   });
 
   it("should return 400 validation error when resetting password with short or missing password", async () => {
