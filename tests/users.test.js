@@ -36,4 +36,40 @@ describe("User Routes", () => {
     expect(res.statusCode).toEqual(200);
     expect(res.body.success).toBe(true);
   });
+
+  it("should prevent admin from self-deleting via user management route", async () => {
+    const meRes = await request(app)
+      .get("/api/v1/auth/me")
+      .set("Authorization", `Bearer ${token}`);
+
+    const adminId = meRes.body.data._id;
+
+    const deleteRes = await request(app)
+      .delete(`/api/v1/users/${adminId}`)
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(deleteRes.statusCode).toEqual(400);
+    expect(deleteRes.body.success).toBe(false);
+    expect(deleteRes.body.error).toMatch(/Admin cannot delete their own account/i);
+  });
+
+  it("should return 404 when getting, updating, or deleting a non-existent user ID", async () => {
+    const fakeId = new mongoose.Types.ObjectId().toString();
+
+    const getRes = await request(app)
+      .get(`/api/v1/users/${fakeId}`)
+      .set("Authorization", `Bearer ${token}`);
+    expect(getRes.statusCode).toEqual(404);
+
+    const updateRes = await request(app)
+      .put(`/api/v1/users/${fakeId}`)
+      .set("Authorization", `Bearer ${token}`)
+      .send({ name: "Updated Name" });
+    expect(updateRes.statusCode).toEqual(404);
+
+    const deleteRes = await request(app)
+      .delete(`/api/v1/users/${fakeId}`)
+      .set("Authorization", `Bearer ${token}`);
+    expect(deleteRes.statusCode).toEqual(404);
+  });
 });
