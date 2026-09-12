@@ -213,8 +213,11 @@ exports.bootcampPhotoUpload = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse(`Please Upload An Image File`, 400));
   }
 
+  // Sanitize file name to strip path traversal sequences (e.g. ../../)
+  const safeFilename = path.basename(file.name);
+
   // Ensure file extension is an allowed image extension to prevent arbitrary file upload vulnerabilities
-  const ext = path.parse(file.name).ext.toLowerCase();
+  const ext = path.parse(safeFilename).ext.toLowerCase();
   const allowedExtensions = [".jpg", ".jpeg", ".png", ".gif", ".webp"];
   if (!allowedExtensions.includes(ext)) {
     return next(
