@@ -91,6 +91,9 @@ exports.updateBootcamp = asyncHandler(async (req, res, next) => {
     );
   }
 
+  // Prevent Mass Assignment / Bootcamp Ownership Transfer
+  delete body.user;
+
   bootcamp = await Bootcamp.findByIdAndUpdate(
     bootcampId,
     { ...body },
