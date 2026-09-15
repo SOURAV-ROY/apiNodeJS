@@ -48,7 +48,7 @@ describe("Bootcamp Photo Upload Path Traversal Prevention", () => {
 
     expect(next).not.toHaveBeenCalled();
     expect(mockMv).toHaveBeenCalledWith(
-      "./public/uploads/photo_60d5ec49f1b2c80015f8e001.png",
+      path.join("./public/uploads", "photo_60d5ec49f1b2c80015f8e001.png"),
       expect.any(Function),
     );
   });
