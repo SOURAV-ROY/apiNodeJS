@@ -15,6 +15,7 @@ const UserSchema = new mongoose.Schema(
       unique: true,
       match: [/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/, "Please add a valid email"],
     },
+    // Security control: Include 'admin' in role enum for proper RBAC validation during user administration
     role: {
       type: String,
       enum: ["user", "publisher", "admin"],
