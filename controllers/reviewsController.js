@@ -84,6 +84,10 @@ exports.updateReview = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse(`Not Authorize To Update Review`, 401));
   }
 
+  // Prevent Mass Assignment / Review Ownership & Bootcamp Reassignment
+  delete req.body.user;
+  delete req.body.bootcamp;
+
   review = await Review.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
     runValidators: true,
