@@ -24,8 +24,11 @@ const advancedResults = (model, populate) => async (req, res, next) => {
     (match) => `$${match}`,
   );
 
+  // Parse query JSON object once to re-use across countDocuments and find
+  const parsedQuery = JSON.parse(queryString);
+
   //Finding Resource *************************************************
-  query = model.find(JSON.parse(queryString)).populate("courses");
+  query = model.find(parsedQuery).populate("courses");
 
   //Select Fields ****************************************************
   if (req.query.select) {
@@ -50,7 +53,9 @@ const advancedResults = (model, populate) => async (req, res, next) => {
   const startIndex = (page - 1) * limit;
   const endIndex = page * limit;
 
-  const total = await model.countDocuments();
+  // Pass filtered query to countDocuments to leverage indexed filter queries
+  // and return accurate count/pagination metadata for the requested criteria
+  const total = await model.countDocuments(parsedQuery);
 
   query = query.skip(startIndex).limit(limit);
 
