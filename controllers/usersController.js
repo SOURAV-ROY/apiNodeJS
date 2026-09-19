@@ -43,6 +43,17 @@ exports.createUser = asyncHandler(async (req, res, next) => {
 // @route           PUT /api/v1/users/:id
 // @access          Private/Admin
 exports.updateUser = asyncHandler(async (req, res, next) => {
+  // Security control: Prevent admin from self-demoting via user management route
+  if (
+    req.params.id === req.user.id &&
+    req.body.role &&
+    req.body.role !== "admin"
+  ) {
+    return next(
+      new ErrorResponse("Admin cannot demote their own account role", 400),
+    );
+  }
+
   const user = await User.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
     runValidators: true,
