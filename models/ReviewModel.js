@@ -18,15 +18,18 @@ const ReviewSchema = new mongoose.Schema(
       max: 10,
       required: [true, "Please Add A Rating between 1 and 10"],
     },
+    // Performance optimization: Index foreign keys to avoid full collection scans on queries filtering by bootcamp or user
     bootcamp: {
       type: mongoose.Schema.ObjectId,
       ref: "Bootcamp",
       required: true,
+      index: true,
     },
     user: {
       type: mongoose.Schema.ObjectId,
       ref: "User",
       required: true,
+      index: true,
     },
   },
   {
