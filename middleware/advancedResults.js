@@ -24,8 +24,10 @@ const advancedResults = (model, populate) => async (req, res, next) => {
     (match) => `$${match}`,
   );
 
+  const parsedQuery = JSON.parse(queryString);
+
   //Finding Resource *************************************************
-  query = model.find(JSON.parse(queryString)).populate("courses");
+  query = model.find(parsedQuery);
 
   //Select Fields ****************************************************
   if (req.query.select) {
@@ -50,16 +52,18 @@ const advancedResults = (model, populate) => async (req, res, next) => {
   const startIndex = (page - 1) * limit;
   const endIndex = page * limit;
 
-  const total = await model.countDocuments();
-
   query = query.skip(startIndex).limit(limit);
 
   if (populate) {
     query = query.populate(populate);
   }
 
-  //Executing Query **************************************************
-  const results = await query;
+  // Performance optimization: Execute total count and main results query concurrently using Promise.all
+  // to reduce total database roundtrip latency. Also pass parsedQuery to countDocuments for accurate filtered total counts.
+  const [total, results] = await Promise.all([
+    model.countDocuments(parsedQuery),
+    query,
+  ]);
 
   //Pagination Result ************************************************
   const pagination = {};
