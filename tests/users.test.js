@@ -50,7 +50,9 @@ describe("User Routes", () => {
 
     expect(deleteRes.statusCode).toEqual(400);
     expect(deleteRes.body.success).toBe(false);
-    expect(deleteRes.body.error).toMatch(/Admin cannot delete their own account/i);
+    expect(deleteRes.body.error).toMatch(
+      /Admin cannot delete their own account/i,
+    );
   });
 
   it("should return 404 when getting, updating, or deleting a non-existent user ID", async () => {
