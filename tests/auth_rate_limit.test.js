@@ -5,6 +5,9 @@ const { User } = require("../models");
 describe("Auth Rate Limiting", () => {
   beforeAll(() => {
     jest.spyOn(User, "findOne").mockResolvedValue(null);
+    jest.spyOn(User, "create").mockResolvedValue({
+      getSignedJwtToken: () => "mock-jwt-token",
+    });
   });
 
   afterAll(() => {
@@ -59,6 +62,39 @@ describe("Auth Rate Limiting", () => {
 
     expect(response.status).toBe(429);
     expect(response.body.error).toMatch(/Too many login attempts/i);
+  });
+
+  it("should return 429 when rate limit is exceeded on /register", async () => {
+    const agent = request.agent(app);
+
+    // Get CSRF Token
+    const tokenRes = await agent.get("/api/v1/auth/csrf-token");
+    const csrfToken = tokenRes.body.csrfToken;
+
+    // Make 10 requests (the limit for register)
+    for (let i = 0; i < 10; i++) {
+      await agent
+        .post("/api/v1/auth/register")
+        .set("x-csrf-token", csrfToken)
+        .send({
+          name: "Test User",
+          email: `testreg${i}@example.com`,
+          password: "password123",
+        });
+    }
+
+    // The 11th request should be rate limited and return 429
+    const response = await agent
+      .post("/api/v1/auth/register")
+      .set("x-csrf-token", csrfToken)
+      .send({
+        name: "Test User",
+        email: "testreg11@example.com",
+        password: "password123",
+      });
+
+    expect(response.status).toBe(429);
+    expect(response.body.error).toMatch(/Too many registration attempts/i);
   });
 
   it("should return 400 validation error when resetting password with short or missing password", async () => {
