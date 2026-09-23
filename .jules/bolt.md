@@ -1,3 +1,8 @@
+## 2026-09-21 - Concurrent Execution & Filter Accuracy in Pagination Middleware
+
+**Learning:** In Mongoose pagination middleware (`advancedResults`), executing database queries (`countDocuments` and `find`) sequentially introduces unnecessary round-trip latency. Furthermore, calling `countDocuments()` without passing `parsedQuery` produces inaccurate total counts when query filters are applied.
+**Action:** Use `Promise.all([model.countDocuments(parsedQuery), query])` to execute count and data fetch concurrently while ensuring accurate total count calculation for filtered datasets.
+=======
 <!--  bolt-optimize-advanced-results-17181035364112865129 -->
 ## 2026-09-20 - Concurrent Query Execution and Clean Filter Passing in Pagination Middleware
 
