@@ -60,6 +60,9 @@ const advancedResults = (model, populate) => async (req, res, next) => {
     query = query.populate(populate);
   }
 
+  // Bolt Optimization: Chain .lean() to bypass Mongoose document hydration overhead on read-only paginated results.
+  query = query.lean();
+
   // bolt/optimize-advanced-results-concurrent-query-4844573461497662429
   // Performance optimization: Execute total count and main results query concurrently using Promise.all
   // to reduce total database roundtrip latency. Also pass parsedQuery to countDocuments for accurate filtered total counts.

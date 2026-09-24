@@ -10,6 +10,7 @@ describe("advancedResults middleware query sanitization", () => {
       sort: jest.fn().mockReturnThis(),
       skip: jest.fn().mockReturnThis(),
       limit: jest.fn().mockReturnThis(),
+      lean: jest.fn().mockReturnThis(),
       countDocuments: jest.fn().mockResolvedValue(0),
       exec: jest.fn().mockResolvedValue([]),
     };
@@ -46,6 +47,7 @@ describe("advancedResults middleware query sanitization", () => {
       sort: jest.fn().mockReturnThis(),
       skip: jest.fn().mockReturnThis(),
       limit: jest.fn().mockReturnThis(),
+      lean: jest.fn().mockReturnThis(),
       countDocuments: jest.fn().mockResolvedValue(0),
       exec: jest.fn().mockResolvedValue([]),
     };
@@ -78,6 +80,7 @@ describe("advancedResults middleware query sanitization", () => {
       sort: jest.fn().mockReturnThis(),
       skip: jest.fn().mockReturnThis(),
       limit: jest.fn().mockReturnThis(),
+      lean: jest.fn().mockReturnThis(),
       countDocuments: jest.fn().mockResolvedValue(10),
     };
 

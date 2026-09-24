@@ -11,6 +11,7 @@ describe("advancedResults middleware optimizations", () => {
       sort: jest.fn().mockReturnThis(),
       skip: jest.fn().mockReturnThis(),
       limit: jest.fn().mockReturnThis(),
+      lean: jest.fn().mockReturnThis(),
       countDocuments: jest.fn().mockImplementation((query) => {
         countDocumentsCalledWith = query;
         return Promise.resolve(2);
