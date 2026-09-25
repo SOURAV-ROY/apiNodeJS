@@ -38,7 +38,11 @@ const loginLimiter = expressRateLimit({
   },
 });
 
-// Rate limiter for registration endpoint to mitigate automated account creation spam / DoS
+/**
+ * Limits registration to 10 requests per `req.ip` in each 10-minute window.
+ * Requests count even if body validation fails. Excess requests receive HTTP
+ * 429 with a JSON error before registration runs.
+ */
 const registerLimiter = expressRateLimit({
   windowMs: 10 * 60 * 1000, // 10 minutes
   max: 10, // Limit each IP to 10 registration requests per 10 minutes
