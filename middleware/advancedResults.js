@@ -30,7 +30,9 @@ const advancedResults = (model, populate) => async (req, res, next) => {
   const parsedQuery = JSON.parse(queryString);
 
   //Finding Resource *************************************************
-  query = model.find(parsedQuery);
+  // Bolt Optimization: Chain .lean() to bypass Mongoose document hydration
+  // and return plain JavaScript objects, significantly reducing memory and CPU overhead.
+  query = model.find(parsedQuery).lean();
 
   //Select Fields ****************************************************
   if (req.query.select) {
