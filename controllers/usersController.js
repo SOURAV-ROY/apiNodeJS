@@ -54,7 +54,13 @@ exports.updateUser = asyncHandler(async (req, res, next) => {
     );
   }
 
-  const user = await User.findByIdAndUpdate(req.params.id, req.body, {
+  // Whitelist permitted fields to prevent mass assignment vulnerabilities
+  const fieldsToUpdate = {};
+  if (req.body.name !== undefined) fieldsToUpdate.name = req.body.name;
+  if (req.body.email !== undefined) fieldsToUpdate.email = req.body.email;
+  if (req.body.role !== undefined) fieldsToUpdate.role = req.body.role;
+
+  const user = await User.findByIdAndUpdate(req.params.id, fieldsToUpdate, {
     new: true,
     runValidators: true,
   });
