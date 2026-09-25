@@ -11,6 +11,7 @@ describe("advancedResults Performance & Filter Optimization", () => {
     next = jest.fn();
 
     const mockQuery = {
+      lean: jest.fn().mockReturnThis(),
       select: jest.fn().mockReturnThis(),
       sort: jest.fn().mockReturnThis(),
       skip: jest.fn().mockReturnThis(),
