@@ -17,6 +17,7 @@ describe("advancedResults Performance & Filter Optimization", () => {
       skip: jest.fn().mockReturnThis(),
       limit: jest.fn().mockReturnThis(),
       populate: jest.fn().mockReturnThis(),
+      lean: jest.fn().mockReturnThis(),
       then: jest.fn((resolve) => resolve([{ name: "Test Bootcamp" }])),
     };
 
