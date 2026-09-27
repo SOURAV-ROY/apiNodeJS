@@ -6,6 +6,7 @@ jest.mock("../models", () => ({
     findById: jest.fn(),
     findByIdAndUpdate: jest.fn(),
   },
+  Bootcamp: {},
 }));
 
 describe("Review Controller - Mass Assignment Security", () => {
@@ -14,6 +15,8 @@ describe("Review Controller - Mass Assignment Security", () => {
       _id: "review123",
       user: "user123",
       bootcamp: "bootcamp123",
+      title: "Old Review Title",
+      text: "Old Review Text",
       title: "Great Bootcamp",
       text: "Loved every moment of it",
       rating: 9,
@@ -31,6 +34,7 @@ describe("Review Controller - Mass Assignment Security", () => {
       body: {
         title: "Updated Review Title",
         user: "attacker456", // Attempted ownership transfer
+        bootcamp: "attackerBootcamp789", // Attempted bootcamp association change
         bootcamp: "attackerBootcamp789", // Attempted bootcamp re-association
       },
     };
