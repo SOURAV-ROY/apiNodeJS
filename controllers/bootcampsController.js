@@ -16,7 +16,8 @@ exports.getBootcamps = asyncHandler(async (req, res, next) => {
 exports.getBootcamp = asyncHandler(async (req, res, next) => {
   // try {
   const bootcampId = req.params.id;
-  const bootcamp = await Bootcamp.findById(bootcampId);
+  // Bolt Optimization: Use .lean() on read-only single query to bypass Mongoose document hydration
+  const bootcamp = await Bootcamp.findById(bootcampId).lean();
   if (!bootcamp) {
     return next(
       new ErrorResponse(`Bootcamp not found with id ${req.params.id}`, 404),
