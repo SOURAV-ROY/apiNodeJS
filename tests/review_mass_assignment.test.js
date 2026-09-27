@@ -17,6 +17,9 @@ describe("Review Controller - Mass Assignment Security", () => {
       bootcamp: "bootcamp123",
       title: "Old Review Title",
       text: "Old Review Text",
+      title: "Great Bootcamp",
+      text: "Loved every moment of it",
+      rating: 9,
     };
 
     Review.findById.mockResolvedValue(mockReview);
@@ -32,6 +35,7 @@ describe("Review Controller - Mass Assignment Security", () => {
         title: "Updated Review Title",
         user: "attacker456", // Attempted ownership transfer
         bootcamp: "attackerBootcamp789", // Attempted bootcamp association change
+        bootcamp: "attackerBootcamp789", // Attempted bootcamp re-association
       },
     };
 
