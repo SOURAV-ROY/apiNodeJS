@@ -38,6 +38,30 @@ const forgotPasswordLimiter = expressRateLimit({
   },
 });
 
+// Rate limiter for login endpoint to mitigate brute-force and credential stuffing attacks
+const loginLimiter = expressRateLimit({
+  windowMs: 10 * 60 * 1000, // 10 minutes
+  max: 10, // Limit each IP to 10 login requests per 10 minutes
+  validate: { trustProxy: false },
+  message: {
+    success: false,
+    error:
+      "Too many login attempts from this IP, please try again after 10 minutes",
+  },
+});
+
+// Rate limiter for registration endpoint to mitigate automated account creation spam / DoS
+const registerLimiter = expressRateLimit({
+  windowMs: 10 * 60 * 1000, // 10 minutes
+  max: 10, // Limit each IP to 10 registration requests per 10 minutes
+  validate: { trustProxy: false },
+  message: {
+    success: false,
+    error:
+      "Too many registration attempts from this IP, please try again after 10 minutes",
+  },
+});
+
 // Protect Middleware ****************************************
 const { protect, validate } = require("../middleware");
 
@@ -54,6 +78,7 @@ const {
 } = require("../utils/validators");
 
 router.post("/register", validate(registerSchema), register);
+router.post("/register", registerLimiter, validate(registerSchema), register);
 router.post("/login", loginLimiter, validate(loginSchema), login);
 router.get("/logout", logout);
 router.get("/csrf-token", getCsrfToken);
