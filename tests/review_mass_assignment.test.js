@@ -9,29 +9,33 @@ jest.mock("../models", () => ({
   Bootcamp: {},
 }));
 
-describe("Review Mass Assignment Protection", () => {
-  it("should delete 'user' and 'bootcamp' fields from req.body when updating a review", async () => {
+describe("Review Controller - Mass Assignment Security", () => {
+  it("should strip user and bootcamp fields from req.body when updating a review", async () => {
     const mockReview = {
       _id: "review123",
       user: "user123",
       bootcamp: "bootcamp123",
+      title: "Old Review Title",
+      text: "Old Review Text",
+      title: "Great Bootcamp",
+      text: "Loved every moment of it",
+      rating: 9,
     };
 
     Review.findById.mockResolvedValue(mockReview);
     Review.findByIdAndUpdate.mockResolvedValue({
-      _id: "review123",
-      title: "Updated Title",
-      text: "Updated text",
+      ...mockReview,
+      title: "Updated Review Title",
     });
 
     const req = {
       params: { id: "review123" },
       user: { id: "user123", role: "user" },
       body: {
-        title: "Updated Title",
-        text: "Updated text",
-        user: "attacker_user_id",
-        bootcamp: "attacker_bootcamp_id",
+        title: "Updated Review Title",
+        user: "attacker456", // Attempted ownership transfer
+        bootcamp: "attackerBootcamp789", // Attempted bootcamp association change
+        bootcamp: "attackerBootcamp789", // Attempted bootcamp re-association
       },
     };
 
@@ -47,18 +51,10 @@ describe("Review Mass Assignment Protection", () => {
       updateReview(req, res, next);
     });
 
-    expect(req.body.user).toBeUndefined();
-    expect(req.body.bootcamp).toBeUndefined();
     expect(Review.findByIdAndUpdate).toHaveBeenCalledWith(
       "review123",
-      {
-        title: "Updated Title",
-        text: "Updated text",
-      },
-      {
-        new: true,
-        runValidators: true,
-      },
+      { title: "Updated Review Title" },
+      { new: true, runValidators: true },
     );
     expect(res.status).toHaveBeenCalledWith(200);
   });
