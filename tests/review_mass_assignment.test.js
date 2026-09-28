@@ -35,7 +35,6 @@ describe("Review Controller - Mass Assignment Security", () => {
         title: "Updated Review Title",
         user: "attacker456", // Attempted ownership transfer
         bootcamp: "attackerBootcamp789", // Attempted bootcamp association change
-        bootcamp: "attackerBootcamp789", // Attempted bootcamp re-association
       },
     };
 
