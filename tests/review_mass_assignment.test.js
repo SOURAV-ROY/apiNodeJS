@@ -15,8 +15,10 @@ describe("Review Controller - Mass Assignment Security", () => {
       _id: "review123",
       user: "user123",
       bootcamp: "bootcamp123",
-      title: "Great bootcamp",
-      text: "Really learned a lot",
+      title: "Old Review Title",
+      text: "Old Review Text",
+      title: "Great Bootcamp",
+      text: "Loved every moment of it",
       rating: 9,
     };
 
@@ -32,7 +34,7 @@ describe("Review Controller - Mass Assignment Security", () => {
       body: {
         title: "Updated Review Title",
         user: "attacker456", // Attempted ownership transfer
-        bootcamp: "attackerBootcamp789", // Attempted bootcamp relocation
+        bootcamp: "attackerBootcamp789", // Attempted bootcamp association change
       },
     };
 
