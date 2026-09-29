@@ -16,7 +16,9 @@ exports.getBootcamps = asyncHandler(async (req, res, next) => {
 exports.getBootcamp = asyncHandler(async (req, res, next) => {
   // try {
   const bootcampId = req.params.id;
-  const bootcamp = await Bootcamp.findById(bootcampId);
+  // Performance optimization: Chain .lean() to bypass Mongoose document hydration
+  // for read-only queries, returning plain JS objects to reduce memory/CPU overhead.
+  const bootcamp = await Bootcamp.findById(bootcampId).lean();
   if (!bootcamp) {
     return next(
       new ErrorResponse(`Bootcamp not found with id ${req.params.id}`, 404),
@@ -171,11 +173,13 @@ exports.getBootcampsInRadius = asyncHandler(async (req, res, next) => {
   //    Earth Radius = 3963 miles / 6378 km
   const radius = distance / 3963;
 
+  // Performance optimization: Chain .lean() to bypass Mongoose document hydration
+  // for read-only queries, returning plain JS objects to reduce memory/CPU overhead.
   const bootcamps = await Bootcamp.find({
     location: {
       $geoWithin: { $centerSphere: [[longitude, latitude], radius] },
     },
-  });
+  }).lean();
   res.status(200).json({
     success: true,
     count: bootcamps.length,

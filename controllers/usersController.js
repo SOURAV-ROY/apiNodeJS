@@ -13,7 +13,9 @@ exports.getUsers = asyncHandler(async (req, res, next) => {
 // @route           GET /api/v1/users/:id
 // @access          Private/Admin
 exports.getUser = asyncHandler(async (req, res, next) => {
-  const user = await User.findById(req.params.id);
+  // Performance optimization: Chain .lean() to bypass Mongoose document hydration
+  // for read-only queries, returning plain JS objects to reduce memory/CPU overhead.
+  const user = await User.findById(req.params.id).lean();
 
   if (!user) {
     return next(
