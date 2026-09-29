@@ -85,6 +85,7 @@ exports.updateReview = asyncHandler(async (req, res, next) => {
   }
 
   // Prevent Mass Assignment / Review Ownership & Bootcamp Reassignment
+  // Prevent Mass Assignment: protect review ownership and bootcamp association
   delete req.body.user;
   delete req.body.bootcamp;
 
