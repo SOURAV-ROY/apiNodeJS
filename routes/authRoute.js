@@ -14,7 +14,7 @@ const {
 
 const router = express.Router();
 
-// Specific rate limiter for sensitive authentication endpoints (e.g. forgot password)
+// Specific rate limiter for sensitive authentication endpoints (e.g. login & forgot password)
 const forgotPasswordLimiter = expressRateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 5, // Limit each IP to 5 requests per windowMs to prevent email bombing / enumeration
