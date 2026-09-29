@@ -50,6 +50,16 @@ const registerLimiter = expressRateLimit({
   },
 });
 
+const resetPasswordLimiter = expressRateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // Limit each IP to 10 requests per windowMs to prevent reset token brute-forcing
+  validate: { trustProxy: false },
+  message: {
+    success: false,
+    error: "Too many password reset attempts from this IP, please try again after 15 minutes",
+  },
+});
+
 // Protect Middleware ****************************************
 const { protect, validate } = require("../middleware");
 
