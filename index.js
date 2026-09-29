@@ -2,7 +2,7 @@ const path = require("path");
 const express = require("express");
 const dotenv = require("dotenv");
 const morgan = require("morgan");
-// const mongoSanitize = require("express-mongo-sanitize");
+const mongoSanitize = require("express-mongo-sanitize");
 const helmet = require("helmet");
 // const xssClean = require("xss-clean");
 const expressRateLimit = require("express-rate-limit");
@@ -85,8 +85,15 @@ if (process.env.NODE_ENV === "development") {
 //File Uploading *******************************************************
 app.use(fileUpload());
 
-// Sanitize Data *******************************************************
-// app.use(mongoSanitize());
+// Sanitize Data (Express 5 compatible in-place NoSQL injection protection) ********
+app.use((req, res, next) => {
+  if (req.body) mongoSanitize.sanitize(req.body);
+  if (req.params) mongoSanitize.sanitize(req.params);
+  if (req.headers) mongoSanitize.sanitize(req.headers);
+  // Sanitize req.query in-place to prevent NoSQL query operator injection attacks via URL query params
+  if (req.query) mongoSanitize.sanitize(req.query);
+  next();
+});
 
 //Set Security Headers ************************************************
 app.use(helmet());
@@ -115,10 +122,16 @@ app.use(hpp());
 app.use(cors());
 
 // Enforce secret presence in production; provide safe fallback in dev/test
-if (process.env.NODE_ENV === "production" && (!process.env.SESSION_SECRET || !process.env.JWT_SECRET)) {
-  throw new Error("FATAL SECURITY ERROR: SESSION_SECRET and JWT_SECRET must be defined in production mode.");
+if (
+  process.env.NODE_ENV === "production" &&
+  (!process.env.SESSION_SECRET || !process.env.JWT_SECRET)
+) {
+  throw new Error(
+    "FATAL SECURITY ERROR: SESSION_SECRET and JWT_SECRET must be defined in production mode.",
+  );
 }
-const sessionSecret = process.env.SESSION_SECRET || "dev_session_secret_fallback_key_32_chars";
+const sessionSecret =
+  process.env.SESSION_SECRET || "dev_session_secret_fallback_key_32_chars";
 
 // Set up session middleware
 app.use(

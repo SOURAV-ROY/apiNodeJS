@@ -21,7 +21,32 @@ const forgotPasswordLimiter = expressRateLimit({
   validate: { trustProxy: false },
   message: {
     success: false,
-    error: "Too many password reset requests from this IP, please try again after 15 minutes",
+    error:
+      "Too many password reset requests from this IP, please try again after 15 minutes",
+  },
+});
+
+// Rate limiter for login endpoint to mitigate brute-force and credential stuffing attacks
+const loginLimiter = expressRateLimit({
+  windowMs: 10 * 60 * 1000, // 10 minutes
+  max: 10, // Limit each IP to 10 login requests per 10 minutes
+  validate: { trustProxy: false },
+  message: {
+    success: false,
+    error:
+      "Too many login attempts from this IP, please try again after 10 minutes",
+  },
+});
+
+// Rate limiter for registration endpoint to mitigate automated account creation spam / DoS
+const registerLimiter = expressRateLimit({
+  windowMs: 10 * 60 * 1000, // 10 minutes
+  max: 10, // Limit each IP to 10 registration requests per 10 minutes
+  validate: { trustProxy: false },
+  message: {
+    success: false,
+    error:
+      "Too many registration attempts from this IP, please try again after 10 minutes",
   },
 });
 
@@ -40,19 +65,45 @@ const { protect, validate } = require("../middleware");
 
 // Validation Middleware *************************************
 const {
-  authValidator: { registerSchema, loginSchema },
+  authValidator: {
+    registerSchema,
+    loginSchema,
+    resetPasswordSchema,
+    forgotPasswordSchema,
+    updateDetailsSchema,
+    updatePasswordSchema,
+  },
 } = require("../utils/validators");
 
-router.post("/register", validate(registerSchema), register);
-router.post("/login", validate(loginSchema), login);
+router.post("/register", registerLimiter, validate(registerSchema), register);
+router.post("/login", loginLimiter, validate(loginSchema), login);
 router.get("/logout", logout);
 router.get("/csrf-token", getCsrfToken);
 router.get("/me", protect, getMe);
 
-router.put("/updatedetails", protect, updateDetails);
-router.put("/updatepassword", protect, updatePassword);
+router.put(
+  "/updatedetails",
+  protect,
+  validate(updateDetailsSchema),
+  updateDetails,
+);
+router.put(
+  "/updatepassword",
+  protect,
+  validate(updatePasswordSchema),
+  updatePassword,
+);
 
-router.post("/forgotpassword", forgotPasswordLimiter, forgotPassword);
-router.put("/resetpassword/:resettoken", resetPasswordLimiter, resetPassword);
+router.post(
+  "/forgotpassword",
+  forgotPasswordLimiter,
+  validate(forgotPasswordSchema),
+  forgotPassword,
+);
+router.put(
+  "/resetpassword/:resettoken",
+  validate(resetPasswordSchema),
+  resetPassword,
+);
 
 module.exports = router;
