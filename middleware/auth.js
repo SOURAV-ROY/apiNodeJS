@@ -30,7 +30,8 @@ exports.protect = asyncHandler(async (req, res, next) => {
 
     req.user = await User.findById(decoded.id);
 
-    // Verify user still exists in database (defense in depth & prevents DoS on req.user property accesses)
+    // Defense in Depth: Ensure user account exists in database after JWT signature verification.
+    // Prevents JWT Session Orphaning & Null Pointer Dereference DoS if a user account is deleted while token remains valid.
     if (!req.user) {
       return next(
         new ErrorResponse("Not Authorized to access this route", 401),
