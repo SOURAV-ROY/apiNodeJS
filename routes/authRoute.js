@@ -102,6 +102,7 @@ router.post(
 );
 router.put(
   "/resetpassword/:resettoken",
+  resetPasswordLimiter,
   validate(resetPasswordSchema),
   resetPassword,
 );
