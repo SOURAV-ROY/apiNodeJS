@@ -1,3 +1,8 @@
+## 2026-09-22 - Bypassing Mongoose Document Hydration in Authentication Middleware
+
+**Learning:** In authentication middleware (`protect`), fetching the user document using standard `User.findById(id)` instantiates a full Mongoose `Document` instance on every authenticated API request. Chaining `.lean()` returns a plain JavaScript object, avoiding CPU and memory overhead for Mongoose change tracking, internal state, and virtual getters. Explicitly setting `req.user.id = req.user._id.toString()` maintains full property compatibility with downstream route handlers expecting standard Mongoose `id` virtuals.
+**Action:** Always chain `.lean()` on read-only user queries in authentication middleware, ensuring `req.user.id` is explicitly attached as a string when downstream routes access `req.user.id`.
+
 ## 2026-09-21 - Concurrent Execution & Filter Accuracy in Pagination Middleware
 
 **Learning:** In Mongoose pagination middleware (`advancedResults`), executing database queries (`countDocuments` and `find`) sequentially introduces unnecessary round-trip latency. Furthermore, calling `countDocuments()` without passing `parsedQuery` produces inaccurate total counts when query filters are applied.
