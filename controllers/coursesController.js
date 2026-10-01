@@ -10,7 +10,9 @@ exports.getCourses = asyncHandler(async (req, res, next) => {
   // let query;
 
   if (req.params.bootcampId) {
-    const courses = await Course.find({ bootcamp: req.params.bootcampId });
+    // Bolt Optimization: Chain .lean() to bypass Mongoose document hydration
+    // for read-only queries, reducing memory allocations and response CPU overhead.
+    const courses = await Course.find({ bootcamp: req.params.bootcampId }).lean();
 
     return res.status(200).json({
       success: true,
@@ -38,10 +40,14 @@ exports.getCourses = asyncHandler(async (req, res, next) => {
 // @route           GET /api/v1/course/:id
 // @access          Public
 exports.getCourse = asyncHandler(async (req, res, next) => {
-  const course = await Course.findById(req.params.id).populate({
-    path: "bootcamp",
-    select: "name description",
-  });
+  // Bolt Optimization: Chain .lean() to bypass Mongoose document hydration
+  // for read-only queries, reducing memory allocations and response CPU overhead.
+  const course = await Course.findById(req.params.id)
+    .populate({
+      path: "bootcamp",
+      select: "name description",
+    })
+    .lean();
 
   if (!course) {
     return next(
