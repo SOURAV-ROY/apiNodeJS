@@ -5,6 +5,7 @@ describe("advancedResults middleware query sanitization", () => {
     // Mock model with chainable methods
     const mockModel = {
       find: jest.fn().mockReturnThis(),
+      lean: jest.fn().mockReturnThis(),
       populate: jest.fn().mockReturnThis(),
       select: jest.fn().mockReturnThis(),
       sort: jest.fn().mockReturnThis(),
@@ -42,6 +43,7 @@ describe("advancedResults middleware query sanitization", () => {
   it("should allow legitimate query filtering with non-dollar comparison syntax (gt, gte, lt, lte, in)", async () => {
     const mockModel = {
       find: jest.fn().mockReturnThis(),
+      lean: jest.fn().mockReturnThis(),
       populate: jest.fn().mockReturnThis(),
       select: jest.fn().mockReturnThis(),
       sort: jest.fn().mockReturnThis(),
@@ -75,6 +77,7 @@ describe("advancedResults middleware query sanitization", () => {
   it("should pass parsedQuery filter to countDocuments", async () => {
     const mockModel = {
       find: jest.fn().mockReturnThis(),
+      lean: jest.fn().mockReturnThis(),
       populate: jest.fn().mockReturnThis(),
       select: jest.fn().mockReturnThis(),
       sort: jest.fn().mockReturnThis(),

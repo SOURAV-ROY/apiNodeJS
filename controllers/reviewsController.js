@@ -49,6 +49,7 @@ exports.getReview = asyncHandler(async (req, res, next) => {
 // @route           POST /api/v1/bootcamps/:bootcampId/reviews
 // @access          Private
 exports.addReview = asyncHandler(async (req, res, next) => {
+  // Prevent mass-assignment spoofing: explicitly enforce authenticated user and route bootcamp ID
   req.body.bootcamp = req.params.bootcampId;
   req.body.user = req.user.id;
 
@@ -88,6 +89,7 @@ exports.updateReview = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse(`Not Authorize To Update Review`, 401));
   }
 
+  // Prevent Mass Assignment / Review Ownership & Bootcamp Reassignment
   // Prevent Mass Assignment: protect review ownership and bootcamp association
   delete req.body.user;
   delete req.body.bootcamp;

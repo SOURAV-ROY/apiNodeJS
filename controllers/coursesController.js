@@ -117,6 +117,7 @@ exports.updateCourse = asyncHandler(async (req, res, next) => {
     );
   }
 
+  // Prevent Mass Assignment / Course Ownership & Bootcamp Reassignment
   // Prevent Mass Assignment: protect course ownership and bootcamp association
   delete req.body.user;
   delete req.body.bootcamp;

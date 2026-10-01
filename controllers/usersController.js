@@ -32,7 +32,11 @@ exports.getUser = asyncHandler(async (req, res, next) => {
 // @route           POST /api/v1/users
 // @access          Private/Admin
 exports.createUser = asyncHandler(async (req, res, next) => {
-  const user = await User.create(req.body);
+  // Prevent mass assignment: explicitly allow only permitted fields
+  const { name, email, password, role } = req.body;
+  const fieldsToCreate = { name, email, password, role };
+
+  const user = await User.create(fieldsToCreate);
 
   res.status(201).json({
     success: true,
@@ -55,7 +59,15 @@ exports.updateUser = asyncHandler(async (req, res, next) => {
     );
   }
 
-  const user = await User.findByIdAndUpdate(req.params.id, req.body, {
+  // Prevent mass assignment: explicitly allow only permitted fields
+  // Whitelist permitted fields to prevent mass assignment vulnerabilities
+
+  const fieldsToUpdate = {};
+  if (req.body.name !== undefined) fieldsToUpdate.name = req.body.name;
+  if (req.body.email !== undefined) fieldsToUpdate.email = req.body.email;
+  if (req.body.role !== undefined) fieldsToUpdate.role = req.body.role;
+
+  const user = await User.findByIdAndUpdate(req.params.id, fieldsToUpdate, {
     new: true,
     runValidators: true,
   });
