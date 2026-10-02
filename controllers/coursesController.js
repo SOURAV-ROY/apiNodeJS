@@ -10,6 +10,7 @@ exports.getCourses = asyncHandler(async (req, res, next) => {
   // let query;
 
   if (req.params.bootcampId) {
+    // Bolt Optimization: Chain .lean() to bypass document hydration for read-only query
     // Bolt Optimization: Chain .lean() to bypass Mongoose document hydration
     // Bolt Optimization: Chain .lean() to bypass document hydration on read-only queries
     const courses = await Course.find({ bootcamp: req.params.bootcampId }).lean();
