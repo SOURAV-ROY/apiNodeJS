@@ -16,6 +16,7 @@ exports.getBootcamps = asyncHandler(async (req, res, next) => {
 exports.getBootcamp = asyncHandler(async (req, res, next) => {
   // try {
   const bootcampId = req.params.id;
+  // Bolt Optimization: Use .lean() on read-only single query to bypass Mongoose document hydration
   // Bolt Optimization: Chain .lean() to bypass document hydration for read-only query
   // Bolt Optimization: Chain .lean() to bypass Mongoose document hydration
   // Bolt Optimization: Chain .lean() to bypass document hydration on read-only queries
