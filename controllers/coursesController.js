@@ -74,7 +74,8 @@ exports.addCourse = asyncHandler(async (req, res, next) => {
   }
 
   //Make Sure user is bootcamp owner *****************************************
-  if (bootcamp.user.toString() !== req.user.id && req.user.role !== "admin") {
+  // Defensive check using optional chaining to prevent unhandled TypeError / DoS if user field is missing
+  if (bootcamp.user?.toString() !== req.user.id && req.user.role !== "admin") {
     return next(
       new ErrorResponse(
         `User ${req.user.id} Is Not Authorized to Add A Course to Bootcamp ${bootcamp._id}`,
@@ -104,7 +105,8 @@ exports.updateCourse = asyncHandler(async (req, res, next) => {
   }
 
   //Make Sure User is Course Owner *****************************************
-  if (course.user.toString() !== req.user.id && req.user.role !== "admin") {
+  // Defensive check using optional chaining to prevent unhandled TypeError / DoS if user field is missing
+  if (course.user?.toString() !== req.user.id && req.user.role !== "admin") {
     return next(
       new ErrorResponse(
         `User ${req.user.id} Is Not Authorized to Update Course ${course._id}`,
@@ -142,7 +144,8 @@ exports.deleteCourse = asyncHandler(async (req, res, next) => {
   }
 
   //Make Sure User is Course Owner *****************************************
-  if (course.user.toString() !== req.user.id && req.user.role !== "admin") {
+  // Defensive check using optional chaining to prevent unhandled TypeError / DoS if user field is missing
+  if (course.user?.toString() !== req.user.id && req.user.role !== "admin") {
     return next(
       new ErrorResponse(
         `User ${req.user.id} Is Not Authorized to Delete Course ${course._id}`,
