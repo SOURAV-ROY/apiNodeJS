@@ -28,7 +28,9 @@ exports.protect = asyncHandler(async (req, res, next) => {
 
     console.log(decoded);
 
-    req.user = await User.findById(decoded.id);
+    // Bolt Optimization: Chain .lean() to bypass Mongoose document hydration for user lookup in protect middleware.
+    // This returns plain JavaScript objects and significantly reduces CPU and memory overhead on every protected endpoint request.
+    req.user = await User.findById(decoded.id).lean();
 
     // Verify user still exists in database (defense in depth & prevents DoS on req.user property accesses)
     if (!req.user) {
@@ -36,6 +38,9 @@ exports.protect = asyncHandler(async (req, res, next) => {
         new ErrorResponse("Not Authorized to access this route", 401),
       );
     }
+
+    // Ensure req.user.id exists as a string property matching standard Mongoose virtual behavior
+    req.user.id = req.user._id.toString();
 
     next();
   } catch (errors) {
