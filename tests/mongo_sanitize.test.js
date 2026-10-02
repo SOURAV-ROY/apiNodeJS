@@ -9,6 +9,7 @@ jest.mock("../models", () => {
     Bootcamp: {
       find: jest.fn().mockImplementation(() => {
         const queryObj = {
+          lean: jest.fn().mockReturnThis(),
           populate: jest.fn().mockReturnThis(),
           select: jest.fn().mockReturnThis(),
           sort: jest.fn().mockReturnThis(),

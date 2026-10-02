@@ -30,7 +30,9 @@ const advancedResults = (model, populate) => async (req, res, next) => {
   const parsedQuery = JSON.parse(queryString);
 
   //Finding Resource *************************************************
-  query = model.find(parsedQuery);
+  // Bolt Optimization: Chain .lean() to bypass Mongoose document hydration
+  // and return plain JavaScript objects, significantly reducing memory and CPU overhead.
+  query = model.find(parsedQuery).lean();
 
   //Select Fields ****************************************************
   if (req.query.select) {
@@ -61,6 +63,8 @@ const advancedResults = (model, populate) => async (req, res, next) => {
   }
 
   // Bolt Optimization: Chain .lean() to bypass Mongoose document hydration overhead on read-only paginated results.
+  // Bolt Optimization: Use .lean() to bypass document hydration for read-only query results,
+  // reducing CPU & memory overhead.
   query = query.lean();
 
   // bolt/optimize-advanced-results-concurrent-query-4844573461497662429

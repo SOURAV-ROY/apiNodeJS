@@ -6,6 +6,7 @@ describe("advancedResults middleware optimizations", () => {
 
     const mockModel = {
       find: jest.fn().mockReturnThis(),
+      lean: jest.fn().mockReturnThis(),
       populate: jest.fn().mockReturnThis(),
       select: jest.fn().mockReturnThis(),
       sort: jest.fn().mockReturnThis(),

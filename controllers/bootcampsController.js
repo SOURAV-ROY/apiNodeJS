@@ -17,6 +17,7 @@ exports.getBootcamp = asyncHandler(async (req, res, next) => {
   // try {
   const bootcampId = req.params.id;
   // Bolt Optimization: Chain .lean() to bypass Mongoose document hydration
+  // Bolt Optimization: Chain .lean() to bypass document hydration on read-only queries
   const bootcamp = await Bootcamp.findById(bootcampId).lean();
   if (!bootcamp) {
     return next(
@@ -83,7 +84,7 @@ exports.updateBootcamp = asyncHandler(async (req, res, next) => {
   }
 
   //Make Sure user is bootcamp owner *********************************
-  if (bootcamp?.user.toString() !== req.user.id && req.user.role !== "admin") {
+  if (bootcamp.user?.toString() !== req.user.id && req.user.role !== "admin") {
     return next(
       new ErrorResponse(
         `User ${req.user.id} Is Not Authorized to Update The Bootcamp`,
@@ -132,7 +133,7 @@ exports.deleteBootcamp = asyncHandler(async (req, res, next) => {
   }
 
   //Make Sure user is bootcamp owner *********************************
-  if (bootcamp.user.toString() !== req.user.id && req.user.role !== "admin") {
+  if (bootcamp.user?.toString() !== req.user.id && req.user.role !== "admin") {
     return next(
       new ErrorResponse(
         `User ${req.user.id} -> ${req.user.name} Is Not Authorized to Delete The Bootcamp`,
@@ -173,6 +174,7 @@ exports.getBootcampsInRadius = asyncHandler(async (req, res, next) => {
   const radius = distance / 3963;
 
   // Bolt Optimization: Chain .lean() to bypass Mongoose document hydration
+  // Bolt Optimization: Chain .lean() to bypass document hydration on read-only queries
   const bootcamps = await Bootcamp.find({
     location: {
       $geoWithin: { $centerSphere: [[longitude, latitude], radius] },
@@ -197,7 +199,7 @@ exports.bootcampPhotoUpload = asyncHandler(async (req, res, next) => {
   }
 
   //Make Sure user is bootcamp owner *********************************
-  if (bootcamp.user.toString() !== req.user.id && req.user.role !== "admin") {
+  if (bootcamp.user?.toString() !== req.user.id && req.user.role !== "admin") {
     return next(
       new ErrorResponse(
         `User ${req.user.id} -> ${req.user.name} Is Not Authorized to Delete Photo From The Bootcamp`,
