@@ -122,4 +122,29 @@ describe("Auth Rate Limiting", () => {
     expect(resShort.status).toBe(400);
     expect(resShort.body.success).toBe(false);
   });
+
+  it("should return 429 when rate limit is exceeded on /resetpassword/:resettoken", async () => {
+    const agent = request.agent(app);
+
+    // Get CSRF Token
+    const tokenRes = await agent.get("/api/v1/auth/csrf-token");
+    const csrfToken = tokenRes.body.csrfToken;
+
+    // Make 10 requests (the limit for resetpassword)
+    for (let i = 0; i < 10; i++) {
+      await agent
+        .put("/api/v1/auth/resetpassword/dummytoken123")
+        .set("x-csrf-token", csrfToken)
+        .send({ password: "newPassword123" });
+    }
+
+    // The 11th request should be rate limited and return 429
+    const response = await agent
+      .put("/api/v1/auth/resetpassword/dummytoken123")
+      .set("x-csrf-token", csrfToken)
+      .send({ password: "newPassword123" });
+
+    expect(response.status).toBe(429);
+    expect(response.body.error).toMatch(/Too many password reset attempts/i);
+  });
 });

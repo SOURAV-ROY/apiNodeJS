@@ -60,6 +60,7 @@ exports.login = asyncHandler(async (req, res, next) => {
 // @route           GET /api/v1/auth/logout
 // @access          Private
 exports.logout = asyncHandler(async (req, res, next) => {
+  // Clear authentication token with secure cookie configuration matching creation options
   const options = {
     expires: new Date(Date.now() + 10 * 1000),
     httpOnly: true,
@@ -212,11 +213,14 @@ const sendTokenResponse = (user, statusCode, res) => {
   // Cookie Token *********************************************************
   const token = user.getSignedJwtToken();
 
+  // Security control: Apply httpOnly, sameSite, path, and conditional secure options to protect against XSS and CSRF
   const options = {
     expires: new Date(
       Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000,
     ),
     httpOnly: true,
+    sameSite: "strict",
+    path: "/",
   };
 
   if (process.env.NODE_ENV === "production") {
