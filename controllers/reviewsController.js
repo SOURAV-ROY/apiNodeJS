@@ -8,7 +8,8 @@ const { Review, Bootcamp } = require("../models");
 // @access          Public
 exports.getReviews = asyncHandler(async (req, res, next) => {
   if (req.params.bootcampId) {
-    const reviews = await Review.find({ bootcamp: req.params.bootcampId });
+    // Bolt Optimization: Chain .lean() to bypass document hydration on read-only queries
+    const reviews = await Review.find({ bootcamp: req.params.bootcampId }).lean();
 
     return res.status(200).json({
       success: true,
@@ -24,10 +25,13 @@ exports.getReviews = asyncHandler(async (req, res, next) => {
 // @route           GET /api/v1/reviews/:id
 // @access          Public
 exports.getReview = asyncHandler(async (req, res, next) => {
-  const review = await Review.findById(req.params.id).populate({
-    path: "bootcamp",
-    select: "name description",
-  });
+  // Bolt Optimization: Chain .lean() to bypass document hydration on read-only queries
+  const review = await Review.findById(req.params.id)
+    .populate({
+      path: "bootcamp",
+      select: "name description",
+    })
+    .lean();
 
   if (!review) {
     return next(

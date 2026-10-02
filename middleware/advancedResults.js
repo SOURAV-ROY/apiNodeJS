@@ -62,6 +62,10 @@ const advancedResults = (model, populate) => async (req, res, next) => {
     query = query.populate(populate);
   }
 
+  // Bolt Optimization: Use .lean() to bypass document hydration for read-only query results,
+  // reducing CPU & memory overhead.
+  query = query.lean();
+
   // bolt/optimize-advanced-results-concurrent-query-4844573461497662429
   // Performance optimization: Execute total count and main results query concurrently using Promise.all
   // to reduce total database roundtrip latency. Also pass parsedQuery to countDocuments for accurate filtered total counts.
