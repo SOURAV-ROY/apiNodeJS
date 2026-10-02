@@ -8,6 +8,7 @@ const { Review, Bootcamp } = require("../models");
 // @access          Public
 exports.getReviews = asyncHandler(async (req, res, next) => {
   if (req.params.bootcampId) {
+    // Bolt Optimization: Chain .lean() to bypass Mongoose document hydration
     // Bolt Optimization: Chain .lean() to bypass document hydration on read-only queries
     const reviews = await Review.find({ bootcamp: req.params.bootcampId }).lean();
 

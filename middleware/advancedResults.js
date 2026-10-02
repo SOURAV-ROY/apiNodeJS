@@ -62,6 +62,7 @@ const advancedResults = (model, populate) => async (req, res, next) => {
     query = query.populate(populate);
   }
 
+  // Bolt Optimization: Chain .lean() to bypass Mongoose document hydration overhead on read-only paginated results.
   // Bolt Optimization: Use .lean() to bypass document hydration for read-only query results,
   // reducing CPU & memory overhead.
   query = query.lean();

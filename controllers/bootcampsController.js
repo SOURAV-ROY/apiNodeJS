@@ -16,6 +16,7 @@ exports.getBootcamps = asyncHandler(async (req, res, next) => {
 exports.getBootcamp = asyncHandler(async (req, res, next) => {
   // try {
   const bootcampId = req.params.id;
+  // Bolt Optimization: Chain .lean() to bypass Mongoose document hydration
   // Bolt Optimization: Chain .lean() to bypass document hydration on read-only queries
   const bootcamp = await Bootcamp.findById(bootcampId).lean();
   if (!bootcamp) {
@@ -172,6 +173,7 @@ exports.getBootcampsInRadius = asyncHandler(async (req, res, next) => {
   //    Earth Radius = 3963 miles / 6378 km
   const radius = distance / 3963;
 
+  // Bolt Optimization: Chain .lean() to bypass Mongoose document hydration
   // Bolt Optimization: Chain .lean() to bypass document hydration on read-only queries
   const bootcamps = await Bootcamp.find({
     location: {
