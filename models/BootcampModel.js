@@ -106,17 +106,22 @@ const BootcampSchema = new mongoose.Schema(
 );
 
 // Use Slugify ********************************************************************
-BootcampSchema.pre("save", function (next) {
+BootcampSchema.pre("save", function () {
   this.slug = slugify(this.name, { lower: true });
 
   console.log("Slugify RAN ->>> ", this.name.green.bold);
-
-  next();
 });
 
 //GeoCode & create location field *******************************
-BootcampSchema.pre("save", async function (next) {
+BootcampSchema.pre("save", async function () {
   const loc = await geocoder.geocode(this.address);
+
+  // Geocoder can return zero results (e.g. provider rate limit) -> skip instead of aborting the save
+  if (!loc || !loc.length) {
+    console.log(`Geocode returned no result for: ${this.address}`.yellow);
+    return;
+  }
+
   this.location = {
     type: "Point",
     coordinates: [loc[0].longitude, loc[0].latitude],
@@ -130,16 +135,17 @@ BootcampSchema.pre("save", async function (next) {
 
   //Do not save address in DB ***************
   this.address = undefined;
-
-  next();
 });
 
 //Cascade delete courses when a bootcamp *************
-BootcampSchema.pre("remove", async function (next) {
-  console.log(`Course being removed from bootcamp: ${this._id}`);
-  await this.model("Course").deleteMany({ bootcamp: this._id });
-  next();
-});
+BootcampSchema.pre(
+  "deleteOne",
+  { document: true, query: false },
+  async function () {
+    console.log(`Course being removed from bootcamp: ${this._id}`);
+    await this.model("Course").deleteMany({ bootcamp: this._id });
+  },
+);
 
 //Reverse populate with virtual **********************
 BootcampSchema.virtual("courses", {

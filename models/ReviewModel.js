@@ -70,12 +70,12 @@ ReviewSchema.statics.getAverageRating = async function (bootcampId) {
 
 //Call AverageCost After Add Course **********************
 ReviewSchema.post("save", function () {
-  this.constructor.getAverageRating(this.bootcamp);
+  return this.constructor.getAverageRating(this.bootcamp);
 });
 
-//Call AverageCost Before Remove Course ******************
-ReviewSchema.pre("remove", function () {
-  this.constructor.getAverageRating(this.bootcamp);
+//Call AverageRating After Remove Review ******************
+ReviewSchema.post("deleteOne", { document: true, query: false }, function () {
+  return this.constructor.getAverageRating(this.bootcamp);
 });
 
 module.exports = mongoose.model("Review", ReviewSchema);

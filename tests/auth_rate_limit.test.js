@@ -41,10 +41,10 @@ describe("Auth Rate Limiting", () => {
 
   it("should return 429 when rate limit is exceeded on /login", async () => {
     const agent = request.agent(app);
-    
+
     // Get CSRF Token and Session cookie
-    const tokenRes = await agent.get("/api/v1/auth/csrf-token");
-    const csrfToken = tokenRes.body.csrfToken;
+    // const tokenRes = await agent.get("/api/v1/auth/csrf-token");
+    // const csrfToken = tokenRes.body.csrfToken;
 
     // Make 10 requests (the limit)
     // Get CSRF Token

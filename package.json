@@ -11,7 +11,11 @@
     "start": "node index.js",
     "dev": "nodemon --inspect index.js",
     "format": "prettier --write .",
-    "test": "jest --detectOpenHandles"
+    "test": "jest --detectOpenHandles",
+    "seed": "node seeder.js -i",
+    "seed:destroy": "node seeder.js -d",
+    "seed:test": "node seeder.js -i --test",
+    "seed:test:destroy": "node seeder.js -d --test"
   },
   "keywords": [],
   "author": "SOURAV ROY",
