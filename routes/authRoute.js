@@ -14,7 +14,7 @@ const {
 
 const router = express.Router();
 
-// Specific rate limiter for sensitive authentication endpoints (e.g. forgot password)
+// Specific rate limiter for sensitive authentication endpoints (e.g. login & forgot password)
 const forgotPasswordLimiter = expressRateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 5, // Limit each IP to 5 requests per windowMs to prevent email bombing / enumeration
@@ -23,6 +23,41 @@ const forgotPasswordLimiter = expressRateLimit({
     success: false,
     error:
       "Too many password reset requests from this IP, please try again after 15 minutes",
+  },
+});
+
+// Rate limiter for login endpoint to mitigate brute-force and credential stuffing attacks
+const loginLimiter = expressRateLimit({
+  windowMs: 10 * 60 * 1000, // 10 minutes
+  max: 10, // Limit each IP to 10 login requests per 10 minutes
+  validate: { trustProxy: false },
+  message: {
+    success: false,
+    error:
+      "Too many login attempts from this IP, please try again after 10 minutes",
+  },
+});
+
+// Rate limiter for registration endpoint to mitigate automated account creation spam / DoS
+const registerLimiter = expressRateLimit({
+  windowMs: 10 * 60 * 1000, // 10 minutes
+  max: 10, // Limit each IP to 10 registration requests per 10 minutes
+  validate: { trustProxy: false },
+  message: {
+    success: false,
+    error:
+      "Too many registration attempts from this IP, please try again after 10 minutes",
+  },
+});
+
+const resetPasswordLimiter = expressRateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // Limit each IP to 10 requests per windowMs to prevent reset token brute-forcing
+  validate: { trustProxy: false },
+  message: {
+    success: false,
+    error:
+      "Too many password reset attempts from this IP, please try again after 15 minutes",
   },
 });
 
@@ -41,8 +76,8 @@ const {
   },
 } = require("../utils/validators");
 
-router.post("/register", validate(registerSchema), register);
-router.post("/login", validate(loginSchema), login);
+router.post("/register", registerLimiter, validate(registerSchema), register);
+router.post("/login", loginLimiter, validate(loginSchema), login);
 router.get("/logout", logout);
 router.get("/csrf-token", getCsrfToken);
 router.get("/me", protect, getMe);
@@ -68,6 +103,7 @@ router.post(
 );
 router.put(
   "/resetpassword/:resettoken",
+  resetPasswordLimiter,
   validate(resetPasswordSchema),
   resetPassword,
 );

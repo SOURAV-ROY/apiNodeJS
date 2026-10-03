@@ -18,15 +18,18 @@ const ReviewSchema = new mongoose.Schema(
       max: 10,
       required: [true, "Please Add A Rating between 1 and 10"],
     },
+    // Performance optimization: Index foreign keys to avoid full collection scans on queries filtering by bootcamp or user
     bootcamp: {
       type: mongoose.Schema.ObjectId,
       ref: "Bootcamp",
       required: true,
+      index: true,
     },
     user: {
       type: mongoose.Schema.ObjectId,
       ref: "User",
       required: true,
+      index: true,
     },
   },
   {
@@ -67,12 +70,12 @@ ReviewSchema.statics.getAverageRating = async function (bootcampId) {
 
 //Call AverageCost After Add Course **********************
 ReviewSchema.post("save", function () {
-  this.constructor.getAverageRating(this.bootcamp);
+  return this.constructor.getAverageRating(this.bootcamp);
 });
 
-//Call AverageCost Before Remove Course ******************
-ReviewSchema.pre("remove", function () {
-  this.constructor.getAverageRating(this.bootcamp);
+//Call AverageRating After Remove Review ******************
+ReviewSchema.post("deleteOne", { document: true, query: false }, function () {
+  return this.constructor.getAverageRating(this.bootcamp);
 });
 
 module.exports = mongoose.model("Review", ReviewSchema);

@@ -28,15 +28,18 @@ const CourseSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    // Performance optimization: Index foreign keys to avoid full collection scans on queries filtering by bootcamp or user
     bootcamp: {
       type: mongoose.Schema.ObjectId,
       ref: "Bootcamp",
       required: true,
+      index: true, // Bolt Optimization: Index foreign key to speed up queries by bootcamp (e.g. GET /bootcamps/:id/courses & getAverageCost aggregate)
     },
     user: {
       type: mongoose.Schema.ObjectId,
       ref: "User",
       required: true,
+      index: true, // Bolt Optimization: Index user foreign key for fast owner lookups
     },
   },
   {
@@ -76,12 +79,12 @@ CourseSchema.statics.getAverageCost = async function (bootcampId) {
 
 //Call AverageCost After Add Course ******************
 CourseSchema.post("save", function () {
-  this.constructor.getAverageCost(this.bootcamp);
+  return this.constructor.getAverageCost(this.bootcamp);
 });
 
-//Call AverageCost Before Remove Course ******************
-CourseSchema.pre("remove", function () {
-  this.constructor.getAverageCost(this.bootcamp);
+//Call AverageCost After Remove Course ******************
+CourseSchema.post("deleteOne", { document: true, query: false }, function () {
+  return this.constructor.getAverageCost(this.bootcamp);
 });
 
 module.exports = mongoose.model("Course", CourseSchema);

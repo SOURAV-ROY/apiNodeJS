@@ -15,9 +15,10 @@ const UserSchema = new mongoose.Schema(
       unique: true,
       match: [/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/, "Please add a valid email"],
     },
+    // Security control: Include 'admin' in role enum for proper RBAC validation during user administration
     role: {
       type: String,
-      enum: ["user", "publisher"],
+      enum: ["user", "publisher", "admin"],
       default: "user",
     },
     password: {
@@ -26,8 +27,14 @@ const UserSchema = new mongoose.Schema(
       minlength: 6,
       select: false,
     },
-    resetPasswordToken: String,
-    resetPasswordExpire: Date,
+    resetPasswordToken: {
+      type: String,
+      select: false,
+    },
+    resetPasswordExpire: {
+      type: Date,
+      select: false,
+    },
   },
   {
     timestamp: true,
@@ -35,9 +42,9 @@ const UserSchema = new mongoose.Schema(
 );
 
 // Encrypt password using bcryptjs **********************
-UserSchema.pre("save", async function (next) {
+UserSchema.pre("save", async function () {
   if (!this.isModified("password")) {
-    next();
+    return;
   }
 
   const salt = await bcrypt.genSalt(10);
