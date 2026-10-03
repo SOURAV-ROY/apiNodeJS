@@ -114,7 +114,20 @@ BootcampSchema.pre("save", function () {
 
 //GeoCode & create location field *******************************
 BootcampSchema.pre("save", async function () {
-  const loc = await geocoder.geocode(this.address);
+  // Nothing to geocode (e.g. address already resolved on a previous save)
+  if (!this.address) {
+    return;
+  }
+
+  let loc;
+  try {
+    loc = await geocoder.geocode(this.address);
+  } catch (errors) {
+    // A third-party geocoder outage must not abort saving the bootcamp.
+    // `location` is optional, so keep the document and the address instead.
+    console.warn(`Geocode failed for: ${this.address}`.yellow, errors.message);
+    return;
+  }
 
   // Geocoder can return zero results (e.g. provider rate limit) -> skip instead of aborting the save
   if (!loc || !loc.length) {
