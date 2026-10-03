@@ -8,9 +8,9 @@ const { Review, Bootcamp } = require("../models");
 // @access          Public
 exports.getReviews = asyncHandler(async (req, res, next) => {
   if (req.params.bootcampId) {
+    // Bolt Optimization: Chain .lean() to bypass Mongoose document hydration
     // Bolt Optimization: Chain .lean() to bypass document hydration for read-only review listing
     // Bolt Optimization: Chain .lean() to bypass document hydration for read-only query
-    // Bolt Optimization: Chain .lean() to bypass Mongoose document hydration
     // Bolt Optimization: Chain .lean() to bypass document hydration on read-only queries
     const reviews = await Review.find({ bootcamp: req.params.bootcampId }).lean();
 
@@ -28,6 +28,7 @@ exports.getReviews = asyncHandler(async (req, res, next) => {
 // @route           GET /api/v1/reviews/:id
 // @access          Public
 exports.getReview = asyncHandler(async (req, res, next) => {
+  // Bolt Optimization: Chain .lean() to bypass Mongoose document hydration
   // Bolt Optimization: Chain .lean() to bypass document hydration for read-only review lookup
   // Bolt Optimization: Chain .lean() to bypass document hydration on read-only queries
   const review = await Review.findById(req.params.id)

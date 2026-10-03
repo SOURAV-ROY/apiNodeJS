@@ -10,9 +10,9 @@ exports.getCourses = asyncHandler(async (req, res, next) => {
   // let query;
 
   if (req.params.bootcampId) {
+    // Bolt Optimization: Chain .lean() to bypass Mongoose document hydration
     // Bolt Optimization: Chain .lean() to bypass document hydration for read-only course listing
     // Bolt Optimization: Chain .lean() to bypass document hydration for read-only query
-    // Bolt Optimization: Chain .lean() to bypass Mongoose document hydration
     // Bolt Optimization: Chain .lean() to bypass document hydration on read-only queries
     const courses = await Course.find({ bootcamp: req.params.bootcampId }).lean();
 
@@ -42,6 +42,7 @@ exports.getCourses = asyncHandler(async (req, res, next) => {
 // @route           GET /api/v1/course/:id
 // @access          Public
 exports.getCourse = asyncHandler(async (req, res, next) => {
+  // Bolt Optimization: Chain .lean() to bypass Mongoose document hydration
   // Bolt Optimization: Chain .lean() to bypass document hydration for read-only course lookup
   // Bolt Optimization: Chain .lean() to bypass document hydration on read-only queries
   const course = await Course.findById(req.params.id)

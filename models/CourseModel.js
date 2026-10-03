@@ -33,13 +33,13 @@ const CourseSchema = new mongoose.Schema(
       type: mongoose.Schema.ObjectId,
       ref: "Bootcamp",
       required: true,
-      index: true,
+      index: true, // Bolt Optimization: Index foreign key to speed up queries by bootcamp (e.g. GET /bootcamps/:id/courses & getAverageCost aggregate)
     },
     user: {
       type: mongoose.Schema.ObjectId,
       ref: "User",
       required: true,
-      index: true,
+      index: true, // Bolt Optimization: Index user foreign key for fast owner lookups
     },
   },
   {
