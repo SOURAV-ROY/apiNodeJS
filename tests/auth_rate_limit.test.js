@@ -41,7 +41,12 @@ describe("Auth Rate Limiting", () => {
 
   it("should return 429 when rate limit is exceeded on /login", async () => {
     const agent = request.agent(app);
+    
+    // Get CSRF Token and Session cookie
+    const tokenRes = await agent.get("/api/v1/auth/csrf-token");
+    const csrfToken = tokenRes.body.csrfToken;
 
+    // Make 10 requests (the limit)
     // Get CSRF Token
     const tokenRes = await agent.get("/api/v1/auth/csrf-token");
     const csrfToken = tokenRes.body.csrfToken;
@@ -51,14 +56,14 @@ describe("Auth Rate Limiting", () => {
       await agent
         .post("/api/v1/auth/login")
         .set("x-csrf-token", csrfToken)
-        .send({ email: `test${i}@example.com`, password: "password123" });
+        .send({ email: `user${i}@example.com`, password: "password123" });
     }
 
     // The 11th request should be rate limited and return 429
     const response = await agent
       .post("/api/v1/auth/login")
       .set("x-csrf-token", csrfToken)
-      .send({ email: "test11@example.com", password: "password123" });
+      .send({ email: "user11@example.com", password: "password123" });
 
     expect(response.status).toBe(429);
     expect(response.body.error).toMatch(/Too many login attempts/i);

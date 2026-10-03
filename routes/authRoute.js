@@ -75,6 +75,7 @@ const {
   },
 } = require("../utils/validators");
 
+router.post("/register", validate(registerSchema), register);
 router.post("/register", registerLimiter, validate(registerSchema), register);
 router.post("/login", loginLimiter, validate(loginSchema), login);
 router.get("/logout", logout);
