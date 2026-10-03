@@ -96,10 +96,11 @@ exports.getMe = asyncHandler(async (req, res, next) => {
 // @route           PUT /api/v1/auth/updatedetails
 // @access          Private
 exports.updateDetails = asyncHandler(async (req, res, next) => {
-  const fieldToUpdate = {
-    name: req.body.name,
-    email: req.body.email,
-  };
+  // Prevent mass assignment and partial payload property unsetting:
+  // Whitelist permitted fields and assign only properties explicitly provided in req.body
+  const fieldToUpdate = {};
+  if (req.body.name !== undefined) fieldToUpdate.name = req.body.name;
+  if (req.body.email !== undefined) fieldToUpdate.email = req.body.email;
 
   let user = await User.findByIdAndUpdate(req.user.id, fieldToUpdate, {
     new: true,
