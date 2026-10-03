@@ -1,3 +1,9 @@
+## 2026-10-03 - Optimizing Existence Queries and Foreign Keys in Mongoose Schemas
+
+**Learning:** When performing existence checks (such as checking if a user has already published a bootcamp in `creteBootcamp`), executing `findOne` without field projection or document hydration bypass transfers unnecessary fields over the wire and wastes CPU cycles on Mongoose document hydration. Chaining `.select("_id").lean()` retrieves only the primary key and skips hydration. Additionally, ensuring foreign key fields (like `user` in `BootcampSchema`) have `index: true` avoids full collection scans during owner lookups.
+
+**Action:** Chain `.select("_id").lean()` on Mongoose existence checks and ensure foreign key fields on models have `index: true` configured.
+
 ## 2026-09-26 - Bypassing Document Hydration in Authentication Middleware & Read Queries
 
 **Learning:** In Express APIs using Mongoose authentication middleware (`protect`), calling `User.findById(id)` without `.lean()` hydrates a full Mongoose document instance on every authenticated request, incurring CPU and memory overhead for change-tracking and schema getters/setters. Chaining `.lean()` bypasses document hydration. Since plain JS objects returned by `.lean()` lack Mongoose virtual getters (such as `.id`), explicitly assigning `req.user.id = req.user._id.toString()` preserves compatibility with downstream authorization checks without document overhead.
