@@ -79,12 +79,12 @@ CourseSchema.statics.getAverageCost = async function (bootcampId) {
 
 //Call AverageCost After Add Course ******************
 CourseSchema.post("save", function () {
-  this.constructor.getAverageCost(this.bootcamp);
+  return this.constructor.getAverageCost(this.bootcamp);
 });
 
-//Call AverageCost Before Remove Course ******************
-CourseSchema.pre("remove", function () {
-  this.constructor.getAverageCost(this.bootcamp);
+//Call AverageCost After Remove Course ******************
+CourseSchema.post("deleteOne", { document: true, query: false }, function () {
+  return this.constructor.getAverageCost(this.bootcamp);
 });
 
 module.exports = mongoose.model("Course", CourseSchema);

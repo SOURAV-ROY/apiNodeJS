@@ -14,7 +14,9 @@ exports.getCourses = asyncHandler(async (req, res, next) => {
     // Bolt Optimization: Chain .lean() to bypass document hydration for read-only course listing
     // Bolt Optimization: Chain .lean() to bypass document hydration for read-only query
     // Bolt Optimization: Chain .lean() to bypass document hydration on read-only queries
-    const courses = await Course.find({ bootcamp: req.params.bootcampId }).lean();
+    const courses = await Course.find({
+      bootcamp: req.params.bootcampId,
+    }).lean();
 
     return res.status(200).json({
       success: true,
@@ -160,7 +162,7 @@ exports.deleteCourse = asyncHandler(async (req, res, next) => {
     );
   }
 
-  await course.remove();
+  await course.deleteOne();
 
   res.status(200).json({
     success: true,

@@ -12,7 +12,9 @@ exports.getReviews = asyncHandler(async (req, res, next) => {
     // Bolt Optimization: Chain .lean() to bypass document hydration for read-only review listing
     // Bolt Optimization: Chain .lean() to bypass document hydration for read-only query
     // Bolt Optimization: Chain .lean() to bypass document hydration on read-only queries
-    const reviews = await Review.find({ bootcamp: req.params.bootcampId }).lean();
+    const reviews = await Review.find({
+      bootcamp: req.params.bootcampId,
+    }).lean();
 
     return res.status(200).json({
       success: true,
@@ -127,7 +129,7 @@ exports.deleteReview = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse(`Not Authorize To Delete The Review`, 401));
   }
 
-  await review.remove();
+  await review.deleteOne();
 
   res.status(200).json({
     success: true,

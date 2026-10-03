@@ -121,7 +121,8 @@ describe("advancedResults middleware query sanitization", () => {
       countDocuments: jest.fn().mockResolvedValue(1),
     };
 
-    mockModel.then = (resolve) => resolve([{ _id: "123", name: "Lean Bootcamp" }]);
+    mockModel.then = (resolve) =>
+      resolve([{ _id: "123", name: "Lean Bootcamp" }]);
 
     const req = { query: {} };
     const res = {};
@@ -131,7 +132,9 @@ describe("advancedResults middleware query sanitization", () => {
     await middleware(req, res, next);
 
     expect(mockModel.lean).toHaveBeenCalled();
-    expect(res.advancedResults.data).toEqual([{ _id: "123", name: "Lean Bootcamp" }]);
+    expect(res.advancedResults.data).toEqual([
+      { _id: "123", name: "Lean Bootcamp" },
+    ]);
     expect(next).toHaveBeenCalled();
   });
 });

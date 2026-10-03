@@ -40,7 +40,10 @@ jest.mock("../utils", () => ({
 }));
 
 const { protect } = require("../middleware/auth");
-const { getBootcamp, getBootcampsInRadius } = require("../controllers/bootcampsController");
+const {
+  getBootcamp,
+  getBootcampsInRadius,
+} = require("../controllers/bootcampsController");
 const { getCourse, getCourses } = require("../controllers/coursesController");
 const { getReview, getReviews } = require("../controllers/reviewsController");
 const { getUser } = require("../controllers/usersController");
@@ -93,7 +96,9 @@ describe("Read-Only Query Performance Optimizations (.lean)", () => {
     it("getBootcamp should chain .lean()", async () => {
       req.params.id = "bootcamp123";
       const mockQuery = {
-        lean: jest.fn().mockResolvedValue({ _id: "bootcamp123", name: "DevCamp" }),
+        lean: jest
+          .fn()
+          .mockResolvedValue({ _id: "bootcamp123", name: "DevCamp" }),
       };
       Bootcamp.findById.mockReturnValue(mockQuery);
 
@@ -133,7 +138,9 @@ describe("Read-Only Query Performance Optimizations (.lean)", () => {
       req.params.id = "course123";
       const mockQuery = {
         populate: jest.fn().mockReturnThis(),
-        lean: jest.fn().mockResolvedValue({ _id: "course123", title: "Web Dev" }),
+        lean: jest
+          .fn()
+          .mockResolvedValue({ _id: "course123", title: "Web Dev" }),
       };
       Course.findById.mockReturnValue(mockQuery);
 
@@ -164,7 +171,9 @@ describe("Read-Only Query Performance Optimizations (.lean)", () => {
       req.params.id = "review123";
       const mockQuery = {
         populate: jest.fn().mockReturnThis(),
-        lean: jest.fn().mockResolvedValue({ _id: "review123", title: "Great!" }),
+        lean: jest
+          .fn()
+          .mockResolvedValue({ _id: "review123", title: "Great!" }),
       };
       Review.findById.mockReturnValue(mockQuery);
 
