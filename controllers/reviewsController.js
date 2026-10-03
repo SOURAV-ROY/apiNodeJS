@@ -9,6 +9,9 @@ const { Review, Bootcamp } = require("../models");
 exports.getReviews = asyncHandler(async (req, res, next) => {
   if (req.params.bootcampId) {
     // Bolt Optimization: Chain .lean() to bypass Mongoose document hydration
+    // Bolt Optimization: Chain .lean() to bypass document hydration for read-only review listing
+    // Bolt Optimization: Chain .lean() to bypass document hydration for read-only query
+    // Bolt Optimization: Chain .lean() to bypass document hydration on read-only queries
     const reviews = await Review.find({ bootcamp: req.params.bootcampId }).lean();
 
     return res.status(200).json({
@@ -26,6 +29,8 @@ exports.getReviews = asyncHandler(async (req, res, next) => {
 // @access          Public
 exports.getReview = asyncHandler(async (req, res, next) => {
   // Bolt Optimization: Chain .lean() to bypass Mongoose document hydration
+  // Bolt Optimization: Chain .lean() to bypass document hydration for read-only review lookup
+  // Bolt Optimization: Chain .lean() to bypass document hydration on read-only queries
   const review = await Review.findById(req.params.id)
     .populate({
       path: "bootcamp",
@@ -49,6 +54,7 @@ exports.getReview = asyncHandler(async (req, res, next) => {
 // @route           POST /api/v1/bootcamps/:bootcampId/reviews
 // @access          Private
 exports.addReview = asyncHandler(async (req, res, next) => {
+  // Prevent mass-assignment spoofing: explicitly enforce authenticated user and route bootcamp ID
   req.body.bootcamp = req.params.bootcampId;
   req.body.user = req.user.id;
 
@@ -88,6 +94,7 @@ exports.updateReview = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse(`Not Authorize To Update Review`, 401));
   }
 
+  // Prevent Mass Assignment / Review Ownership & Bootcamp Reassignment
   // Prevent Mass Assignment: protect review ownership and bootcamp association
   delete req.body.user;
   delete req.body.bootcamp;

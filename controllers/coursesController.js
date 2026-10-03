@@ -11,6 +11,9 @@ exports.getCourses = asyncHandler(async (req, res, next) => {
 
   if (req.params.bootcampId) {
     // Bolt Optimization: Chain .lean() to bypass Mongoose document hydration
+    // Bolt Optimization: Chain .lean() to bypass document hydration for read-only course listing
+    // Bolt Optimization: Chain .lean() to bypass document hydration for read-only query
+    // Bolt Optimization: Chain .lean() to bypass document hydration on read-only queries
     const courses = await Course.find({ bootcamp: req.params.bootcampId }).lean();
 
     return res.status(200).json({
@@ -40,6 +43,8 @@ exports.getCourses = asyncHandler(async (req, res, next) => {
 // @access          Public
 exports.getCourse = asyncHandler(async (req, res, next) => {
   // Bolt Optimization: Chain .lean() to bypass Mongoose document hydration
+  // Bolt Optimization: Chain .lean() to bypass document hydration for read-only course lookup
+  // Bolt Optimization: Chain .lean() to bypass document hydration on read-only queries
   const course = await Course.findById(req.params.id)
     .populate({
       path: "bootcamp",
@@ -117,6 +122,7 @@ exports.updateCourse = asyncHandler(async (req, res, next) => {
     );
   }
 
+  // Prevent Mass Assignment / Course Ownership & Bootcamp Reassignment
   // Prevent Mass Assignment: protect course ownership and bootcamp association
   delete req.body.user;
   delete req.body.bootcamp;
