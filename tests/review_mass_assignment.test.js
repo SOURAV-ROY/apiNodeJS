@@ -10,7 +10,6 @@ jest.mock("../models", () => ({
   Bootcamp: {
     findById: jest.fn(),
   },
-  Bootcamp: {},
 }));
 
 describe("Review Controller - Mass Assignment Security", () => {
