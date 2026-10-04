@@ -57,20 +57,29 @@ const reviews = JSON.parse(
 );
 
 const importData = async () => {
+  // Batches are dependent (bootcamps need users, courses need bootcamps, ...),
+  // so they are created one at a time and a failure stops the dependents.
   const batches = [
-    ["users", await User.create(users, { aggregateErrors: true })],
-    ["bootcamps", await Bootcamp.create(bootcamps, { aggregateErrors: true })],
-    ["courses", await Course.create(courses, { aggregateErrors: true })],
-    ["reviews", await Review.create(reviews, { aggregateErrors: true })],
+    ["users", () => User.create(users, { aggregateErrors: true })],
+    ["bootcamps", () => Bootcamp.create(bootcamps, { aggregateErrors: true })],
+    ["courses", () => Course.create(courses, { aggregateErrors: true })],
+    ["reviews", () => Review.create(reviews, { aggregateErrors: true })],
   ];
 
   // { aggregateErrors: true } makes Mongoose return the errors inside the result
   // array instead of throwing, so inspect the batches or failures go unnoticed.
-  const failures = batches.flatMap(([label, result]) =>
-    [...result]
-      .filter((entry) => entry instanceof Error)
-      .map((error) => ({ label, error })),
-  );
+  const failures = [];
+
+  for (const [label, createBatch] of batches) {
+    const result = await createBatch();
+    const batchFailures = [...result].filter((entry) => entry instanceof Error);
+
+    if (batchFailures.length) {
+      failures.push(...batchFailures.map((error) => ({ label, error })));
+      // A failed prerequisite would only cascade into more failures downstream.
+      break;
+    }
+  }
 
   if (failures.length) {
     for (const { label, error } of failures) {

@@ -58,11 +58,18 @@ ReviewSchema.statics.getAverageRating = async function (bootcampId) {
   console.log(obj);
 
   try {
-    await this.model("Bootcamp").findByIdAndUpdate(bootcampId, {
-      // averageRating: obj[0].averageRating
-      averageRating:
-        Math.round((obj[0].averageRating + Number.EPSILON) * 1000) / 1000,
-    });
+    if (obj.length) {
+      await this.model("Bootcamp").findByIdAndUpdate(bootcampId, {
+        // averageRating: obj[0].averageRating
+        averageRating:
+          Math.round((obj[0].averageRating + Number.EPSILON) * 1000) / 1000,
+      });
+    } else {
+      // Last review was deleted -> clear the stale average instead of keeping it
+      await this.model("Bootcamp").findByIdAndUpdate(bootcampId, {
+        $unset: { averageRating: 1 },
+      });
+    }
   } catch (errors) {
     console.log(errors);
   }
