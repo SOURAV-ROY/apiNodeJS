@@ -69,9 +69,16 @@ CourseSchema.statics.getAverageCost = async function (bootcampId) {
   console.log(obj);
 
   try {
-    await this.model("Bootcamp").findByIdAndUpdate(bootcampId, {
-      averageCost: Math.ceil(obj[0].averageCost / 10) * 10,
-    });
+    if (obj.length) {
+      await this.model("Bootcamp").findByIdAndUpdate(bootcampId, {
+        averageCost: Math.ceil(obj[0].averageCost / 10) * 10,
+      });
+    } else {
+      // Last course was deleted -> clear the stale average instead of keeping it
+      await this.model("Bootcamp").findByIdAndUpdate(bootcampId, {
+        $unset: { averageCost: 1 },
+      });
+    }
   } catch (errors) {
     console.log(errors);
   }
