@@ -73,7 +73,10 @@ exports.addCourse = asyncHandler(async (req, res, next) => {
   req.body.bootcamp = req.params.bootcampId;
   req.body.user = req.user.id;
 
-  const bootcamp = await Bootcamp.findById(req.params.bootcampId);
+  // Bolt Optimization: Chain .select("user").lean() to bypass document hydration and retrieve only required user field for authorization check
+  const bootcamp = await Bootcamp.findById(req.params.bootcampId)
+    .select("user")
+    .lean();
 
   if (!bootcamp) {
     return next(

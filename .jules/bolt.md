@@ -1,3 +1,8 @@
+## 2026-10-04 - Indexing Foreign Keys and Projecting Fields on Existence Checks
+
+**Learning:** Unindexed foreign key fields (`user` in `BootcampModel`) cause collection scans when checking if a user has published a bootcamp or filtering bootcamps by owner. Furthermore, fetching full Mongoose documents during existence/authorization checks (`addCourse`, `addReview`, `creteBootcamp`) loads unnecessary fields (`location`, `careers`, etc.) and hydrates Mongoose models.
+**Action:** Always set `index: true` on foreign key fields in Mongoose models. Chain `.select("_id")` or `.select("field")` with `.lean()` when performing existence and authorization checks to minimize payload size, memory allocation, and CPU hydration cost.
+
 ## 2026-09-22 - Indexing Foreign Keys and Chaining `.lean()` in Controller Queries
 
 **Learning:** Unindexed foreign key fields (`bootcamp` and `user` in `CourseModel`) force full collection scans (COLLSCAN) during relational lookups (e.g., `GET /api/v1/bootcamps/:bootcampId/courses`) and aggregation pipelines (`getAverageCost`). Additionally, omitting `.lean()` in controller-level `find` and `findById` queries creates unnecessary Mongoose document hydration overhead when returning read-only JSON responses.
