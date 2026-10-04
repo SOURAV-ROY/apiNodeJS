@@ -56,7 +56,8 @@ const resetPasswordLimiter = expressRateLimit({
   validate: { trustProxy: false },
   message: {
     success: false,
-    error: "Too many password reset attempts from this IP, please try again after 15 minutes",
+    error:
+      "Too many password reset attempts from this IP, please try again after 15 minutes",
   },
 });
 
@@ -75,7 +76,6 @@ const {
   },
 } = require("../utils/validators");
 
-router.post("/register", validate(registerSchema), register);
 router.post("/register", registerLimiter, validate(registerSchema), register);
 router.post("/login", loginLimiter, validate(loginSchema), login);
 router.get("/logout", logout);
