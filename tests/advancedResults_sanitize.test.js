@@ -11,6 +11,7 @@ describe("advancedResults middleware query sanitization", () => {
       sort: jest.fn().mockReturnThis(),
       skip: jest.fn().mockReturnThis(),
       limit: jest.fn().mockReturnThis(),
+      lean: jest.fn().mockReturnThis(),
       countDocuments: jest.fn().mockResolvedValue(0),
       exec: jest.fn().mockResolvedValue([]),
     };
@@ -48,6 +49,7 @@ describe("advancedResults middleware query sanitization", () => {
       sort: jest.fn().mockReturnThis(),
       skip: jest.fn().mockReturnThis(),
       limit: jest.fn().mockReturnThis(),
+      lean: jest.fn().mockReturnThis(),
       countDocuments: jest.fn().mockResolvedValue(0),
       exec: jest.fn().mockResolvedValue([]),
     };
@@ -81,6 +83,7 @@ describe("advancedResults middleware query sanitization", () => {
       sort: jest.fn().mockReturnThis(),
       skip: jest.fn().mockReturnThis(),
       limit: jest.fn().mockReturnThis(),
+      lean: jest.fn().mockReturnThis(),
       countDocuments: jest.fn().mockResolvedValue(10),
     };
 
@@ -103,6 +106,35 @@ describe("advancedResults middleware query sanitization", () => {
     });
     expect(res.advancedResults).toBeDefined();
     expect(res.advancedResults.total).toBe(10);
+    expect(next).toHaveBeenCalled();
+  });
+
+  it("should invoke lean() on the Mongoose query to bypass document hydration for performance", async () => {
+    const mockModel = {
+      find: jest.fn().mockReturnThis(),
+      populate: jest.fn().mockReturnThis(),
+      select: jest.fn().mockReturnThis(),
+      sort: jest.fn().mockReturnThis(),
+      skip: jest.fn().mockReturnThis(),
+      limit: jest.fn().mockReturnThis(),
+      lean: jest.fn().mockReturnThis(),
+      countDocuments: jest.fn().mockResolvedValue(1),
+    };
+
+    mockModel.then = (resolve) =>
+      resolve([{ _id: "123", name: "Lean Bootcamp" }]);
+
+    const req = { query: {} };
+    const res = {};
+    const next = jest.fn();
+
+    const middleware = advancedResults(mockModel);
+    await middleware(req, res, next);
+
+    expect(mockModel.lean).toHaveBeenCalled();
+    expect(res.advancedResults.data).toEqual([
+      { _id: "123", name: "Lean Bootcamp" },
+    ]);
     expect(next).toHaveBeenCalled();
   });
 });

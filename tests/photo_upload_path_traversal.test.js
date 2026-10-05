@@ -47,6 +47,9 @@ describe("Bootcamp Photo Upload Path Traversal Prevention", () => {
     await bootcampPhotoUpload(req, res, next);
 
     expect(next).not.toHaveBeenCalled();
+    //     sentinel/fix-bootcamp-user-schema-authorization-1347152347538683621
+    //     sentinel/prevent-admin-self-demotion-9178754681000968741
+
     const expectedPath = path.join(
       process.env.FILE_UPLOAD_PATH,
       "photo_60d5ec49f1b2c80015f8e001.png",

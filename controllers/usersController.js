@@ -13,8 +13,9 @@ exports.getUsers = asyncHandler(async (req, res, next) => {
 // @route           GET /api/v1/users/:id
 // @access          Private/Admin
 exports.getUser = asyncHandler(async (req, res, next) => {
-  // Performance optimization: Chain .lean() to bypass Mongoose document hydration
-  // for read-only queries, returning plain JS objects to reduce memory/CPU overhead.
+  // Bolt Optimization: Chain .lean() to bypass document hydration for read-only query
+  // Bolt Optimization: Chain .lean() to bypass Mongoose document hydration
+  // Bolt Optimization: Chain .lean() to bypass document hydration on read-only queries
   const user = await User.findById(req.params.id).lean();
 
   if (!user) {

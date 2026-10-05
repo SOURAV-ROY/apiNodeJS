@@ -84,8 +84,7 @@ exports.logout = asyncHandler(async (req, res, next) => {
 // @route           GET /api/v1/auth/me
 // @access          Private
 exports.getMe = asyncHandler(async (req, res, next) => {
-  // Performance optimization: Chain .lean() to bypass Mongoose document hydration
-  // for read-only queries, returning plain JS objects to reduce memory/CPU overhead.
+  // Bolt Optimization: Chain .lean() to bypass document hydration for read-only query
   let user = await User.findById(req.user.id).lean();
   res.status(200).json({
     success: true,
