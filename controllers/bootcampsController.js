@@ -16,7 +16,11 @@ exports.getBootcamps = asyncHandler(async (req, res, next) => {
 exports.getBootcamp = asyncHandler(async (req, res, next) => {
   // try {
   const bootcampId = req.params.id;
-  const bootcamp = await Bootcamp.findById(bootcampId);
+  // Bolt Optimization: Use .lean() on read-only single query to bypass Mongoose document hydration
+  // Bolt Optimization: Chain .lean() to bypass document hydration for read-only query
+  // Bolt Optimization: Chain .lean() to bypass Mongoose document hydration
+  // Bolt Optimization: Chain .lean() to bypass document hydration on read-only queries
+  const bootcamp = await Bootcamp.findById(bootcampId).lean();
   if (!bootcamp) {
     return next(
       new ErrorResponse(`Bootcamp not found with id ${req.params.id}`, 404),
@@ -82,7 +86,7 @@ exports.updateBootcamp = asyncHandler(async (req, res, next) => {
   }
 
   //Make Sure user is bootcamp owner *********************************
-  if (bootcamp?.user.toString() !== req.user.id && req.user.role !== "admin") {
+  if (bootcamp.user?.toString() !== req.user.id && req.user.role !== "admin") {
     return next(
       new ErrorResponse(
         `User ${req.user.id} Is Not Authorized to Update The Bootcamp`,
@@ -131,7 +135,7 @@ exports.deleteBootcamp = asyncHandler(async (req, res, next) => {
   }
 
   //Make Sure user is bootcamp owner *********************************
-  if (bootcamp.user.toString() !== req.user.id && req.user.role !== "admin") {
+  if (bootcamp.user?.toString() !== req.user.id && req.user.role !== "admin") {
     return next(
       new ErrorResponse(
         `User ${req.user.id} -> ${req.user.name} Is Not Authorized to Delete The Bootcamp`,
@@ -141,7 +145,7 @@ exports.deleteBootcamp = asyncHandler(async (req, res, next) => {
   }
 
   //Bootcamp Delete With Courses *************************************
-  bootcamp.remove();
+  await bootcamp.deleteOne();
 
   res.status(200).json({ success: true, data: {} });
   // } catch (errors) {
@@ -171,11 +175,14 @@ exports.getBootcampsInRadius = asyncHandler(async (req, res, next) => {
   //    Earth Radius = 3963 miles / 6378 km
   const radius = distance / 3963;
 
+  // Bolt Optimization: Chain .lean() to bypass document hydration for read-only query
+  // Bolt Optimization: Chain .lean() to bypass Mongoose document hydration
+  // Bolt Optimization: Chain .lean() to bypass document hydration on read-only queries
   const bootcamps = await Bootcamp.find({
     location: {
       $geoWithin: { $centerSphere: [[longitude, latitude], radius] },
     },
-  });
+  }).lean();
   res.status(200).json({
     success: true,
     count: bootcamps.length,
@@ -195,7 +202,7 @@ exports.bootcampPhotoUpload = asyncHandler(async (req, res, next) => {
   }
 
   //Make Sure user is bootcamp owner *********************************
-  if (bootcamp.user.toString() !== req.user.id && req.user.role !== "admin") {
+  if (bootcamp.user?.toString() !== req.user.id && req.user.role !== "admin") {
     return next(
       new ErrorResponse(
         `User ${req.user.id} -> ${req.user.name} Is Not Authorized to Delete Photo From The Bootcamp`,
@@ -210,6 +217,12 @@ exports.bootcampPhotoUpload = asyncHandler(async (req, res, next) => {
   console.log(req.files);
 
   const file = req.files.file;
+
+  if (!file) {
+    return next(
+      new ErrorResponse(`Please upload a file with field name 'file'`, 400),
+    );
+  }
 
   //Make Sure thee image is photo ***********************************************************
   if (!file.mimetype.startsWith("image")) {

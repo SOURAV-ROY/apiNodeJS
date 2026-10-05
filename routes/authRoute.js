@@ -56,7 +56,8 @@ const resetPasswordLimiter = expressRateLimit({
   validate: { trustProxy: false },
   message: {
     success: false,
-    error: "Too many password reset attempts from this IP, please try again after 15 minutes",
+    error:
+      "Too many password reset attempts from this IP, please try again after 15 minutes",
   },
 });
 

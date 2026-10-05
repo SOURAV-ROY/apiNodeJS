@@ -1,6 +1,146 @@
 # NodeJs API
 
-Backend API for the DevCamper application to manage bootcamps, courses, reviews, and users.
+Express + MongoDB REST API for the **DevCamper** application: bootcamps, the courses and reviews attached to them, and the users who own them.
+
+<!-- - **Base URL**: `http://localhost:4444/api/v1` -->
+<!-- - **Interactive docs**: `http://localhost:4444/docs` (Swagger UI) -->
+<!-- - **API spec**: [`docs/swagger.json`](docs/swagger.json) -->
+
+## Tech Stack
+
+| Layer | Choice |
+| --- | --- |
+| Runtime | Node.js >= 20.15.0, npm >= 10.2.4 |
+| Web framework | Express 5 |
+| Database | MongoDB through Mongoose 9 |
+| Validation | Joi schemas on `params`, `body` and `query` per route |
+| Authentication | JWT (Bearer header or httpOnly cookie) + lusca CSRF tokens |
+| Geocoding | `node-geocoder` (LocationIQ by default) |
+| Email | Nodemailer over SMTP |
+| Testing | Jest + Supertest |
+| Formatting | Prettier |
+
+## Quick Start
+
+```bash
+git clone <repository-url> && cd apiNodeJS
+npm install
+cp .env.example .env   # then edit the values
+npm run seed           # optional: load fixture data
+npm run dev            # http://localhost:4444
+```
+
+MongoDB must be reachable at `MONGO_URI` before the server starts.
+
+> **Gotcha:** keep `NODE_ENV=development` in `.env` while developing. `index.js`
+> skips `connectDB()` when `NODE_ENV=test`, and the seeder than writes to
+> `MONGO_URI_TEST` instead of `MONGO_URI`.
+
+## Scripts
+
+| Command | What it does |
+| --- | --- |
+| `npm run dev` | Dev server with `nodemon` + inspector |
+| `npm start` | Production server (`node index.js`) |
+| `npm test` | Full Jest suite (`--detectOpenHandles`) |
+| `npm run format` | Write Prettier formatting across the repo |
+| `npm run seed` | Import `_data/*.json` into `MONGO_URI` |
+| `npm run seed:destroy` | Drop all seeded collections |
+| `npm run seed:test` | Import fixtures into `MONGO_URI_TEST` |
+| `npm run seed:test:destroy` | Drop collections on the test DB |
+
+Seeding an already-populated database fails on duplicate `_id` and exits `1` — run `npm run seed:destroy` first. Batches are dependent (users → bootcamps → courses → reviews), so a failure stops the dependents instead of cascading more errors.
+
+## Environment Variables
+
+Copy `.env.example` to `.env`. Never commit `.env` — it is git-ignored.
+
+| Variable | Purpose |
+| --- | --- |
+| `NODE_ENV` | `development` \| `production` \| `test`. Gates CSRF, DB auto-connect and logging |
+| `PORT` | HTTP port; `.env.example` sets `4444`, code falls back to `5000` |
+| `MONGO_URI` | Development / production database |
+| `MONGO_URI_TEST` | Database used by tests and `--test` seeding |
+| `GEOCODER_PROVIDER` | `node-geocoder` provider (e.g. `locationiq`) |
+| `GEOCODER_API_KEY` | Geocoding provider API key |
+| `FILE_UPLOAD_PATH` | Upload target for bootcamp photos |
+| `MAX_FILE_UPLOAD` | Maximum upload size in bytes |
+| `JWT_SECRET` | Signing key for access tokens |
+| `JWT_EXPIRE` | Token lifetime (e.g. `30d`) |
+| `JWT_COOKIE_EXPIRE` | Cookie lifetime in days |
+| `SESSION_SECRET` | Signing key for session / CSRF state |
+| `SMTP_HOST`, `SMTP_PORT`, `SMTP_EMAIL`, `SMTP_PASSWORD` | Outbound mail |
+| `FROM_EMAIL`, `FROM_NAME` | Mail sender identity |
+
+## API Surface
+
+All routes mount under `/api/v1`.
+
+| Group | Endpoints | Access |
+| --- | --- | --- |
+| **Auth** `/auth` | `POST /register`, `POST /login`, `GET /logout`, `GET /csrf-token`, `GET /me`, `PUT /updatedetails`, `PUT /updatepassword`, `POST /forgotpassword`, `PUT /resetpassword/:resettoken` | Public; mutating calls need a CSRF token. Login / register / forgot / reset are rate limited |
+| **Bootcamps** `/bootcamps` | `GET /`, `GET /:id`, `POST /`, `PUT /:id`, `DELETE /:id`, `PUT /:id/photo`, `GET /radius/:zipcode/:distance` | Reads public; writes need `admin` or `publisher` |
+| **Courses** `/bootcamps/:bootcampId/courses`, `/courses` | `GET /`, `GET /:id`, `POST /`, `PUT /:id`, `DELETE /:id` | Reads public; writes need `admin` or `publisher` |
+| **Reviews** `/bootcamps/:bootcampId/reviews`, `/reviews` | `GET /`, `GET /:id`, `POST /`, `PUT /:id`, `DELETE /:id` | Reads public; writes need `admin` or `user` |
+| **Users** `/users` | `GET /`, `GET /:id`, `POST /`, `PUT /:id`, `DELETE /:id` | `admin` only |
+
+List endpoints accept `advancedResults` query params (pagination, sorting, filtering, field selection). Request/response examples are in **[API Reference](docs/API_REFERENCE.md)**.
+
+## Project Structure
+
+```text
+index.js        App bootstrap: middleware pipeline, route mounting, Swagger UI
+seeder.js       Fixture import / destroy
+db/             Mongo connection; picks dev vs test URI from NODE_ENV
+routes/         One router per resource + index barrel
+controllers/    Request handlers
+models/         Mongoose schemas, hooks, statics, indexes
+middleware/     protect, authorize, validate, advancedResults, async, error, logging
+utils/          geocoder, sendMail, ErrorResponse, validators/, csrf/
+_data/          JSON fixtures (bootcamps, courses, users, reviews)
+config/         config.json (hostname, mailer settings)
+tests/          Jest + Supertest suites
+docs/           Guides, swagger.json, Swagger UI source
+```
+
+## How a Request Flows
+
+1. `index.js` loads `.env` and applies middleware in order: body parser → cookies → logger → file upload → `helmet` → mongo-sanitize → global rate limit → `hpp` → `cors` → session + `lusca.csrf()` → static files.
+2. The request hits a router mounted under `/api/v1/...`.
+3. Per route: `validate(joiSchema)` → `protect` (JWT) → `authorize(...roles)` → `advancedResults(model)` → controller.
+4. Controllers call the Mongoose models and respond; the `async()` wrapper forwards rejections to the error handler.
+5. `middleware/error.js` renders `{ success: false, error }` with a status code.
+
+`lusca.csrf()` is enabled whenever `NODE_ENV !== "development"`, so every `POST` / `PUT` / `DELETE` needs the token from `GET /api/v1/auth/csrf-token` together with its session cookie.
+
+## Data Model
+
+- **Bootcamp → Course** (1: N) — deleting a bootcamp cascade to its courses; `getAverageCost()` rolls tuition up into `bootcamp.averageCost` and `$unset`s it when no courses remain.
+- **Bootcamp → Review** (1: N) — `getAverageRating()` rolls ratings up into `bootcamp.averageRating` and `$unset`s it when no reviews remain.
+- **User → Bootcamp / Course / Review** (1: N) — ownership used for authorization.
+- **Review** carries a unique `(bootcamp, user)` index: one review per user per bootcamp.
+- A `pre("save")` hook geocodes `bootcamp.address` into `bootcamp.location`, then clears the raw address.
+- Read paths use `.lean()`; foreign keys are indexed.
+
+## Testing
+
+```bash
+npm test
+```
+
+- Suites live in `tests/` — currently **32 suites / 83 tests**.
+- Integration style: Supertest drives the real Express app against a real MongoDB (`MONGO_URI_TEST`, database `bnodeapi_test`).
+- Jest forces `NODE_ENV=test`, so CSRF stays on while `index.js` skips auto-connecting; each suite opens its own connection in `beforeAll`.
+- Tests create their own users and bootcamps and clean up in `afterAll`. Seeding with `--test` stubs the geocoder, so no external API calls are made.
+
+## Security
+
+- bcrypt password hashing; JWT with configurable expiry; httpOnly cookies.
+- Role-based authorization (`user`, `publisher`, `admin`) on every mutating route.
+- Joi validation on `params`, `body` and `query` for every route.
+- Per-endpoint rate limits (login 10/10 min, register 10/10 min, forgot-password 5/15 min, reset 10/15 min) plus a global limiter.
+- `helmet`, `cors`, `hpp`, `express-mongo-sanitize`, lusca CSRF.
+- Photo upload validates MIME type and extension, rebuilds the filename from the bootcamp id, and rejects path traversal.
 
 ## Documentation
 
@@ -140,7 +280,7 @@ class node_geocoder,node_send_mail,node_csrf_utils toneIndigo
 class node_seeder,node_tests toneTeal
 ```
 
-## Quick Start
+## Architecture: Request Pipeline
 
 ```mermaid
 flowchart TD
@@ -331,7 +471,7 @@ class node_geocoder,node_email,node_seeder,node_fixtures,node_deployment toneMin
 - **Courses**: Manage courses associated with bootcamps.
 - **Reviews**: Users can review bootcamps.
 - **Users & Authentication**: 
-    - JWT/Cookie based authentication.
+    - JWT/ Cookie-based authentication.
     - User roles (User, Publisher, Admin).
     - Password reset and update profile.
 - **Geocoding**: Calculate location and radius for bootcamps.
@@ -343,13 +483,6 @@ class node_geocoder,node_email,node_seeder,node_fixtures,node_deployment toneMin
     - XSS protection.
     - HPP protection.
     - CORS enabled.
-
-## Quick Start
-
-1.  Clone the repo.
-2.  Install dependencies: `npm install`.
-3.  Set up `config/config.env` (see [Setup Guide](docs/SETUP_AND_CONFIGURATION.md)).
-4.  Run dev server: `npm run dev`.
 
 ## License
 ISC
