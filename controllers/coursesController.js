@@ -85,6 +85,7 @@ exports.addCourse = asyncHandler(async (req, res, next) => {
   }
 
   //Make Sure user is bootcamp owner *****************************************
+  // Defensive check using optional chaining to prevent unhandled TypeError / DoS if user field is missing
   if (bootcamp.user?.toString() !== req.user.id && req.user.role !== "admin") {
     return next(
       new ErrorResponse(
@@ -115,6 +116,7 @@ exports.updateCourse = asyncHandler(async (req, res, next) => {
   }
 
   //Make Sure User is Course Owner *****************************************
+  // Defensive check using optional chaining to prevent unhandled TypeError / DoS if user field is missing
   if (course.user?.toString() !== req.user.id && req.user.role !== "admin") {
     return next(
       new ErrorResponse(
@@ -153,6 +155,7 @@ exports.deleteCourse = asyncHandler(async (req, res, next) => {
   }
 
   //Make Sure User is Course Owner *****************************************
+  // Defensive check using optional chaining to prevent unhandled TypeError / DoS if user field is missing
   if (course.user?.toString() !== req.user.id && req.user.role !== "admin") {
     return next(
       new ErrorResponse(
