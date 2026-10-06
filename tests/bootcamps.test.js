@@ -7,6 +7,8 @@ const connectDB = require("../db");
 
 describe("Bootcamp Routes", () => {
   let token;
+  let csrfToken;
+  let cookies;
   const testUser = {
     name: "Publisher User",
     email: `publisher_${Date.now()}@example.com`,
@@ -16,18 +18,48 @@ describe("Bootcamp Routes", () => {
 
   beforeAll(async () => {
     await connectDB();
+
+    // POSTs require a lusca CSRF token plus its session cookie.
+    const csrfRes = await request(app).get("/api/v1/auth/csrf-token");
+    csrfToken = csrfRes.body.csrfToken;
+    cookies = csrfRes.headers["set-cookie"];
+
     // Register and login to get token
-    await request(app).post("/api/v1/auth/register").send(testUser);
-    const res = await request(app).post("/api/v1/auth/login").send({
-      email: testUser.email,
-      password: testUser.password,
-    });
+    await request(app)
+      .post("/api/v1/auth/register")
+      .set("x-csrf-token", csrfToken)
+      .set("Cookie", cookies)
+      .send(testUser);
+
+    // Public registration always creates a "user"; promote to publisher so the
+    // bootcamp create route's authorize("admin", "publisher") allows access.
+    await User.updateOne(
+      { email: testUser.email },
+      { $set: { role: "publisher" } },
+    );
+
+    const res = await request(app)
+      .post("/api/v1/auth/login")
+      .set("x-csrf-token", csrfToken)
+      .set("Cookie", cookies)
+      .send({
+        email: testUser.email,
+        password: testUser.password,
+      });
     token = res.body.token;
+    if (!token) {
+      throw new Error(
+        `Login failed (${res.statusCode}): ${JSON.stringify(res.body)}`,
+      );
+    }
   });
 
   afterAll(async () => {
-    await User.deleteOne({ email: testUser.email });
-    await Bootcamp.deleteMany({ user: testUser._id }); // Assuming user field exists
+    const user = await User.findOne({ email: testUser.email });
+    if (user) {
+      await Bootcamp.deleteMany({ user: user._id });
+      await User.deleteOne({ _id: user._id });
+    }
     await mongoose.connection.close();
   });
 
@@ -41,6 +73,8 @@ describe("Bootcamp Routes", () => {
     const res = await request(app)
       .post("/api/v1/bootcamps")
       .set("Authorization", `Bearer ${token}`)
+      .set("x-csrf-token", csrfToken)
+      .set("Cookie", cookies)
       .send({
         name: `Test Bootcamp ${Date.now()}`,
         description: "Test Description",
@@ -48,8 +82,8 @@ describe("Bootcamp Routes", () => {
         careers: ["Web Development"],
       });
 
-    // Note: This might fail if geocoder is not configured or fails
-    // But we expect 201 or 400 depending on validation
+    // Expect 201 on success; otherwise a client error (validation / geocoder),
+    // but never an unhandled 500.
     if (res.statusCode === 201) {
       expect(res.body.success).toBe(true);
     } else {

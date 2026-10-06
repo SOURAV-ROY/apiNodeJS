@@ -111,4 +111,27 @@ describe("Bootcamp Photo Upload File Extension Validation", () => {
       require("path").join("./public/uploads", "passwd.png"),
     );
   });
+
+  it("should return 400 ErrorResponse when req.files exists but req.files.file is missing", async () => {
+    Bootcamp.findById.mockResolvedValue({
+      _id: "60d5ec49f1b2c80015f8e001",
+      user: { toString: () => "5d7a514b5d2c12c7449be042" },
+    });
+
+    req.files = {
+      otherField: {
+        name: "photo.jpg",
+        mimetype: "image/jpeg",
+        size: 1000,
+      },
+    };
+
+    await bootcampPhotoUpload(req, res, next);
+
+    expect(next).toHaveBeenCalledTimes(1);
+    const error = next.mock.calls[0][0];
+    expect(error).toBeInstanceOf(ErrorResponse);
+    expect(error.statusCode).toBe(400);
+    expect(error.message).toBe("Please upload a file with field name 'file'");
+  });
 });
