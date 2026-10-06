@@ -92,10 +92,12 @@ const BootcampSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    // Performance optimization: Index user foreign key to avoid full collection scans when filtering bootcamps by user
     user: {
       type: mongoose.Schema.ObjectId,
       ref: "User",
       required: true,
+      index: true, // Bolt Optimization: Index user foreign key for fast user lookups and existing published bootcamp checks
     },
   },
   {
