@@ -15,6 +15,7 @@ jest.mock("../models", () => {
           sort: jest.fn().mockReturnThis(),
           skip: jest.fn().mockReturnThis(),
           limit: jest.fn().mockReturnThis(),
+          lean: jest.fn().mockReturnThis(),
           then: function (resolve) {
             resolve([]);
           },

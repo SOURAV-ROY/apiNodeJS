@@ -26,7 +26,7 @@ const advancedResults = (model, populate) => async (req, res, next) => {
 
   // bolt-optimize-advanced-results-17181035364112865129
   // Performance optimization: Parse query filter once to reuse in find and countDocuments
-  
+
   const parsedQuery = JSON.parse(queryString);
 
   //Finding Resource *************************************************
@@ -62,6 +62,11 @@ const advancedResults = (model, populate) => async (req, res, next) => {
     query = query.populate(populate);
   }
 
+  // Bolt Optimization: Chain .lean() to bypass Mongoose document hydration overhead on read-only paginated results.
+  // Bolt Optimization: Use .lean() to bypass document hydration for read-only query results,
+  // reducing CPU & memory overhead.
+  query = query.lean();
+
   // bolt/optimize-advanced-results-concurrent-query-4844573461497662429
   // Performance optimization: Execute total count and main results query concurrently using Promise.all
   // to reduce total database roundtrip latency. Also pass parsedQuery to countDocuments for accurate filtered total counts.
@@ -71,7 +76,7 @@ const advancedResults = (model, populate) => async (req, res, next) => {
   //Executing Query concurrently *************************************
   // Bolt Optimization: Run countDocuments(parsedQuery) and dataset query concurrently
   // with Promise.all to eliminate serial database round-trip latency.
-  
+
   const [total, results] = await Promise.all([
     model.countDocuments(parsedQuery),
     query,
