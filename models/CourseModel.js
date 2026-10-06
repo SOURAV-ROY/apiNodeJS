@@ -33,13 +33,13 @@ const CourseSchema = new mongoose.Schema(
       type: mongoose.Schema.ObjectId,
       ref: "Bootcamp",
       required: true,
-      index: true,
+      index: true, // Bolt Optimization: Index foreign key to speed up queries by bootcamp (e.g. GET /bootcamps/:id/courses & getAverageCost aggregate)
     },
     user: {
       type: mongoose.Schema.ObjectId,
       ref: "User",
       required: true,
-      index: true,
+      index: true, // Bolt Optimization: Index user foreign key for fast owner lookups
     },
   },
   {
@@ -69,9 +69,16 @@ CourseSchema.statics.getAverageCost = async function (bootcampId) {
   console.log(obj);
 
   try {
-    await this.model("Bootcamp").findByIdAndUpdate(bootcampId, {
-      averageCost: Math.ceil(obj[0].averageCost / 10) * 10,
-    });
+    if (obj.length) {
+      await this.model("Bootcamp").findByIdAndUpdate(bootcampId, {
+        averageCost: Math.ceil(obj[0].averageCost / 10) * 10,
+      });
+    } else {
+      // Last course was deleted -> clear the stale average instead of keeping it
+      await this.model("Bootcamp").findByIdAndUpdate(bootcampId, {
+        $unset: { averageCost: 1 },
+      });
+    }
   } catch (errors) {
     console.log(errors);
   }
@@ -79,12 +86,12 @@ CourseSchema.statics.getAverageCost = async function (bootcampId) {
 
 //Call AverageCost After Add Course ******************
 CourseSchema.post("save", function () {
-  this.constructor.getAverageCost(this.bootcamp);
+  return this.constructor.getAverageCost(this.bootcamp);
 });
 
-//Call AverageCost Before Remove Course ******************
-CourseSchema.pre("remove", function () {
-  this.constructor.getAverageCost(this.bootcamp);
+//Call AverageCost After Remove Course ******************
+CourseSchema.post("deleteOne", { document: true, query: false }, function () {
+  return this.constructor.getAverageCost(this.bootcamp);
 });
 
 module.exports = mongoose.model("Course", CourseSchema);

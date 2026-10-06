@@ -84,7 +84,7 @@ exports.logout = asyncHandler(async (req, res, next) => {
 // @route           GET /api/v1/auth/me
 // @access          Private
 exports.getMe = asyncHandler(async (req, res, next) => {
-  // Bolt Optimization: Chain .lean() to bypass document hydration on read-only queries
+  // Bolt Optimization: Chain .lean() to bypass document hydration for read-only query
   let user = await User.findById(req.user.id).lean();
   res.status(200).json({
     success: true,
