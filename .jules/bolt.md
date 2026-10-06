@@ -1,3 +1,8 @@
+## 2026-10-06 - Indexing Bootcamp User Foreign Key & Lean Existence Projection
+
+**Learning:** Unindexed `user` foreign key on `BootcampModel` forced MongoDB to perform full collection scans (COLLSCAN) during existence checks (`Bootcamp.findOne({ user: req.user.id })`) and user-filtered bootcamp queries. Furthermore, retrieving full documents without projection or `.lean()` during existence checks causes unnecessary database I/O and Mongoose document hydration.
+**Action:** Always add `index: true` on schema foreign key fields, and use `.select("_id").lean()` for existence checks to minimize memory footprint and execution latency.
+
 ## 2026-09-22 - Indexing Foreign Keys and Chaining `.lean()` in Controller Queries
 
 **Learning:** Unindexed foreign key fields (`bootcamp` and `user` in `CourseModel`) force full collection scans (COLLSCAN) during relational lookups (e.g., `GET /api/v1/bootcamps/:bootcampId/courses`) and aggregation pipelines (`getAverageCost`). Additionally, omitting `.lean()` in controller-level `find` and `findById` queries creates unnecessary Mongoose document hydration overhead when returning read-only JSON responses.

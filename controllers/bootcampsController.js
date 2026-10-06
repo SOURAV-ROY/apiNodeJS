@@ -47,7 +47,10 @@ exports.creteBootcamp = asyncHandler(async (req, res, next) => {
   req.body.user = req.user.id;
 
   // Check for published bootcamp ******************************************
-  const publishedBootcamp = await Bootcamp.findOne({ user: req.user.id });
+  // Bolt Optimization: Chain .select("_id").lean() to bypass document hydration and minimize memory overhead when checking for existing bootcamp
+  const publishedBootcamp = await Bootcamp.findOne({ user: req.user.id })
+    .select("_id")
+    .lean();
 
   if (publishedBootcamp && req.user.role !== "admin") {
     return next(
