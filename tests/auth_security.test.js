@@ -47,7 +47,9 @@ describe("Protect Middleware - Security Checks", () => {
   test("should return 401 when user in decoded JWT payload is not found in database (session orphaning / deleted user)", async () => {
     req.headers.authorization = "Bearer validtoken";
     jwt.verify.mockReturnValue({ id: "user123" });
-    User.findById.mockResolvedValue(null);
+    const mockQuery = Promise.resolve(null);
+    mockQuery.lean = jest.fn().mockResolvedValue(null);
+    User.findById.mockReturnValue(mockQuery);
 
     await protect(req, res, next);
 
@@ -60,13 +62,15 @@ describe("Protect Middleware - Security Checks", () => {
 
   test("should call next with no error when token is valid and user exists in database", async () => {
     req.headers.authorization = "Bearer validtoken";
-    const mockUser = { id: "user123", role: "user" };
+    const userDoc = { _id: "user123", role: "user" };
     jwt.verify.mockReturnValue({ id: "user123" });
-    User.findById.mockResolvedValue(mockUser);
+    const mockQuery = Promise.resolve(userDoc);
+    mockQuery.lean = jest.fn().mockResolvedValue({ _id: "user123", role: "user" });
+    User.findById.mockReturnValue(mockQuery);
 
     await protect(req, res, next);
 
-    expect(req.user).toEqual(mockUser);
+    expect(req.user).toEqual({ _id: "user123", id: "user123", role: "user" });
     expect(next).toHaveBeenCalledWith();
   });
 });

@@ -1,3 +1,9 @@
+## 2026-10-07 - Selective Projection and Foreign Key Indexing on Bootcamp User Lookup
+
+**Learning:** When performing existence checks (such as verifying whether a user has already published a bootcamp in `creteBootcamp`), retrieving the full document without `.select("_id")` or `.lean()` causes MongoDB to transmit all fields across the wire and forces Mongoose to hydrate a full document instance. Additionally, omitting `index: true` on foreign key fields (like `user` in `BootcampModel`) causes MongoDB to perform collection scans (COLLSCAN) on owner lookup queries.
+
+**Action:** Always set `index: true` on foreign key schema fields and chain `.select("_id").lean()` for existence or validation queries that only need to check record presence.
+
 ## 2026-09-22 - Indexing Foreign Keys and Chaining `.lean()` in Controller Queries
 
 **Learning:** Unindexed foreign key fields (`bootcamp` and `user` in `CourseModel`) force full collection scans (COLLSCAN) during relational lookups (e.g., `GET /api/v1/bootcamps/:bootcampId/courses`) and aggregation pipelines (`getAverageCost`). Additionally, omitting `.lean()` in controller-level `find` and `findById` queries creates unnecessary Mongoose document hydration overhead when returning read-only JSON responses.
