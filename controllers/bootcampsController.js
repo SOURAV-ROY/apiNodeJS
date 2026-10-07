@@ -148,7 +148,7 @@ exports.deleteBootcamp = asyncHandler(async (req, res, next) => {
   }
 
   //Bootcamp Delete With Courses *************************************
-  bootcamp.remove();
+  await bootcamp.deleteOne();
 
   res.status(200).json({ success: true, data: {} });
   // } catch (errors) {

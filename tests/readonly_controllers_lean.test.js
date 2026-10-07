@@ -11,7 +11,9 @@ describe("Read-Only Controllers - Mongoose .lean() Optimization", () => {
   let next;
 
   beforeEach(() => {
-    req = { params: { id: "123456789012345678901234", bootcampId: "bootcamp123" } };
+    req = {
+      params: { id: "123456789012345678901234", bootcampId: "bootcamp123" },
+    };
     res = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
@@ -23,13 +25,18 @@ describe("Read-Only Controllers - Mongoose .lean() Optimization", () => {
   describe("getBootcamp", () => {
     it("should call .lean() when querying bootcamp by id", async () => {
       const mockQuery = {
-        lean: jest.fn().mockResolvedValue({ _id: "123456789012345678901234", name: "Test Bootcamp" }),
+        lean: jest.fn().mockResolvedValue({
+          _id: "123456789012345678901234",
+          name: "Test Bootcamp",
+        }),
       };
       Bootcamp.findById.mockReturnValue(mockQuery);
 
       await getBootcamp(req, res, next);
 
-      expect(Bootcamp.findById).toHaveBeenCalledWith("123456789012345678901234");
+      expect(Bootcamp.findById).toHaveBeenCalledWith(
+        "123456789012345678901234",
+      );
       expect(mockQuery.lean).toHaveBeenCalled();
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith({
@@ -43,7 +50,9 @@ describe("Read-Only Controllers - Mongoose .lean() Optimization", () => {
     it("should call .lean() when querying course by id", async () => {
       const mockQuery = {
         populate: jest.fn().mockReturnThis(),
-        lean: jest.fn().mockResolvedValue({ _id: "course123", title: "Test Course" }),
+        lean: jest
+          .fn()
+          .mockResolvedValue({ _id: "course123", title: "Test Course" }),
       };
       Course.findById.mockReturnValue(mockQuery);
 
@@ -66,7 +75,9 @@ describe("Read-Only Controllers - Mongoose .lean() Optimization", () => {
   describe("getCourses by bootcampId", () => {
     it("should call .lean() when querying courses for a bootcamp", async () => {
       const mockQuery = {
-        lean: jest.fn().mockResolvedValue([{ _id: "course1", title: "Course 1" }]),
+        lean: jest
+          .fn()
+          .mockResolvedValue([{ _id: "course1", title: "Course 1" }]),
       };
       Course.find.mockReturnValue(mockQuery);
 
@@ -87,7 +98,9 @@ describe("Read-Only Controllers - Mongoose .lean() Optimization", () => {
     it("should call .lean() when querying review by id", async () => {
       const mockQuery = {
         populate: jest.fn().mockReturnThis(),
-        lean: jest.fn().mockResolvedValue({ _id: "review123", title: "Test Review" }),
+        lean: jest
+          .fn()
+          .mockResolvedValue({ _id: "review123", title: "Test Review" }),
       };
       Review.findById.mockReturnValue(mockQuery);
 
@@ -110,7 +123,9 @@ describe("Read-Only Controllers - Mongoose .lean() Optimization", () => {
   describe("getReviews by bootcampId", () => {
     it("should call .lean() when querying reviews for a bootcamp", async () => {
       const mockQuery = {
-        lean: jest.fn().mockResolvedValue([{ _id: "review1", title: "Review 1" }]),
+        lean: jest
+          .fn()
+          .mockResolvedValue([{ _id: "review1", title: "Review 1" }]),
       };
       Review.find.mockReturnValue(mockQuery);
 

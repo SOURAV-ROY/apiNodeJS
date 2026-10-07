@@ -26,7 +26,7 @@ const advancedResults = (model, populate) => async (req, res, next) => {
 
   // bolt-optimize-advanced-results-17181035364112865129
   // Performance optimization: Parse query filter once to reuse in find and countDocuments
-  
+
   const parsedQuery = JSON.parse(queryString);
 
   //Finding Resource *************************************************
@@ -76,7 +76,7 @@ const advancedResults = (model, populate) => async (req, res, next) => {
   //Executing Query concurrently *************************************
   // Bolt Optimization: Run countDocuments(parsedQuery) and dataset query concurrently
   // with Promise.all to eliminate serial database round-trip latency.
-  
+
   const [total, results] = await Promise.all([
     model.countDocuments(parsedQuery),
     query,
