@@ -12,7 +12,9 @@ exports.getReviews = asyncHandler(async (req, res, next) => {
     // Bolt Optimization: Chain .lean() to bypass document hydration for read-only review listing
     // Bolt Optimization: Chain .lean() to bypass document hydration for read-only query
     // Bolt Optimization: Chain .lean() to bypass document hydration on read-only queries
-    const reviews = await Review.find({ bootcamp: req.params.bootcampId }).lean();
+    const reviews = await Review.find({
+      bootcamp: req.params.bootcampId,
+    }).lean();
 
     return res.status(200).json({
       success: true,
@@ -90,7 +92,8 @@ exports.updateReview = asyncHandler(async (req, res, next) => {
   }
 
   //Make sure review belongs to user or admin **************************************
-  if (review.user.toString() !== req.user.id && req.user.role !== "admin") {
+  // Defensive check using optional chaining to prevent unhandled TypeError / DoS if user field is missing
+  if (review.user?.toString() !== req.user.id && req.user.role !== "admin") {
     return next(new ErrorResponse(`Not Authorize To Update Review`, 401));
   }
 
@@ -123,11 +126,12 @@ exports.deleteReview = asyncHandler(async (req, res, next) => {
   }
 
   //Make sure review belongs to user or admin **************************************
-  if (review.user.toString() !== req.user.id && req.user.role !== "admin") {
+  // Defensive check using optional chaining to prevent unhandled TypeError / DoS if user field is missing
+  if (review.user?.toString() !== req.user.id && req.user.role !== "admin") {
     return next(new ErrorResponse(`Not Authorize To Delete The Review`, 401));
   }
 
-  await review.remove();
+  await review.deleteOne();
 
   res.status(200).json({
     success: true,

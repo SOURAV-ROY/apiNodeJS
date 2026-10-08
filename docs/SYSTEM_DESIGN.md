@@ -1,6 +1,7 @@
 # System Design Document
 
 ## Table of Contents
+
 1. [Project Overview](#project-overview)
 2. [System Architecture](#system-architecture)
 3. [Technology Stack](#technology-stack)
@@ -29,6 +30,7 @@
 - **File Upload**: Upload photos for bootcamps
 
 ### Key Features
+
 - RESTful API design
 - JWT/Cookie-based authentication
 - Role-based access control (User, Publisher, Admin)
@@ -57,18 +59,18 @@ graph TD
             MW[Middleware Pipeline]
             RH[Routes Handler]
             CL[Controller Logic]
-            
+
             MW --> RH
             RH --> CL
         end
-        
+
         subgraph BusinessLogic [Business Logic Layer]
             Auth[Auth & Authorization]
             Val[Validation]
             Geo[Geocoding]
             File[File Processing]
             Mail[Email Service]
-            
+
             CL --> Auth
             CL --> Val
             CL --> Geo
@@ -83,7 +85,7 @@ graph TD
         Coll2(Bootcamps Collection)
         Coll3(Courses Collection)
         Coll4(Reviews Collection)
-        
+
         DB --- Coll1
         DB --- Coll2
         DB --- Coll3
@@ -104,6 +106,7 @@ graph TD
 ```
 
 ### Architecture Pattern
+
 - **Layered Architecture**: Separation of concerns with distinct layers (Routes → Controllers → Models)
 - **MVC Pattern**: Model-View-Controller pattern (though View is replaced by JSON responses)
 - **Middleware Pattern**: Request processing through middleware pipeline
@@ -113,6 +116,7 @@ graph TD
 ## Technology Stack
 
 ### Core Technologies
+
 - **Runtime**: Node.js (v20.15.0+)
 - **Framework**: Express.js (v5.2.1)
 - **Database**: MongoDB with Mongoose ODM (v8.9.5)
@@ -121,6 +125,7 @@ graph TD
 ### Key Dependencies
 
 #### Security
+
 - `helmet`: Security headers
 - `express-rate-limit`: Rate limiting (100 req/10min)
 - `hpp`: HTTP Parameter Pollution protection
@@ -132,6 +137,7 @@ graph TD
 - `lusca`: CSRF protection
 
 #### Utilities
+
 - `dotenv`: Environment variable management
 - `morgan`: HTTP request logger
 - `express-fileupload`: File upload handling
@@ -141,6 +147,7 @@ graph TD
 - `joi`: Input validation
 
 #### Development
+
 - `nodemon`: Development server auto-reload
 - `jest`: Testing framework
 - `supertest`: HTTP assertion library
@@ -151,9 +158,11 @@ graph TD
 ## System Components
 
 ### 1. Routes Layer (`routes/`)
+
 Defines API endpoints and maps them to controller functions.
 
 **Structure:**
+
 ```
 routes/
 ├── bootcampsRoute.js    # /api/v1/bootcamps
@@ -164,14 +173,17 @@ routes/
 ```
 
 **Responsibilities:**
+
 - Define HTTP methods (GET, POST, PUT, DELETE)
 - Apply middleware (authentication, authorization, validation)
 - Route requests to appropriate controllers
 
 ### 2. Controllers Layer (`controllers/`)
+
 Contains business logic for handling requests.
 
 **Structure:**
+
 ```
 controllers/
 ├── bootcampsController.js  # Bootcamp CRUD operations
@@ -182,15 +194,18 @@ controllers/
 ```
 
 **Responsibilities:**
+
 - Process request data
 - Interact with models/database
 - Handle business rules
 - Return JSON responses
 
 ### 3. Models Layer (`models/`)
+
 Mongoose schemas defining data structure and validation.
 
 **Structure:**
+
 ```
 models/
 ├── BootcampModel.js    # Bootcamp schema
@@ -200,15 +215,18 @@ models/
 ```
 
 **Features:**
+
 - Schema validation
 - Pre/post hooks (e.g., password hashing, geocoding)
 - Virtual fields
 - Indexes for performance
 
 ### 4. Middleware Layer (`middleware/`)
+
 Custom middleware functions for request processing.
 
 **Key Middleware:**
+
 - `auth.js`: JWT authentication and role authorization
 - `error.js`: Global error handler
 - `advancedResults.js`: Pagination, filtering, sorting
@@ -217,18 +235,22 @@ Custom middleware functions for request processing.
 - `async.js`: Async error wrapper
 
 ### 5. Utilities (`utils/`)
+
 Helper functions and services.
 
 **Components:**
+
 - `geocoder.js`: Geocoding service wrapper
 - `sendMail.js`: Email service
 - `ErrorResponse.js`: Custom error class
 - `validators/`: Joi validation schemas
 
 ### 6. Database Layer (`db/`)
+
 Database connection and configuration.
 
 **Components:**
+
 - `db.js`: MongoDB connection logic
 - Handles test/production database switching
 
@@ -288,6 +310,7 @@ erDiagram
 ### Model Details
 
 #### User Model
+
 ```javascript
 {
   name: String (required),
@@ -300,12 +323,14 @@ erDiagram
 ```
 
 **Features:**
+
 - Password hashing via bcrypt (pre-save hook)
 - JWT token generation method
 - Password reset token generation
 - Password comparison method
 
 #### Bootcamp Model
+
 ```javascript
 {
   name: String (required, max 100 chars),
@@ -333,6 +358,7 @@ erDiagram
 ```
 
 **Features:**
+
 - Auto-generates slug from name (pre-save hook)
 - Geocodes address to coordinates (pre-save hook)
 - 2dsphere index on location for geospatial queries
@@ -340,6 +366,7 @@ erDiagram
 - Cascade delete courses on bootcamp deletion
 
 #### Course Model
+
 ```javascript
 {
   title: String (required),
@@ -353,10 +380,12 @@ erDiagram
 ```
 
 **Features:**
+
 - References Bootcamp model
 - Cascade delete when bootcamp is deleted
 
 #### Review Model
+
 ```javascript
 {
   title: String (required),
@@ -368,6 +397,7 @@ erDiagram
 ```
 
 **Features:**
+
 - One review per user per bootcamp (unique constraint)
 - References both Bootcamp and User models
 
@@ -376,14 +406,18 @@ erDiagram
 ## API Design
 
 ### API Structure
+
 All endpoints follow RESTful conventions:
+
 - Base URL: `/api/v1`
 - Resource-based URLs
 - HTTP methods: GET, POST, PUT, DELETE
 - JSON request/response format
 
 ### Swagger Documentation
+
 The API is fully documented using Swagger (OpenAPI 3.0).
+
 - **Documentation URL**: `/docs`
 - **Specification File**: `docs/swagger.json`
 - **Interactive UI**: Allows testing all endpoints directly from the browser.
@@ -391,6 +425,7 @@ The API is fully documented using Swagger (OpenAPI 3.0).
 ### Endpoint Categories
 
 #### 1. Authentication (`/api/v1/auth`)
+
 ```
 POST   /register          # User registration
 POST   /login             # User login
@@ -403,6 +438,7 @@ PUT    /updatepassword    # Update password
 ```
 
 #### 2. Bootcamps (`/api/v1/bootcamps`)
+
 ```
 GET    /                  # Get all bootcamps (paginated, filtered)
 GET    /:id               # Get single bootcamp
@@ -414,6 +450,7 @@ GET    /radius/:zipcode/:distance  # Get bootcamps within radius
 ```
 
 **Query Parameters:**
+
 - `page`: Page number
 - `limit`: Results per page
 - `select`: Fields to include
@@ -421,6 +458,7 @@ GET    /radius/:zipcode/:distance  # Get bootcamps within radius
 - `filter`: Filter criteria (e.g., `careers[in]=Web Development`)
 
 #### 3. Courses (`/api/v1/courses`)
+
 ```
 GET    /                  # Get all courses
 GET    /bootcamp/:bootcampId  # Get courses for bootcamp
@@ -431,6 +469,7 @@ DELETE /:id               # Delete course (owner/admin)
 ```
 
 #### 4. Reviews (`/api/v1/reviews`)
+
 ```
 GET    /                  # Get all reviews
 GET    /bootcamp/:bootcampId  # Get reviews for bootcamp
@@ -441,6 +480,7 @@ DELETE /:id               # Delete review (owner/admin)
 ```
 
 #### 5. Users (`/api/v1/users`)
+
 ```
 GET    /                  # Get all users (admin only)
 GET    /:id               # Get single user (admin only)
@@ -452,6 +492,7 @@ DELETE /:id               # Delete user (admin only)
 ### Response Format
 
 **Success Response:**
+
 ```json
 {
   "success": true,
@@ -461,6 +502,7 @@ DELETE /:id               # Delete user (admin only)
 ```
 
 **Error Response:**
+
 ```json
 {
   "success": false,
@@ -476,12 +518,14 @@ DELETE /:id               # Delete user (admin only)
 ### Security Layers
 
 #### 1. Authentication
+
 - **JWT Tokens**: Stateless authentication
 - **Cookie-based**: Alternative token storage
 - **Token Expiry**: Configurable (default: 30 days)
 - **Password Hashing**: bcrypt with salt rounds (10)
 
 #### 2. Authorization
+
 - **Role-Based Access Control (RBAC)**:
   - `user`: Can create reviews
   - `publisher`: Can create/manage bootcamps and courses
@@ -495,32 +539,39 @@ Request → Helmet → CORS → Rate Limit → HPP → CSRF → Body Parser
 ```
 
 **Helmet**: Sets security HTTP headers
+
 - X-Content-Type-Options
 - X-Frame-Options
 - X-XSS-Protection
 - Strict-Transport-Security
 
-**Rate Limiting**: 
+**Rate Limiting**:
+
 - 100 requests per 10 minutes per IP
 - Prevents brute force attacks
 
-**HPP (HTTP Parameter Pollution)**: 
+**HPP (HTTP Parameter Pollution)**:
+
 - Prevents duplicate parameter attacks
 
-**CSRF Protection**: 
+**CSRF Protection**:
+
 - Enabled in production
 - Uses Lusca middleware
 
-**CORS**: 
+**CORS**:
+
 - Configurable origins
 - Credentials support
 
 #### 4. Input Validation
+
 - **Joi Validation**: Request body/query validation
 - **Mongoose Validation**: Schema-level validation
 - **Sanitization**: Prevents NoSQL injection
 
 #### 5. Password Security
+
 - Minimum 6 characters
 - Bcrypt hashing (salt rounds: 10)
 - Password reset tokens (SHA-256 hashed, 10-minute expiry)
@@ -559,6 +610,7 @@ sequenceDiagram
 ```
 
 ### Example: Creating a Bootcamp
+
 **Flow**: `POST /api/v1/bootcamps` with Bearer Token
 
 1. **Client** sends request with Auth header.
@@ -591,16 +643,19 @@ graph LR
 ### Custom Middleware Details
 
 #### `protect` (Authentication)
+
 - Extracts JWT from Authorization header or cookie
 - Verifies token signature
 - Loads user from database
 - Attaches user to `req.user`
 
 #### `authorize` (Authorization)
+
 - Checks user role against required roles
 - Returns 403 if unauthorized
 
 #### `advancedResults` (Query Enhancement)
+
 - Pagination: `page`, `limit`
 - Field selection: `select`
 - Sorting: `sort`
@@ -608,6 +663,7 @@ graph LR
 - Populates related data
 
 #### `errorHandler` (Error Management)
+
 - Centralized error handling
 - Formats error responses
 - Logs errors for monitoring
@@ -621,18 +677,23 @@ graph LR
 ## Data Management & Seeding
 
 ### Data Directory (`_data/`)
+
 Contains initial seed data in JSON format:
+
 - `bootcamps.json`: Initial bootcamp listings
 - `courses.json`: Course data associated with bootcamps
 - `users.json`: Default user accounts (Admin, Publisher, User)
 - `reviews.json`: Sample reviews
 
 ### Seeder Script (`seeder.js`)
+
 A utility script to manage database state.
+
 - **Import Data**: `node seeder.js -i`
 - **Destroy Data**: `node seeder.js -d`
 
 **Features:**
+
 - Clear existing collections before import
 - Bulk insert using Mongoose
 - Color-coded console output for status tracking
@@ -649,7 +710,7 @@ graph TD
         Node[Node.js Runtime]
         Express[Express Application]
         Static[Static File Storage]
-        
+
         Node --> Express
     end
 
@@ -659,7 +720,7 @@ graph TD
         Bootcamps(Bootcamps)
         Courses(Courses)
         Reviews(Reviews)
-        
+
         DB --- Users
         DB --- Bootcamps
         DB --- Courses
@@ -670,11 +731,13 @@ graph TD
 ```
 
 ### Environment Configuration
+
 - **Development**: Local MongoDB, file-based logging
 - **Test**: Separate test database
 - **Production**: MongoDB Atlas, Vercel serverless
 
 ### Configuration Files
+
 - `config/config.json`: Application configuration
 - `.env`: Environment variables (not committed)
 - `vercel.json`: Vercel deployment configuration
@@ -684,6 +747,7 @@ graph TD
 ## Scalability Considerations
 
 ### Current Limitations
+
 1. **File Storage**: Local filesystem (not scalable)
 2. **Single Server**: No horizontal scaling
 3. **Database**: Single MongoDB instance
@@ -692,11 +756,13 @@ graph TD
 ### Recommended Improvements
 
 #### 1. File Storage
+
 - **Current**: Local filesystem
 - **Recommended**: AWS S3, Cloudinary, or Azure Blob Storage
 - **Benefits**: Scalable, CDN integration, backup
 
 #### 2. Caching Layer
+
 - **Redis**: Cache frequently accessed data
 - **Cache Strategies**:
   - Bootcamp listings (TTL: 5 minutes)
@@ -704,6 +770,7 @@ graph TD
   - Geocoding results
 
 #### 3. Database Optimization
+
 - **Indexing**: Ensure proper indexes on:
   - User email (unique)
   - Bootcamp location (2dsphere)
@@ -713,22 +780,26 @@ graph TD
 - **Connection Pooling**: Optimize MongoDB connections
 
 #### 4. Load Balancing
+
 - **Multiple Instances**: Deploy multiple server instances
 - **Load Balancer**: Distribute traffic
 - **Session Management**: Use Redis for shared sessions
 
 #### 5. API Rate Limiting
+
 - **Per-User Limits**: Beyond IP-based limiting
 - **Tiered Limits**: Different limits for user roles
 - **Distributed Rate Limiting**: Redis-based for multi-instance
 
 #### 6. Monitoring & Logging
+
 - **APM Tools**: Elastic APM, New Relic
 - **Log Aggregation**: ELK Stack, Splunk
 - **Error Tracking**: Sentry, Rollbar
 - **Metrics**: Prometheus, Grafana
 
 #### 7. Background Jobs
+
 - **Queue System**: Bull, RabbitMQ
 - **Use Cases**:
   - Email sending
@@ -737,6 +808,7 @@ graph TD
   - Report generation
 
 #### 8. API Versioning
+
 - **Current**: `/api/v1`
 - **Strategy**: Maintain multiple versions during transitions
 
@@ -745,12 +817,14 @@ graph TD
 ## Performance Optimizations
 
 ### Implemented
+
 1. **Pagination**: Prevents large dataset retrieval
 2. **Field Selection**: Reduces payload size
 3. **Database Indexes**: Faster queries
 4. **Virtual Populate**: Efficient related data loading
 
 ### Recommended
+
 1. **Response Compression**: gzip compression
 2. **Database Query Optimization**: Use `explain()` to analyze queries
 3. **Connection Pooling**: Reuse database connections
@@ -762,16 +836,19 @@ graph TD
 ## Testing Strategy
 
 ### Current Setup
+
 - **Framework**: Jest
 - **HTTP Testing**: Supertest
 - **Test Files**: Located in `tests/` directory
 
 ### Test Coverage
+
 - Unit tests for controllers
 - Integration tests for routes
 - Authentication/authorization tests
 
 ### Recommended Enhancements
+
 - **E2E Tests**: Full request/response cycle
 - **Load Testing**: Artillery, k6
 - **Security Testing**: OWASP ZAP
@@ -784,6 +861,7 @@ graph TD
 The DevCamper API is a well-structured RESTful API following best practices for security, validation, and error handling. The layered architecture provides clear separation of concerns, making it maintainable and extensible.
 
 ### Strengths
+
 ✅ Clean architecture and code organization
 ✅ Comprehensive security measures
 ✅ Role-based access control
@@ -792,6 +870,7 @@ The DevCamper API is a well-structured RESTful API following best practices for 
 ✅ Input validation at multiple layers
 
 ### Areas for Enhancement
+
 🔧 Cloud-based file storage (S3/Cloudinary)
 🔧 Caching layer (Redis/Memcached)
 🔧 Background job processing (Bull/RabbitMQ)
@@ -803,4 +882,3 @@ The DevCamper API is a well-structured RESTful API following best practices for 
 **Document Version**: 1.1  
 **Last Updated**: 2026-03-10  
 **Maintained By**: SOURAV ROY
-

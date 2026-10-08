@@ -42,9 +42,13 @@ describe("Course & Review Optimizations", () => {
   });
 
   it("should chain .lean() in getCourse", async () => {
-    const mockLean = jest.fn().mockResolvedValue({ id: "course1", title: "Test" });
+    const mockLean = jest
+      .fn()
+      .mockResolvedValue({ id: "course1", title: "Test" });
     const mockPopulate = jest.fn().mockReturnValue({ lean: mockLean });
-    const spy = jest.spyOn(Course, "findById").mockReturnValue({ populate: mockPopulate });
+    const spy = jest
+      .spyOn(Course, "findById")
+      .mockReturnValue({ populate: mockPopulate });
 
     const req = { params: { id: "course1" } };
     const res = {
@@ -84,9 +88,13 @@ describe("Course & Review Optimizations", () => {
   });
 
   it("should chain .lean() in getReview", async () => {
-    const mockLean = jest.fn().mockResolvedValue({ id: "review1", title: "Test" });
+    const mockLean = jest
+      .fn()
+      .mockResolvedValue({ id: "review1", title: "Test" });
     const mockPopulate = jest.fn().mockReturnValue({ lean: mockLean });
-    const spy = jest.spyOn(Review, "findById").mockReturnValue({ populate: mockPopulate });
+    const spy = jest
+      .spyOn(Review, "findById")
+      .mockReturnValue({ populate: mockPopulate });
 
     const req = { params: { id: "review1" } };
     const res = {
