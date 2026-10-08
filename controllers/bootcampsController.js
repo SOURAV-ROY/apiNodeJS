@@ -47,6 +47,7 @@ exports.creteBootcamp = asyncHandler(async (req, res, next) => {
   req.body.user = req.user.id;
 
   // Check for published bootcamp ******************************************
+  // Bolt Optimization: Chain .select("_id").lean() to bypass document hydration and minimize memory overhead during existence check
   // Bolt Optimization: Select only _id and chain .lean() to bypass document hydration for existence check
   const publishedBootcamp = await Bootcamp.findOne({ user: req.user.id })
     .select("_id")
