@@ -40,7 +40,8 @@ exports.protect = asyncHandler(async (req, res, next) => {
       );
     }
 
-    req.user.id = req.user._id.toString();
+    // Defensive assignment with optional chaining to prevent TypeError if _id is undefined
+    req.user.id = req.user._id?.toString() || req.user.id;
 
     next();
   } catch (errors) {

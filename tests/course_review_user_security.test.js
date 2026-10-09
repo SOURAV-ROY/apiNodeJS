@@ -46,9 +46,13 @@ describe("Course and Review Ownership Authorization Safety", () => {
 
   describe("addCourse", () => {
     it("should return 401 when bootcamp user is undefined", async () => {
-      Bootcamp.findById.mockResolvedValue({
-        _id: "bootcamp123",
-        user: undefined,
+      Bootcamp.findById.mockReturnValue({
+        select: jest.fn().mockReturnValue({
+          lean: jest.fn().mockResolvedValue({
+            _id: "bootcamp123",
+            user: undefined,
+          }),
+        }),
       });
 
       addCourse(req, res, next);
