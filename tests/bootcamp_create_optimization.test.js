@@ -15,7 +15,10 @@ describe("Bootcamp Controller - Optimization", () => {
       lean: jest.fn().mockResolvedValue(null),
     };
     Bootcamp.findOne.mockReturnValue(mockQuery);
-    Bootcamp.create.mockResolvedValue({ _id: "bootcamp123", name: "New Bootcamp" });
+    Bootcamp.create.mockResolvedValue({
+      _id: "bootcamp123",
+      name: "New Bootcamp",
+    });
 
     const req = {
       user: { id: "user123", role: "publisher" },

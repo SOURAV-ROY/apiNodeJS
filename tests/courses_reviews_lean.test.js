@@ -5,24 +5,32 @@ const { Course, Review } = require("../models");
 jest.mock("../models", () => {
   const mockCourseChain = {
     populate: jest.fn().mockReturnThis(),
-    lean: jest.fn().mockResolvedValue({ _id: "course123", title: "Test Course" }),
+    lean: jest
+      .fn()
+      .mockResolvedValue({ _id: "course123", title: "Test Course" }),
   };
 
   const mockReviewChain = {
     populate: jest.fn().mockReturnThis(),
-    lean: jest.fn().mockResolvedValue({ _id: "review123", title: "Test Review" }),
+    lean: jest
+      .fn()
+      .mockResolvedValue({ _id: "review123", title: "Test Review" }),
   };
 
   return {
     Course: {
       find: jest.fn().mockReturnValue({
-        lean: jest.fn().mockResolvedValue([{ _id: "course123", title: "Test Course" }]),
+        lean: jest
+          .fn()
+          .mockResolvedValue([{ _id: "course123", title: "Test Course" }]),
       }),
       findById: jest.fn().mockReturnValue(mockCourseChain),
     },
     Review: {
       find: jest.fn().mockReturnValue({
-        lean: jest.fn().mockResolvedValue([{ _id: "review123", title: "Test Review" }]),
+        lean: jest
+          .fn()
+          .mockResolvedValue([{ _id: "review123", title: "Test Review" }]),
       }),
       findById: jest.fn().mockReturnValue(mockReviewChain),
     },
