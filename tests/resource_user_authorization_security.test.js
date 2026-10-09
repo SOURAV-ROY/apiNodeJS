@@ -46,9 +46,13 @@ describe("Resource Ownership Authorization Security (Optional Chaining)", () => 
   });
 
   it("should prevent server crash and return 401 in addCourse when bootcamp user is undefined", async () => {
-    Bootcamp.findById.mockResolvedValue({
-      _id: "60d5ec49f1b2c80015f8e002",
-      user: undefined,
+    Bootcamp.findById.mockReturnValue({
+      select: jest.fn().mockReturnValue({
+        lean: jest.fn().mockResolvedValue({
+          _id: "60d5ec49f1b2c80015f8e002",
+          user: undefined,
+        }),
+      }),
     });
 
     addCourse(req, res, next);
