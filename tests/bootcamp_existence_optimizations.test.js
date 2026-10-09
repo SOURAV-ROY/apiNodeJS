@@ -16,7 +16,9 @@ describe("Bootcamp Existence Query Optimizations", () => {
     const mockLean = jest.fn().mockResolvedValue(null);
     const mockSelect = jest.fn().mockReturnValue({ lean: mockLean });
     jest.spyOn(Bootcamp, "findOne").mockReturnValue({ select: mockSelect });
-    jest.spyOn(Bootcamp, "create").mockResolvedValue({ _id: "b1", name: "New Bootcamp" });
+    jest
+      .spyOn(Bootcamp, "create")
+      .mockResolvedValue({ _id: "b1", name: "New Bootcamp" });
 
     const req = {
       user: { id: "user123", role: "publisher" },
@@ -37,10 +39,14 @@ describe("Bootcamp Existence Query Optimizations", () => {
   });
 
   it("should chain .select('user').lean() when checking bootcamp in addCourse", async () => {
-    const mockLean = jest.fn().mockResolvedValue({ _id: "b1", user: "user123" });
+    const mockLean = jest
+      .fn()
+      .mockResolvedValue({ _id: "b1", user: "user123" });
     const mockSelect = jest.fn().mockReturnValue({ lean: mockLean });
     jest.spyOn(Bootcamp, "findById").mockReturnValue({ select: mockSelect });
-    jest.spyOn(Course, "create").mockResolvedValue({ _id: "c1", title: "New Course" });
+    jest
+      .spyOn(Course, "create")
+      .mockResolvedValue({ _id: "c1", title: "New Course" });
 
     const req = {
       user: { id: "user123", role: "publisher" },
@@ -65,7 +71,9 @@ describe("Bootcamp Existence Query Optimizations", () => {
     const mockLean = jest.fn().mockResolvedValue({ _id: "b1" });
     const mockSelect = jest.fn().mockReturnValue({ lean: mockLean });
     jest.spyOn(Bootcamp, "findById").mockReturnValue({ select: mockSelect });
-    jest.spyOn(Review, "create").mockResolvedValue({ _id: "r1", title: "New Review" });
+    jest
+      .spyOn(Review, "create")
+      .mockResolvedValue({ _id: "r1", title: "New Review" });
 
     const req = {
       user: { id: "user123", role: "user" },
