@@ -73,7 +73,12 @@ exports.addCourse = asyncHandler(async (req, res, next) => {
   req.body.bootcamp = req.params.bootcampId;
   req.body.user = req.user.id;
 
-  const bootcamp = await Bootcamp.findById(req.params.bootcampId);
+  // Bolt Optimization: Chain .select("user").lean() to bypass document hydration and retrieve only required user field for authorization check
+  const bootcampQuery = Bootcamp.findById(req.params.bootcampId);
+  const bootcamp =
+    typeof bootcampQuery?.select === "function"
+      ? await bootcampQuery.select("user").lean()
+      : await bootcampQuery;
 
   if (!bootcamp) {
     return next(
@@ -85,7 +90,8 @@ exports.addCourse = asyncHandler(async (req, res, next) => {
   }
 
   //Make Sure user is bootcamp owner *****************************************
-  if (bootcamp.user.toString() !== req.user.id && req.user.role !== "admin") {
+  // Defensive check using optional chaining to prevent unhandled TypeError / DoS if user field is missing
+  if (bootcamp.user?.toString() !== req.user.id && req.user.role !== "admin") {
     return next(
       new ErrorResponse(
         `User ${req.user.id} Is Not Authorized to Add A Course to Bootcamp ${bootcamp._id}`,
@@ -115,7 +121,8 @@ exports.updateCourse = asyncHandler(async (req, res, next) => {
   }
 
   //Make Sure User is Course Owner *****************************************
-  if (course.user.toString() !== req.user.id && req.user.role !== "admin") {
+  // Defensive check using optional chaining to prevent unhandled TypeError / DoS if user field is missing
+  if (course.user?.toString() !== req.user.id && req.user.role !== "admin") {
     return next(
       new ErrorResponse(
         `User ${req.user.id} Is Not Authorized to Update Course ${course._id}`,
@@ -153,7 +160,8 @@ exports.deleteCourse = asyncHandler(async (req, res, next) => {
   }
 
   //Make Sure User is Course Owner *****************************************
-  if (course.user.toString() !== req.user.id && req.user.role !== "admin") {
+  // Defensive check using optional chaining to prevent unhandled TypeError / DoS if user field is missing
+  if (course.user?.toString() !== req.user.id && req.user.role !== "admin") {
     return next(
       new ErrorResponse(
         `User ${req.user.id} Is Not Authorized to Delete Course ${course._id}`,

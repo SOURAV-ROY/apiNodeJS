@@ -30,7 +30,11 @@ exports.protect = asyncHandler(async (req, res, next) => {
 
     // Bolt Optimization: Chain .lean() to bypass Mongoose document hydration
     // for authentication lookup, significantly reducing memory and CPU overhead.
-    req.user = await User.findById(decoded.id).lean();
+    const userQuery = User.findById(decoded.id);
+    req.user =
+      typeof userQuery?.lean === "function"
+        ? await userQuery.lean()
+        : await userQuery;
 
     // Defense in Depth: Ensure user account exists in database after JWT signature verification.
     // Prevents JWT Session Orphaning & Null Pointer Dereference DoS if a user account is deleted while token remains valid.
@@ -40,7 +44,9 @@ exports.protect = asyncHandler(async (req, res, next) => {
       );
     }
 
-    req.user.id = req.user._id.toString();
+    if (req.user._id) {
+      req.user.id = req.user._id.toString();
+    }
 
     next();
   } catch (errors) {

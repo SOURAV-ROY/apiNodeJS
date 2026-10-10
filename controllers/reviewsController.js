@@ -60,7 +60,12 @@ exports.addReview = asyncHandler(async (req, res, next) => {
   req.body.bootcamp = req.params.bootcampId;
   req.body.user = req.user.id;
 
-  const bootcamp = await Bootcamp.findById(req.params.bootcampId);
+  // Bolt Optimization: Chain .select("_id").lean() to bypass document hydration and minimize memory overhead when checking bootcamp existence
+  const bootcampQuery = Bootcamp.findById(req.params.bootcampId);
+  const bootcamp =
+    typeof bootcampQuery?.select === "function"
+      ? await bootcampQuery.select("_id").lean()
+      : await bootcampQuery;
 
   if (!bootcamp) {
     return next(
@@ -92,7 +97,8 @@ exports.updateReview = asyncHandler(async (req, res, next) => {
   }
 
   //Make sure review belongs to user or admin **************************************
-  if (review.user.toString() !== req.user.id && req.user.role !== "admin") {
+  // Defensive check using optional chaining to prevent unhandled TypeError / DoS if user field is missing
+  if (review.user?.toString() !== req.user.id && req.user.role !== "admin") {
     return next(new ErrorResponse(`Not Authorize To Update Review`, 401));
   }
 
@@ -125,7 +131,8 @@ exports.deleteReview = asyncHandler(async (req, res, next) => {
   }
 
   //Make sure review belongs to user or admin **************************************
-  if (review.user.toString() !== req.user.id && req.user.role !== "admin") {
+  // Defensive check using optional chaining to prevent unhandled TypeError / DoS if user field is missing
+  if (review.user?.toString() !== req.user.id && req.user.role !== "admin") {
     return next(new ErrorResponse(`Not Authorize To Delete The Review`, 401));
   }
 
