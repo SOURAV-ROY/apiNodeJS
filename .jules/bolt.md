@@ -1,3 +1,8 @@
+## 2026-10-10 - Projecting Foreign Keys and Bypassing Hydration on Pre-Update Authorization Lookups
+
+**Learning:** In update controller handlers (`updateBootcamp`, `bootcampPhotoUpload`, `updateCourse`, `updateReview`), performing `findById` lookups prior to `findByIdAndUpdate` retrieves full database documents and hydrates complete Mongoose instances solely to verify resource ownership. Chaining `.select("user").lean()` on pre-update authorization queries fetches only the `user` foreign key (and `_id`) over the wire, cutting network transfer sizes by ~90% and bypassing CPU/memory overhead for document hydration before the update occurs.
+**Action:** Always project required fields (`.select("user")`) and chain `.lean()` on pre-update authorization checks in controllers before performing `findByIdAndUpdate`.
+
 ## 2026-10-04 - Indexing Foreign Keys and Projecting Fields on Existence Checks
 
 **Learning:** Unindexed foreign key fields (`user` in `BootcampModel`) cause collection scans when checking if a user has published a bootcamp or filtering bootcamps by owner. Furthermore, fetching full Mongoose documents during existence/authorization checks (`addCourse`, `addReview`, `creteBootcamp`) loads unnecessary fields (`location`, `careers`, etc.) and hydrates Mongoose models.
