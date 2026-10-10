@@ -3,6 +3,7 @@
 This guide will help you set up the DevCamper API project locally.
 
 ## Prerequisites
+
 - Node.js (v20.15.0 or higher)
 - NPM (v10.2.4 or higher)
 - MongoDB (Local or Atlas)
@@ -10,12 +11,14 @@ This guide will help you set up the DevCamper API project locally.
 ## Installation
 
 1.  **Clone the repository**
+
     ```bash
     git clone <repository-url>
     cd apiNodeJS
     ```
 
 2.  **Install dependencies**
+
     ```bash
     npm install
     ```
@@ -26,25 +29,25 @@ This guide will help you set up the DevCamper API project locally.
     ```env
     NODE_ENV=development
     PORT=5000
-    
+
     # Database Connection
     MONGO_URI=<your_mongodb_uri>
-    
+
     # Geocoder (MapQuest, Google, etc.)
     GEOCODER_PROVIDER=mapquest
     GEOCODER_API_KEY=<your_api_key>
-    
+
     # File Upload
     FILE_UPLOAD_PATH=./public/uploads
     MAX_FILE_UPLOAD=1000000
-    
+
     # JWT Authentication
     JWT_SECRET=<your_jwt_secret>
     JWT_EXPIRE=30d
-    
+
     # Cookie
     JWT_COOKIE_EXPIRE=30
-    
+
     # Email (SMTP)
     SMTP_HOST=smtp.mailtrap.io
     SMTP_PORT=2525
@@ -65,8 +68,9 @@ This guide will help you set up the DevCamper API project locally.
       ```
 
 ## Database Seeding
+
 To seed the database with dummy data, you can use the seeder script (if available).
-*(Check `seeder.js` in the root directory if it exists)*
+_(Check `seeder.js` in the root directory if it exists)_
 
 ```bash
 # Import data

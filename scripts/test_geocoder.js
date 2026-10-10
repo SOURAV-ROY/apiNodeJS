@@ -12,7 +12,7 @@ const address = "Dhaka, Bangladesh";
 
 console.log(`Testing geocoder with provider: ${process.env.GEOCODER_PROVIDER}`);
 const apiKey = process.env.GEOCODER_API_KEY;
-console.log(`API Key length: ${apiKey ? apiKey.length : "undefined"}`);
+console.log(`API Key is ${apiKey ? "configured" : "not configured"}`);
 
 async function testGeocoder() {
   try {
