@@ -60,13 +60,17 @@ describe("Protect Middleware - Security Checks", () => {
 
   test("should call next with no error when token is valid and user exists in database", async () => {
     req.headers.authorization = "Bearer validtoken";
-    const mockUser = { id: "user123", role: "user" };
+    const mockUser = { _id: { toString: () => "user123" }, role: "user" };
+    const mockQuery = {
+      lean: jest.fn().mockResolvedValue(mockUser),
+    };
     jwt.verify.mockReturnValue({ id: "user123" });
-    User.findById.mockResolvedValue(mockUser);
+    User.findById.mockReturnValue(mockQuery);
 
     await protect(req, res, next);
 
-    expect(req.user).toEqual(mockUser);
+    expect(req.user.role).toBe("user");
+    expect(req.user.id).toBe("user123");
     expect(next).toHaveBeenCalledWith();
   });
 });
