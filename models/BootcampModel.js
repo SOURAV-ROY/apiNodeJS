@@ -92,6 +92,7 @@ const BootcampSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    // Performance optimization: Index user foreign key to avoid full collection scans when filtering bootcamps by user
     // Security and Performance Optimization: Index foreign key to speed up user ownership queries and prevent full collection scans
     // Performance optimization: Index user foreign key to avoid full collection scans on user-filtered lookups
     // Performance optimization: Index foreign key to avoid full collection scans on queries filtering by user
