@@ -86,6 +86,9 @@ exports.logout = asyncHandler(async (req, res, next) => {
 exports.getMe = asyncHandler(async (req, res, next) => {
   // Bolt Optimization: Chain .lean() to bypass document hydration for read-only query
   let user = await User.findById(req.user.id).lean();
+  if (!user) {
+    return next(new ErrorResponse("User not found", 404));
+  }
   res.status(200).json({
     success: true,
     data: user,
@@ -106,6 +109,9 @@ exports.updateDetails = asyncHandler(async (req, res, next) => {
     new: true,
     runValidators: true,
   });
+  if (!user) {
+    return next(new ErrorResponse("User not found", 404));
+  }
   res.status(200).json({
     success: true,
     data: user,
@@ -117,6 +123,11 @@ exports.updateDetails = asyncHandler(async (req, res, next) => {
 // @access          Private
 exports.updatePassword = asyncHandler(async (req, res, next) => {
   const user = await User.findById(req.user.id).select("+password");
+
+  // Defensive check to prevent unhandled TypeError crash / DoS if user document is missing
+  if (!user) {
+    return next(new ErrorResponse("User not found", 404));
+  }
 
   //Check Current Password **********************************************
   if (!(await user.matchPassword(req.body.currentPassword))) {
