@@ -43,7 +43,7 @@ exports.getBootcamp = asyncHandler(async (req, res, next) => {
 // @route           POST /api/v1/bootcamps
 // @access          Private
 exports.creteBootcamp = asyncHandler(async (req, res, next) => {
-  // Add User To req.body **************************************************
+  // Prevent Mass Assignment: Force bootcamp ownership to authenticated user ID
   req.body.user = req.user.id;
 
   // Check for published bootcamp ******************************************
