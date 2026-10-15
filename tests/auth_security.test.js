@@ -77,3 +77,40 @@ describe("Protect Middleware - Security Checks", () => {
     expect(next).toHaveBeenCalledWith();
   });
 });
+
+const { updatePassword } = require("../controllers/authController");
+
+describe("updatePassword - Security Checks", () => {
+  let req;
+  let res;
+  let next;
+
+  beforeEach(() => {
+    req = {
+      user: { id: "nonexistent_user_123" },
+      body: {
+        currentPassword: "Password123!",
+        newPassword: "NewPassword123!",
+      },
+    };
+    res = {};
+    next = jest.fn();
+    jest.clearAllMocks();
+  });
+
+  test("should return 404 ErrorResponse when user is not found in database", async () => {
+    const mockQuery = {
+      select: jest.fn().mockResolvedValue(null),
+    };
+    User.findById.mockReturnValue(mockQuery);
+
+    await updatePassword(req, res, next);
+
+    expect(User.findById).toHaveBeenCalledWith("nonexistent_user_123");
+    expect(mockQuery.select).toHaveBeenCalledWith("+password");
+    expect(next).toHaveBeenCalledTimes(1);
+    const error = next.mock.calls[0][0];
+    expect(error.statusCode).toBe(404);
+    expect(error.message).toBe("User not found");
+  });
+});
