@@ -83,7 +83,13 @@ exports.updateBootcamp = asyncHandler(async (req, res, next) => {
   // try {
   const bootcampId = req.params.id;
   const body = req.body;
-  let bootcamp = await Bootcamp.findById(bootcampId);
+  // Bolt Optimization: Select only 'user' field and chain .lean() to bypass document hydration
+  // and minimize database payload during ownership authorization check before update.
+  const query = Bootcamp.findById(bootcampId);
+  let bootcamp =
+    typeof query?.select === "function"
+      ? await query.select("user").lean()
+      : await query;
 
   if (!bootcamp) {
     return next(
@@ -200,7 +206,14 @@ exports.getBootcampsInRadius = asyncHandler(async (req, res, next) => {
 // @route           PUT /api/v1/bootcamps/:id/photo
 // @access          Private
 exports.bootcampPhotoUpload = asyncHandler(async (req, res, next) => {
-  let bootcamp = await Bootcamp.findById(req.params.id);
+  // Bolt Optimization: Select only 'user' field and chain .lean() to bypass document hydration
+  // and minimize database payload during ownership authorization check before photo upload.
+  const query = Bootcamp.findById(req.params.id);
+  let bootcamp =
+    typeof query?.select === "function"
+      ? await query.select("user").lean()
+      : await query;
+
   if (!bootcamp) {
     return next(
       new ErrorResponse(`Bootcamp not found with id ${req.params.id}`, 404),
