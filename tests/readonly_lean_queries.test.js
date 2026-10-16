@@ -78,6 +78,18 @@ describe("Read-only controller queries - .lean() optimization", () => {
     expect(res.status).toHaveBeenCalledWith(200);
   });
 
+  it("getBootcampsInRadius should return 404 ErrorResponse when geocoder returns no results (prevents DoS)", async () => {
+    jest.spyOn(geocoder, "geocode").mockResolvedValue([]);
+
+    req.params = { zipcode: "invalidzip", distance: "10" };
+    await getBootcampsInRadius(req, res, next);
+
+    expect(next).toHaveBeenCalledTimes(1);
+    const err = next.mock.calls[0][0];
+    expect(err.statusCode).toBe(404);
+    expect(err.message).toContain("No location found for zipcode invalidzip");
+  });
+
   it("getReviews with bootcampId should chain .lean()", async () => {
     const mockQuery = {
       lean: jest.fn().mockResolvedValue([{ _id: "r1", title: "Review 1" }]),
