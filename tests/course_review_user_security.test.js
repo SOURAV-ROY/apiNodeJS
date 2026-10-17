@@ -46,9 +46,13 @@ describe("Course and Review Ownership Authorization Safety", () => {
 
   describe("addCourse", () => {
     it("should return 401 when bootcamp user is undefined", async () => {
-      Bootcamp.findById.mockResolvedValue({
-        _id: "bootcamp123",
-        user: undefined,
+      Bootcamp.findById.mockReturnValue({
+        select: jest.fn().mockReturnValue({
+          lean: jest.fn().mockResolvedValue({
+            _id: "bootcamp123",
+            user: undefined,
+          }),
+        }),
       });
 
       addCourse(req, res, next);
@@ -64,9 +68,13 @@ describe("Course and Review Ownership Authorization Safety", () => {
 
   describe("updateCourse", () => {
     it("should return 401 when course user is undefined", async () => {
-      Course.findById.mockResolvedValue({
-        _id: "course123",
-        user: undefined,
+      Course.findById.mockReturnValue({
+        select: jest.fn().mockReturnValue({
+          lean: jest.fn().mockResolvedValue({
+            _id: "course123",
+            user: undefined,
+          }),
+        }),
       });
 
       updateCourse(req, res, next);
@@ -100,9 +108,13 @@ describe("Course and Review Ownership Authorization Safety", () => {
 
   describe("updateReview", () => {
     it("should return 401 when review user is undefined", async () => {
-      Review.findById.mockResolvedValue({
-        _id: "review123",
-        user: undefined,
+      Review.findById.mockReturnValue({
+        select: jest.fn().mockReturnValue({
+          lean: jest.fn().mockResolvedValue({
+            _id: "review123",
+            user: undefined,
+          }),
+        }),
       });
 
       updateReview(req, res, next);

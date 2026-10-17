@@ -16,7 +16,11 @@ describe("Bootcamp Controller - Mass Assignment Security", () => {
       name: "Old Bootcamp Name",
     };
 
-    Bootcamp.findById.mockResolvedValue(mockBootcamp);
+    Bootcamp.findById.mockReturnValue({
+      select: jest.fn().mockReturnValue({
+        lean: jest.fn().mockResolvedValue(mockBootcamp),
+      }),
+    });
     Bootcamp.findByIdAndUpdate.mockResolvedValue({
       ...mockBootcamp,
       name: "Updated Bootcamp Name",
