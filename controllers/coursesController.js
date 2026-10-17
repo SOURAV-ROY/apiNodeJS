@@ -112,7 +112,12 @@ exports.addCourse = asyncHandler(async (req, res, next) => {
 // @route           PUT /api/v1/courses/:id
 // @access          Private
 exports.updateCourse = asyncHandler(async (req, res, next) => {
-  let course = await Course.findById(req.params.id);
+  // Bolt Optimization: Chain .select("user").lean() to retrieve only required user field for authorization check and bypass Mongoose document hydration prior to update
+  const query = Course.findById(req.params.id);
+  let course =
+    typeof query?.select === "function"
+      ? await query.select("user").lean()
+      : await query;
 
   if (!course) {
     return next(
