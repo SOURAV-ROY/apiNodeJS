@@ -15,3 +15,9 @@
 **Vulnerability:** Relational database references (`user` ownership and `bootcamp` association) in models like `Course` and `Review` were vulnerable to mass assignment during update operations (`updateCourse` and `updateReview`). Because request validation schemas permitted unknown properties, attackers sending custom payload properties (e.g., `{ user: "attackerId", bootcamp: "targetBootcampId" }`) could transfer resource ownership or reassign resources across bootcamps.
 **Learning:** Request body schemas with `.unknown(true)` pass extra properties directly to controller functions. When calling `findByIdAndUpdate(id, req.body)`, any unstripped relation or identity properties in `req.body` overwrite existing schema attributes.
 **Prevention:** In update controller functions, explicitly delete immutable relational fields (`delete req.body.user; delete req.body.bootcamp;`) prior to invoking database update methods like `findByIdAndUpdate`.
+
+## 2026-09-18 - Unhandled Geocoder Null Result DoS
+
+**Vulnerability:** In `controllers/bootcampsController.js`, `getBootcampsInRadius` called `geocoder.geocode(zipcode)` without checking whether a valid location result array was returned. Supplying an unresolvable or invalid zipcode caused `geocoder.geocode` to return an empty array `[]` or `null`, resulting in an unhandled `TypeError` when reading `loc[0].latitude` and leading to potential Denial of Service (DoS).
+**Learning:** External service calls (geocoding, external APIs) can return empty results or null objects for unexpected user input. Controllers must validate array presence and length before dereferencing array elements.
+**Prevention:** Always check `if (!loc || !loc.length)` after geocoding calls and return a 404 `ErrorResponse` if no result is found.
