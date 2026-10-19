@@ -29,7 +29,10 @@ describe("Ownership Optional Chaining Security Tests", () => {
 
   beforeEach(() => {
     req = {
-      params: { id: "60d5ec49f1b2c80015f8e001", bootcampId: "60d5ec49f1b2c80015f8e002" },
+      params: {
+        id: "60d5ec49f1b2c80015f8e001",
+        bootcampId: "60d5ec49f1b2c80015f8e002",
+      },
       user: { id: "user123", role: "publisher", name: "Test User" },
       body: { title: "Updated Title" },
     };
