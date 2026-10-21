@@ -73,4 +73,21 @@ describe("Auth Controller - updateDetails Security", () => {
     );
     expect(res.status).toHaveBeenCalledWith(200);
   });
+
+  it("should return 404 ErrorResponse when user is not found during updateDetails", async () => {
+    User.findByIdAndUpdate.mockResolvedValue(null);
+
+    const req = {
+      user: { id: "user123" },
+      body: { name: "New Name" },
+    };
+    const res = {};
+    const next = jest.fn();
+
+    await updateDetails(req, res, next);
+
+    expect(next).toHaveBeenCalledTimes(1);
+    const errorPassed = next.mock.calls[0][0];
+    expect(errorPassed.statusCode).toBe(404);
+  });
 });
