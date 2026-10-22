@@ -1,3 +1,8 @@
+## 2026-10-22 - Projecting foreign key and bypassing hydration on pre-update authorization queries
+
+**Learning:** Before executing update queries (`findByIdAndUpdate`), fetching full documents via `findById` transfers unused schema fields over the network and wastes CPU time hydrating full Mongoose document instances only to verify ownership (`doc.user`). Chaining `.select("user").lean()` on pre-update lookups minimizes MongoDB network payload size and bypasses document hydration overhead.
+**Action:** Always project required foreign key fields (`.select("user")`) and chain `.lean()` on pre-update authorization lookups prior to invoking `findByIdAndUpdate`.
+
 ## 2026-10-06 - Indexing Bootcamp User Foreign Key & Lean Existence Projection
 
 **Learning:** Unindexed `user` foreign key on `BootcampModel` forced MongoDB to perform full collection scans (COLLSCAN) during existence checks (`Bootcamp.findOne({ user: req.user.id })`) and user-filtered bootcamp queries. Furthermore, retrieving full documents without projection or `.lean()` during existence checks causes unnecessary database I/O and Mongoose document hydration.
