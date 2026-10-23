@@ -1,7 +1,14 @@
+## 2026-10-23 - Pre-Update Query Projection & Lean Optimization
+
+**Learning:** Fetching full Mongoose documents (`Bootcamp.findById(...)`) prior to ownership authorization checks in update controllers (`updateBootcamp`, `bootcampPhotoUpload`) loads unused fields (`location`, `careers`, etc.) and incurs unnecessary Mongoose document hydration overhead when only the `user` foreign key is needed for verification.
+
+**Action:** Chain `.select("user").lean()` on pre-update queries before authorization checks to fetch only the required `user` foreign key and bypass Mongoose document hydration. Check `typeof query?.select === "function"` to maintain compatibility with test query mocks.
+
 ## 2026-10-06 - Indexing Bootcamp User Foreign Key & Lean Existence Projection
 
 **Learning:** Unindexed `user` foreign key on `BootcampModel` forced MongoDB to perform full collection scans (COLLSCAN) during existence checks (`Bootcamp.findOne({ user: req.user.id })`) and user-filtered bootcamp queries. Furthermore, retrieving full documents without projection or `.lean()` during existence checks causes unnecessary database I/O and Mongoose document hydration.
 **Action:** Always add `index: true` on schema foreign key fields, and use `.select("_id").lean()` for existence checks to minimize memory footprint and execution latency.
+
 ## 2026-10-04 - Indexing Foreign Keys and Projecting Fields on Existence Checks
 
 **Learning:** Unindexed foreign key fields (`user` in `BootcampModel`) cause collection scans when checking if a user has published a bootcamp or filtering bootcamps by owner. Furthermore, fetching full Mongoose documents during existence/authorization checks (`addCourse`, `addReview`, `creteBootcamp`) loads unnecessary fields (`location`, `careers`, etc.) and hydrates Mongoose models.
