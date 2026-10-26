@@ -1,3 +1,8 @@
+## 2026-10-26 - Projecting Foreign Keys with `.lean()` for Pre-Update Authorization Checks
+
+**Learning:** When verifying resource ownership before update or upload operations (`updateBootcamp`, `bootcampPhotoUpload`, `updateCourse`, `updateReview`), executing `findById` without field projection or document hydration bypass fetches the entire document (including large text, location GeoJSON, arrays, etc.) and incurs Mongoose model hydration overhead. Chaining `.select("user").lean()` retrieves strictly the foreign key required for the authorization check, significantly reducing database network transfer, heap allocation, and garbage collection pressure prior to `findByIdAndUpdate`.
+**Action:** Always chain `.select("user").lean()` on pre-update and pre-delete ownership checks across controllers.
+
 ## 2026-10-06 - Indexing Bootcamp User Foreign Key & Lean Existence Projection
 
 **Learning:** Unindexed `user` foreign key on `BootcampModel` forced MongoDB to perform full collection scans (COLLSCAN) during existence checks (`Bootcamp.findOne({ user: req.user.id })`) and user-filtered bootcamp queries. Furthermore, retrieving full documents without projection or `.lean()` during existence checks causes unnecessary database I/O and Mongoose document hydration.
