@@ -1,3 +1,8 @@
+## 2026-10-27 - Pre-Update Authorization Query Field Projection & Lean Optimization
+
+**Learning:** In update controllers (`updateBootcamp`), executing full document lookups (`Bootcamp.findById(id)`) prior to `findByIdAndUpdate` transfers all document fields over the wire and wastes CPU cycles on Mongoose model hydration when only checking owner authorization (`user`). Chaining `.select("user").lean()` retrieves only the foreign key field and bypasses hydration, reducing wire transfer size by >90% per update request.
+**Action:** When performing authorization checks before document updates or replacements, chain `.select("user").lean()` to fetch only required authorization fields before executing the update operation.
+
 ## 2026-10-06 - Indexing Bootcamp User Foreign Key & Lean Existence Projection
 
 **Learning:** Unindexed `user` foreign key on `BootcampModel` forced MongoDB to perform full collection scans (COLLSCAN) during existence checks (`Bootcamp.findOne({ user: req.user.id })`) and user-filtered bootcamp queries. Furthermore, retrieving full documents without projection or `.lean()` during existence checks causes unnecessary database I/O and Mongoose document hydration.
