@@ -83,7 +83,12 @@ exports.updateBootcamp = asyncHandler(async (req, res, next) => {
   // try {
   const bootcampId = req.params.id;
   const body = req.body;
-  let bootcamp = await Bootcamp.findById(bootcampId);
+  // Bolt Optimization: Chain .select("user").lean() to bypass Mongoose document hydration and minimize wire payload size for pre-update authorization check
+  const bootcampQuery = Bootcamp.findById(bootcampId);
+  let bootcamp =
+    typeof bootcampQuery?.select === "function"
+      ? await bootcampQuery.select("user").lean()
+      : await bootcampQuery;
 
   if (!bootcamp) {
     return next(
