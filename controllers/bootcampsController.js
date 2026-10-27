@@ -173,6 +173,11 @@ exports.getBootcampsInRadius = asyncHandler(async (req, res, next) => {
 
   // get latitude/ longitude from geocoder
   const loc = await geocoder.geocode(zipcode);
+  if (!loc || !loc.length) {
+    return next(
+      new ErrorResponse(`No location found for the provided zipcode ${zipcode}`, 404),
+    );
+  }
   const latitude = loc[0].latitude;
   const longitude = loc[0].longitude;
 
