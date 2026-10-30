@@ -47,6 +47,7 @@ exports.creteBootcamp = asyncHandler(async (req, res, next) => {
   req.body.user = req.user.id;
 
   // Check for published bootcamp ******************************************
+  // Bolt Optimization: Select only _id and chain .lean() to bypass full document retrieval and Mongoose document hydration
   // Bolt Optimization: Chain .select("_id").lean() to bypass document hydration and minimize memory overhead when checking for existing bootcamp
   // Bolt Optimization: Select only _id and chain .lean() to check existence without hydrating full Bootcamp document or fetching all fields
   // Bolt Optimization: Chain .select("_id").lean() to bypass document hydration and minimize memory overhead during existence check
