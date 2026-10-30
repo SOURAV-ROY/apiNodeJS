@@ -10,6 +10,9 @@ const hpp = require("hpp");
 const cors = require("cors");
 const lusca = require("lusca");
 const session = require("express-session");
+const connectMongo = require("connect-mongo");
+const MongoStore =
+  connectMongo.default || connectMongo.MongoStore || connectMongo;
 require("colors");
 
 // Internal Imports *****************************************************
@@ -33,6 +36,11 @@ if (process.env.NODE_ENV === "production") {
   if (!process.env.JWT_SECRET) {
     throw new Error(
       "CRITICAL SECURITY ERROR: JWT_SECRET is required in production mode",
+    );
+  }
+  if (!process.env.MONGO_URI) {
+    throw new Error(
+      "CRITICAL SECURITY ERROR: MONGO_URI is required in production mode",
     );
   }
 } else {
@@ -124,24 +132,49 @@ app.use(cors());
 // Enforce secret presence in production; provide safe fallback in dev/test
 if (
   process.env.NODE_ENV === "production" &&
-  (!process.env.SESSION_SECRET || !process.env.JWT_SECRET)
+  (!process.env.SESSION_SECRET ||
+    !process.env.JWT_SECRET ||
+    !process.env.MONGO_URI)
 ) {
   throw new Error(
-    "FATAL SECURITY ERROR: SESSION_SECRET and JWT_SECRET must be defined in production mode.",
+    "FATAL SECURITY ERROR: SESSION_SECRET, JWT_SECRET, and MONGO_URI must be defined in production mode.",
   );
 }
 const sessionSecret =
   process.env.SESSION_SECRET || "dev_session_secret_fallback_key_32_chars";
 
 // Set up session middleware
-app.use(
-  session({
-    secret: sessionSecret,
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: process.env.NODE_ENV === "production" },
-  }),
-);
+// Use MongoStore in production and non-test environments when MONGO_URI is configured
+// to avoid MemoryStore memory leaks and support serverless multi-instance deployments (e.g., Vercel)
+const sessionOptions = {
+  secret: sessionSecret,
+  resave: false,
+  saveUninitialized: false,
+  proxy: true,
+  cookie: {
+    secure: process.env.NODE_ENV === "production",
+    httpOnly: true,
+    maxAge: 14 * 24 * 60 * 60 * 1000, // 14 days
+  },
+};
+
+if (
+  (process.env.NODE_ENV !== "test" ||
+    process.env.TEST_USE_MONGO_STORE === "true") &&
+  process.env.MONGO_URI
+) {
+  sessionOptions.store = MongoStore.create({
+    mongoUrl: process.env.MONGO_URI,
+    collectionName: "sessions",
+    ttl: 14 * 24 * 60 * 60, // 14 days
+    autoRemove: "native",
+    crypto: {
+      secret: sessionSecret,
+    },
+  });
+}
+
+app.use(session(sessionOptions));
 
 // CSRF Protection *****************************************************
 if (process.env.NODE_ENV !== "development") {

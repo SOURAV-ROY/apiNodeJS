@@ -3,6 +3,20 @@
 **Learning:** When performing existence checks (such as verifying whether a user has already published a bootcamp in `creteBootcamp`), retrieving the full document without `.select("_id")` or `.lean()` causes MongoDB to transmit all fields across the wire and forces Mongoose to hydrate a full document instance. Additionally, omitting `index: true` on foreign key fields (like `user` in `BootcampModel`) causes MongoDB to perform collection scans (COLLSCAN) on owner lookup queries.
 
 **Action:** Always set `index: true` on foreign key schema fields and chain `.select("_id").lean()` for existence or validation queries that only need to check record presence.
+## 2026-10-06 - Indexing Bootcamp User Foreign Key & Lean Existence Projection
+
+**Learning:** Unindexed `user` foreign key on `BootcampModel` forced MongoDB to perform full collection scans (COLLSCAN) during existence checks (`Bootcamp.findOne({ user: req.user.id })`) and user-filtered bootcamp queries. Furthermore, retrieving full documents without projection or `.lean()` during existence checks causes unnecessary database I/O and Mongoose document hydration.
+**Action:** Always add `index: true` on schema foreign key fields, and use `.select("_id").lean()` for existence checks to minimize memory footprint and execution latency.
+## 2026-10-04 - Indexing Foreign Keys and Projecting Fields on Existence Checks
+
+**Learning:** Unindexed foreign key fields (`user` in `BootcampModel`) cause collection scans when checking if a user has published a bootcamp or filtering bootcamps by owner. Furthermore, fetching full Mongoose documents during existence/authorization checks (`addCourse`, `addReview`, `creteBootcamp`) loads unnecessary fields (`location`, `careers`, etc.) and hydrates Mongoose models.
+**Action:** Always set `index: true` on foreign key fields in Mongoose models. Chain `.select("_id")` or `.select("field")` with `.lean()` when performing existence and authorization checks to minimize payload size, memory allocation, and CPU hydration cost.
+
+## 2026-10-03 - Optimizing Existence Queries and Foreign Keys in Mongoose Schemas
+
+**Learning:** When performing existence checks (such as checking if a user has already published a bootcamp in `creteBootcamp`), executing `findOne` without field projection or document hydration bypass transfers unnecessary fields over the wire and wastes CPU cycles on Mongoose document hydration. Chaining `.select("_id").lean()` retrieves only the primary key and skips hydration. Additionally, ensuring foreign key fields (like `user` in `BootcampSchema`) have `index: true` avoids full collection scans during owner lookups.
+
+**Action:** Chain `.select("_id").lean()` on Mongoose existence checks and ensure foreign key fields on models have `index: true` configured.
 
 ## 2026-09-22 - Indexing Foreign Keys and Chaining `.lean()` in Controller Queries
 
