@@ -112,7 +112,12 @@ exports.addCourse = asyncHandler(async (req, res, next) => {
 // @route           PUT /api/v1/courses/:id
 // @access          Private
 exports.updateCourse = asyncHandler(async (req, res, next) => {
-  let course = await Course.findById(req.params.id);
+  // Bolt Optimization: Select only user field and chain .lean() to check existence and authorization without full document retrieval or Mongoose hydration overhead
+  const courseQuery = Course.findById(req.params.id);
+  let course =
+    typeof courseQuery?.select === "function"
+      ? await courseQuery.select("user").lean()
+      : await courseQuery;
 
   if (!course) {
     return next(
