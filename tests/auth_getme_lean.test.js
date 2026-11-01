@@ -37,4 +37,20 @@ describe("authController.getMe .lean() optimization", () => {
       data: mockUser,
     });
   });
+
+  it("should return 404 ErrorResponse when user document is not found", async () => {
+    User.findById.mockReturnValue({
+      lean: jest.fn().mockResolvedValue(null),
+    });
+
+    const req = { user: { id: "user123" } };
+    const res = {};
+    const next = jest.fn();
+
+    await getMe(req, res, next);
+
+    expect(next).toHaveBeenCalledTimes(1);
+    const errorPassed = next.mock.calls[0][0];
+    expect(errorPassed.statusCode).toBe(404);
+  });
 });
