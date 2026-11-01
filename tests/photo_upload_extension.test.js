@@ -31,9 +31,13 @@ describe("Bootcamp Photo Upload File Extension Validation", () => {
   });
 
   it("should reject files with invalid extensions (e.g. .php, .html, .svg) even if mimetype is image/png", async () => {
-    Bootcamp.findById.mockResolvedValue({
-      _id: "60d5ec49f1b2c80015f8e001",
-      user: { toString: () => "5d7a514b5d2c12c7449be042" },
+    Bootcamp.findById.mockReturnValue({
+      select: jest.fn().mockReturnValue({
+        lean: jest.fn().mockResolvedValue({
+          _id: "60d5ec49f1b2c80015f8e001",
+          user: { toString: () => "5d7a514b5d2c12c7449be042" },
+        }),
+      }),
     });
 
     req.files = {
@@ -56,9 +60,13 @@ describe("Bootcamp Photo Upload File Extension Validation", () => {
   });
 
   it("should accept valid image extension .png", async () => {
-    Bootcamp.findById.mockResolvedValue({
-      _id: "60d5ec49f1b2c80015f8e001",
-      user: { toString: () => "5d7a514b5d2c12c7449be042" },
+    Bootcamp.findById.mockReturnValue({
+      select: jest.fn().mockReturnValue({
+        lean: jest.fn().mockResolvedValue({
+          _id: "60d5ec49f1b2c80015f8e001",
+          user: { toString: () => "5d7a514b5d2c12c7449be042" },
+        }),
+      }),
     });
 
     const fileMoveMock = jest.fn((dest, cb) => cb(null));
@@ -84,9 +92,13 @@ describe("Bootcamp Photo Upload File Extension Validation", () => {
   });
 
   it("should sanitize file name to prevent path traversal when bootcamp _id or ext contains path traversal sequences", async () => {
-    Bootcamp.findById.mockResolvedValue({
-      _id: "../../../etc/passwd",
-      user: { toString: () => "5d7a514b5d2c12c7449be042" },
+    Bootcamp.findById.mockReturnValue({
+      select: jest.fn().mockReturnValue({
+        lean: jest.fn().mockResolvedValue({
+          _id: "../../../etc/passwd",
+          user: { toString: () => "5d7a514b5d2c12c7449be042" },
+        }),
+      }),
     });
 
     const fileMoveMock = jest.fn((dest, cb) => cb(null));
@@ -113,9 +125,13 @@ describe("Bootcamp Photo Upload File Extension Validation", () => {
   });
 
   it("should return 400 ErrorResponse when req.files exists but req.files.file is missing", async () => {
-    Bootcamp.findById.mockResolvedValue({
-      _id: "60d5ec49f1b2c80015f8e001",
-      user: { toString: () => "5d7a514b5d2c12c7449be042" },
+    Bootcamp.findById.mockReturnValue({
+      select: jest.fn().mockReturnValue({
+        lean: jest.fn().mockResolvedValue({
+          _id: "60d5ec49f1b2c80015f8e001",
+          user: { toString: () => "5d7a514b5d2c12c7449be042" },
+        }),
+      }),
     });
 
     req.files = {
