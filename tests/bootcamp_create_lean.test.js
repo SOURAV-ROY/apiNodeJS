@@ -30,7 +30,10 @@ describe("creteBootcamp Optimization", () => {
       lean: jest.fn().mockResolvedValue(null),
     };
     Bootcamp.findOne.mockReturnValue(mockQuery);
-    Bootcamp.create.mockResolvedValue({ _id: "bootcamp123", name: "Test Bootcamp" });
+    Bootcamp.create.mockResolvedValue({
+      _id: "bootcamp123",
+      name: "Test Bootcamp",
+    });
 
     await new Promise((resolve) => {
       res.json.mockImplementation(() => resolve());
