@@ -10,6 +10,12 @@
 **Learning:** Checking JWT validity (signature and expiration) is insufficient to guarantee that a user is still active and valid. Authenticated routes must always verify that the user fetched from the database is non-null before allowing request execution to proceed.
 **Prevention:** Add a database user presence check `if (!req.user)` directly in the core authentication / token-verification middleware (`protect`) before calling `next()`.
 
+## 2026-11-02 - Unhandled TypeError DoS on Geocoder Result in getBootcampsInRadius
+
+**Vulnerability:** In `controllers/bootcampsController.js`, `getBootcampsInRadius` directly indexed `loc[0].latitude` and `loc[0].longitude` from `await geocoder.geocode(zipcode)` without checking if `loc` was null, empty, or undefined. If an invalid or unresolvable zipcode was supplied, `loc` resolved to an empty array (`[]`) or `null`, causing an unhandled `TypeError: Cannot read properties of undefined (reading 'latitude')`, crashing the request handler and creating a Denial of Service (DoS) vulnerability.
+**Learning:** External service calls such as geocoding providers may return empty arrays or null values when inputs cannot be resolved. Code must never assume indexing element 0 will succeed on external data responses.
+**Prevention:** Always validate external service responses (`if (!loc || !loc.length)`) and fail securely by returning a 404 `ErrorResponse` via `next()`.
+
 ## 2026-09-17 - Mass Assignment in Resource Updates
 
 **Vulnerability:** Relational database references (`user` ownership and `bootcamp` association) in models like `Course` and `Review` were vulnerable to mass assignment during update operations (`updateCourse` and `updateReview`). Because request validation schemas permitted unknown properties, attackers sending custom payload properties (e.g., `{ user: "attackerId", bootcamp: "targetBootcampId" }`) could transfer resource ownership or reassign resources across bootcamps.
