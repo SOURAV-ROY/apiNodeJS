@@ -88,7 +88,12 @@ exports.addReview = asyncHandler(async (req, res, next) => {
 // @route           PUT /api/v1/reviews/:id
 // @access          Private
 exports.updateReview = asyncHandler(async (req, res, next) => {
-  let review = await Review.findById(req.params.id);
+  // Bolt Optimization: Chain .select("user").lean() to bypass Mongoose document hydration and fetch only required foreign key for authorization check
+  const reviewQuery = Review.findById(req.params.id);
+  let review =
+    typeof reviewQuery?.select === "function"
+      ? await reviewQuery.select("user").lean()
+      : await reviewQuery;
 
   if (!review) {
     return next(
