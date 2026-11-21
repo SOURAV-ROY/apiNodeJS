@@ -93,10 +93,13 @@ const importData = async () => {
 };
 
 const deleteData = async () => {
-  await Review.deleteMany();
-  await Course.deleteMany();
-  await Bootcamp.deleteMany();
-  await User.deleteMany();
+  // Bolt Optimization: Execute deleteMany calls concurrently using Promise.all to eliminate serial database round trips during database teardown/reset
+  await Promise.all([
+    Review.deleteMany(),
+    Course.deleteMany(),
+    Bootcamp.deleteMany(),
+    User.deleteMany(),
+  ]);
   console.log("Data Destroyed.....".red.bold);
 };
 
