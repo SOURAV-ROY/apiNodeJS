@@ -27,9 +27,13 @@ describe("Bootcamp Photo Upload Path Traversal Prevention", () => {
   });
 
   it("should sanitize filename with path traversal sequences and extract the correct extension", async () => {
-    Bootcamp.findById.mockResolvedValue({
-      _id: "60d5ec49f1b2c80015f8e001",
-      user: { toString: () => "user123" },
+    Bootcamp.findById.mockReturnValue({
+      select: jest.fn().mockReturnValue({
+        lean: jest.fn().mockResolvedValue({
+          _id: "60d5ec49f1b2c80015f8e001",
+          user: { toString: () => "user123" },
+        }),
+      }),
     });
     Bootcamp.findByIdAndUpdate.mockResolvedValue({});
 

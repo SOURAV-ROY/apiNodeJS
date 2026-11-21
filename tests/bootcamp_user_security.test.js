@@ -46,9 +46,13 @@ describe("Bootcamp User Schema and Ownership Authorization Security", () => {
   });
 
   it("should prevent server crash and return 401 when bootcamp user is undefined in deleteBootcamp", async () => {
-    Bootcamp.findById.mockResolvedValue({
-      _id: "60d5ec49f1b2c80015f8e001",
-      user: undefined,
+    Bootcamp.findById.mockReturnValue({
+      select: jest.fn().mockReturnValue({
+        lean: jest.fn().mockResolvedValue({
+          _id: "60d5ec49f1b2c80015f8e001",
+          user: undefined,
+        }),
+      }),
     });
 
     updateBootcamp(req, res, next);
@@ -62,9 +66,13 @@ describe("Bootcamp User Schema and Ownership Authorization Security", () => {
   });
 
   it("should prevent server crash and return 401 when bootcamp user is undefined in bootcampPhotoUpload", async () => {
-    Bootcamp.findById.mockResolvedValue({
-      _id: "60d5ec49f1b2c80015f8e001",
-      user: undefined,
+    Bootcamp.findById.mockReturnValue({
+      select: jest.fn().mockReturnValue({
+        lean: jest.fn().mockResolvedValue({
+          _id: "60d5ec49f1b2c80015f8e001",
+          user: undefined,
+        }),
+      }),
     });
 
     bootcampPhotoUpload(req, res, next);
@@ -99,9 +107,13 @@ describe("Bootcamp User Schema and Ownership Authorization Security", () => {
   });
 
   it("should allow bootcamp update when requesting user matches bootcamp owner", async () => {
-    Bootcamp.findById.mockResolvedValue({
-      _id: "60d5ec49f1b2c80015f8e001",
-      user: { toString: () => "user123" },
+    Bootcamp.findById.mockReturnValue({
+      select: jest.fn().mockReturnValue({
+        lean: jest.fn().mockResolvedValue({
+          _id: "60d5ec49f1b2c80015f8e001",
+          user: { toString: () => "user123" },
+        }),
+      }),
     });
     Bootcamp.findByIdAndUpdate.mockResolvedValue({
       _id: "60d5ec49f1b2c80015f8e001",

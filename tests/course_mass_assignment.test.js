@@ -17,7 +17,11 @@ describe("Course Controller - Mass Assignment Security", () => {
       title: "Old Course Title",
     };
 
-    Course.findById.mockResolvedValue(mockCourse);
+    Course.findById.mockReturnValue({
+      select: jest.fn().mockReturnValue({
+        lean: jest.fn().mockResolvedValue(mockCourse),
+      }),
+    });
     Course.findByIdAndUpdate.mockResolvedValue({
       ...mockCourse,
       title: "Updated Course Title",
