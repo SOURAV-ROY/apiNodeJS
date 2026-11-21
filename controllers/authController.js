@@ -86,6 +86,14 @@ exports.logout = asyncHandler(async (req, res, next) => {
 exports.getMe = asyncHandler(async (req, res, next) => {
   // Bolt Optimization: Chain .lean() to bypass document hydration for read-only query
   let user = await User.findById(req.user.id).lean();
+
+  // Prevent Denial of Service / TypeError if user document is not found
+  if (!user) {
+    return next(
+      new ErrorResponse(`User not found with id of ${req.user.id}`, 404),
+    );
+  }
+
   res.status(200).json({
     success: true,
     data: user,
@@ -106,6 +114,14 @@ exports.updateDetails = asyncHandler(async (req, res, next) => {
     new: true,
     runValidators: true,
   });
+
+  // Prevent Denial of Service / TypeError if user document is not found
+  if (!user) {
+    return next(
+      new ErrorResponse(`User not found with id of ${req.user.id}`, 404),
+    );
+  }
+
   res.status(200).json({
     success: true,
     data: user,
