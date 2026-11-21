@@ -88,7 +88,13 @@ exports.addReview = asyncHandler(async (req, res, next) => {
 // @route           PUT /api/v1/reviews/:id
 // @access          Private
 exports.updateReview = asyncHandler(async (req, res, next) => {
-  let review = await Review.findById(req.params.id);
+  // Bolt Optimization: Select only 'user' field and chain .lean() to bypass document hydration
+  // and minimize database payload during ownership authorization check before review update.
+  const query = Review.findById(req.params.id);
+  let review =
+    typeof query?.select === "function"
+      ? await query.select("user").lean()
+      : await query;
 
   if (!review) {
     return next(
