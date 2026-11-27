@@ -26,7 +26,11 @@ describe("Mass Assignment Security - Courses and Reviews", () => {
       title: "Original Course Title",
     };
 
-    Course.findById.mockResolvedValue(mockCourse);
+    Course.findById.mockReturnValue({
+      select: jest.fn().mockReturnValue({
+        lean: jest.fn().mockResolvedValue(mockCourse),
+      }),
+    });
     Course.findByIdAndUpdate.mockResolvedValue({
       ...mockCourse,
       title: "Updated Course Title",
@@ -70,7 +74,11 @@ describe("Mass Assignment Security - Courses and Reviews", () => {
       title: "Original Review Title",
     };
 
-    Review.findById.mockResolvedValue(mockReview);
+    Review.findById.mockReturnValue({
+      select: jest.fn().mockReturnValue({
+        lean: jest.fn().mockResolvedValue(mockReview),
+      }),
+    });
     Review.findByIdAndUpdate.mockResolvedValue({
       ...mockReview,
       title: "Updated Review Title",

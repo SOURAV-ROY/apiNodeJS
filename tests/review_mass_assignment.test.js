@@ -23,7 +23,11 @@ describe("Review Controller - Mass Assignment Security", () => {
       rating: 9,
     };
 
-    Review.findById.mockResolvedValue(mockReview);
+    Review.findById.mockReturnValue({
+      select: jest.fn().mockReturnValue({
+        lean: jest.fn().mockResolvedValue(mockReview),
+      }),
+    });
     Review.findByIdAndUpdate.mockResolvedValue({
       ...mockReview,
       title: "Updated Review Title",
