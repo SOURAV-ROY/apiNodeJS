@@ -33,6 +33,8 @@ describe("updatePassword - Missing User Security Check", () => {
 
     const errorPassedToNext = next.mock.calls[0][0];
     expect(errorPassedToNext.statusCode).toBe(404);
-    expect(errorPassedToNext.message).toBe("User not found with id of nonexistentuser123");
+    expect(errorPassedToNext.message).toBe(
+      "User not found with id of nonexistentuser123",
+    );
   });
 });
