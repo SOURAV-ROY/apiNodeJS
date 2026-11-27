@@ -60,7 +60,9 @@ describe("Review Controller - Mass Assignment Security", () => {
   });
 
   it("should force req.body.user to req.user.id and req.body.bootcamp to req.params.bootcampId when creating a review", async () => {
-    Bootcamp.findById.mockResolvedValue({ _id: "bootcamp123" });
+    const mockLean = jest.fn().mockResolvedValue({ _id: "bootcamp123" });
+    const mockSelect = jest.fn().mockReturnValue({ lean: mockLean });
+    Bootcamp.findById.mockReturnValue({ select: mockSelect });
     Review.create.mockResolvedValue({
       _id: "review123",
       title: "New Review",

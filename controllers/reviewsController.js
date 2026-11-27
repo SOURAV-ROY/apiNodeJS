@@ -60,7 +60,12 @@ exports.addReview = asyncHandler(async (req, res, next) => {
   req.body.bootcamp = req.params.bootcampId;
   req.body.user = req.user.id;
 
-  const bootcamp = await Bootcamp.findById(req.params.bootcampId);
+  // Bolt Optimization: Chain .select("_id").lean() to bypass document hydration and minimize memory overhead when checking bootcamp existence
+  const bootcampQuery = Bootcamp.findById(req.params.bootcampId);
+  const bootcamp =
+    typeof bootcampQuery?.select === "function"
+      ? await bootcampQuery.select("_id").lean()
+      : await bootcampQuery;
 
   if (!bootcamp) {
     return next(

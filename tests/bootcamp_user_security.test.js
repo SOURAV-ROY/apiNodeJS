@@ -4,6 +4,8 @@ jest.mock("../models", () => ({
   Bootcamp: {
     findById: jest.fn(),
     findByIdAndUpdate: jest.fn(),
+    findOne: jest.fn(),
+    create: jest.fn(),
   },
 }));
 
@@ -12,6 +14,7 @@ const {
   updateBootcamp,
   deleteBootcamp,
   bootcampPhotoUpload,
+  creteBootcamp,
 } = require("../controllers/bootcampsController");
 
 describe("Bootcamp User Schema and Ownership Authorization Security", () => {
@@ -72,6 +75,27 @@ describe("Bootcamp User Schema and Ownership Authorization Security", () => {
         statusCode: 401,
       }),
     );
+  });
+
+  it("should chain .select('_id').lean() on Bootcamp.findOne when creating bootcamp", async () => {
+    const mockLean = jest.fn().mockResolvedValue(null);
+    const mockSelect = jest.fn().mockReturnValue({ lean: mockLean });
+    Bootcamp.findOne.mockReturnValue({ select: mockSelect });
+    Bootcamp.create.mockResolvedValue({
+      _id: "bootcamp123",
+      name: "New Bootcamp",
+      user: "user123",
+    });
+
+    req.body = { name: "New Bootcamp" };
+
+    creteBootcamp(req, res, next);
+    await new Promise(setImmediate);
+
+    expect(Bootcamp.findOne).toHaveBeenCalledWith({ user: "user123" });
+    expect(mockSelect).toHaveBeenCalledWith("_id");
+    expect(mockLean).toHaveBeenCalled();
+    expect(res.status).toHaveBeenCalledWith(201);
   });
 
   it("should allow bootcamp update when requesting user matches bootcamp owner", async () => {

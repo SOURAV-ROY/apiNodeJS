@@ -43,10 +43,14 @@ exports.getBootcamp = asyncHandler(async (req, res, next) => {
 // @route           POST /api/v1/bootcamps
 // @access          Private
 exports.creteBootcamp = asyncHandler(async (req, res, next) => {
-  // Add User To req.body **************************************************
+  // Prevent Mass Assignment: Force bootcamp ownership to authenticated user ID
   req.body.user = req.user.id;
 
   // Check for published bootcamp ******************************************
+  // Bolt Optimization: Select only _id and chain .lean() to bypass full document retrieval and Mongoose document hydration
+  // Bolt Optimization: Chain .select("_id").lean() to bypass document hydration and minimize memory overhead when checking for existing bootcamp
+  // Bolt Optimization: Select only _id and chain .lean() to check existence without hydrating full Bootcamp document or fetching all fields
+  // Bolt Optimization: Chain .select("_id").lean() to bypass document hydration and minimize memory overhead during existence check
   // Bolt Optimization: Select only _id and chain .lean() to bypass document hydration for existence check
   const publishedBootcamp = await Bootcamp.findOne({ user: req.user.id })
     .select("_id")
@@ -170,6 +174,17 @@ exports.getBootcampsInRadius = asyncHandler(async (req, res, next) => {
 
   // get latitude/ longitude from geocoder
   const loc = await geocoder.geocode(zipcode);
+
+  // Security defense: Guard against unhandled TypeError / DoS when geocoder returns no results or empty array
+  if (!loc || !loc.length) {
+    return next(
+      new ErrorResponse(
+        `No location found for the provided zipcode/address: ${zipcode}`,
+        404,
+      ),
+    );
+  }
+
   const latitude = loc[0].latitude;
   const longitude = loc[0].longitude;
 

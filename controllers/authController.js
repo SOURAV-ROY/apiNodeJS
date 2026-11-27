@@ -118,6 +118,13 @@ exports.updateDetails = asyncHandler(async (req, res, next) => {
 exports.updatePassword = asyncHandler(async (req, res, next) => {
   const user = await User.findById(req.user.id).select("+password");
 
+  // Prevent Denial of Service / TypeError if user document is not found
+  if (!user) {
+    return next(
+      new ErrorResponse(`User not found with id of ${req.user.id}`, 404),
+    );
+  }
+
   //Check Current Password **********************************************
   if (!(await user.matchPassword(req.body.currentPassword))) {
     return next(new ErrorResponse("Password is Incorrect", 401));
